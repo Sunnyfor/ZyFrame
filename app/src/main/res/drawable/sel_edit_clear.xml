@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- EditText清除按钮 -->
+    <item android:drawable="@drawable/svg_btn_del_unchecked" android:state_pressed="false"/>
+    <item android:drawable="@drawable/svg_btn_del_checked" android:state_pressed="true"/>
+
+</selector>

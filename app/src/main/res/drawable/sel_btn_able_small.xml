@@ -1,0 +1,13 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--按钮可点击样式-->
+
+    <solid android:color="@color/color_theme" />
+
+    <corners android:radius="@dimen/dp_5" />
+
+    <stroke
+        android:width="@dimen/dp_1"
+        android:color="@color/color_line" />
+
+</shape>

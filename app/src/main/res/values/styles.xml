@@ -1,0 +1,206 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="ZyTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimaryDark">@color/color_theme</item>
+        <item name="colorAccent">@color/color_theme</item>
+        <item name="actionMenuTextColor">@color/color_white</item>
+    </style>
+
+    <!--通用图标样式-->
+
+    <style name="style_common_icon">
+        <item name="android:layout_width">@dimen/dp_40</item>
+        <item name="android:layout_height">@dimen/dp_40</item>
+        <item name="android:padding">@dimen/dp_10</item>
+    </style>
+
+    <!--通用EditText样式-->
+
+    <style name="style_common_edit">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingStart">@dimen/dp_10</item>
+        <item name="android:paddingEnd">@dimen/dp_10</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:inputType">text</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="style_common_edit_multi">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_5</item>
+        <item name="android:padding">@dimen/dp_10</item>
+        <item name="android:gravity">top</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:background">@drawable/sel_border_gray</item>
+    </style>
+
+    <!--通用黑色字体-->
+
+    <style name="style_font_black">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:textColor">@color/font_black</item>
+    </style>
+
+    <style name="style_font_black_small" parent="style_font_black">
+        <item name="android:textSize">@dimen/dp_12</item>
+    </style>
+
+    <style name="style_font_black_smaller" parent="style_font_black">
+        <item name="android:textSize">@dimen/dp_10</item>
+    </style>
+
+    <style name="style_font_black_big" parent="style_font_black">
+        <item name="android:textSize">@dimen/dp_16</item>
+    </style>
+
+    <style name="style_font_black_bigger" parent="style_font_black">
+        <item name="android:textSize">@dimen/dp_18</item>
+    </style>
+
+    <!--通用白色字体-->
+
+    <style name="style_font_white" parent="style_font_black">
+        <item name="android:textColor">@color/font_white</item>
+    </style>
+
+    <style name="style_font_white_small" parent="style_font_white">
+        <item name="android:textSize">@dimen/dp_12</item>
+    </style>
+
+    <style name="style_font_white_smaller" parent="style_font_white">
+        <item name="android:textSize">@dimen/dp_10</item>
+    </style>
+
+    <style name="style_font_white_big" parent="style_font_white">
+        <item name="android:textSize">@dimen/dp_16</item>
+    </style>
+
+    <style name="style_font_white_bigger" parent="style_font_white">
+        <item name="android:textSize">@dimen/dp_18</item>
+    </style>
+
+    <!--通用灰色字体-->
+
+    <style name="style_font_gray" parent="style_font_black">
+        <item name="android:textColor">@color/font_gray</item>
+    </style>
+
+    <style name="style_font_gray_small" parent="style_font_gray">
+        <item name="android:textSize">@dimen/dp_12</item>
+    </style>
+
+    <style name="style_font_gray_smaller" parent="style_font_gray">
+        <item name="android:textSize">@dimen/dp_10</item>
+    </style>
+
+    <style name="style_font_gray_big" parent="style_font_gray">
+        <item name="android:textSize">@dimen/dp_16</item>
+    </style>
+
+    <style name="style_font_gray_bigger" parent="style_font_gray">
+        <item name="android:textSize">@dimen/dp_18</item>
+    </style>
+
+    <!--通用主题色字体-->
+
+    <style name="style_font_theme" parent="style_font_black">
+        <item name="android:textColor">@color/color_theme</item>
+    </style>
+
+    <style name="style_font_theme_small" parent="style_font_theme">
+        <item name="android:textSize">@dimen/dp_12</item>
+    </style>
+
+    <style name="style_font_theme_big" parent="style_font_theme">
+        <item name="android:textSize">@dimen/dp_16</item>
+    </style>
+
+    <style name="style_font_theme_bigger" parent="style_font_theme">
+        <item name="android:textSize">@dimen/dp_18</item>
+    </style>
+
+    <!--菜单CardView样式-->
+    <style name="style_item_card_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_1</item>
+        <item name="android:paddingTop">@dimen/dp_14</item>
+        <item name="android:paddingBottom">@dimen/dp_14</item>
+    </style>
+
+    <!--菜单条目字体样式-->
+    <style name="style_item_card_font" parent="style_font_black_big" />
+
+    <style name="style_item_card_more">
+        <item name="android:layout_width">@dimen/dp_15</item>
+        <item name="android:layout_height">@dimen/dp_15</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:src">@drawable/svg_more</item>
+        <item name="contentDescription">@string/placeholder</item>
+    </style>
+
+    <!--    &lt;!&ndash;Menu菜单子项&ndash;&gt;-->
+    <!--    <style name="style_btn_menu">-->
+    <!--        <item name="android:layout_width">@dimen/dp_48</item>-->
+    <!--        <item name="android:layout_height">@dimen/dp_48</item>-->
+    <!--        <item name="android:layout_gravity">bottom|end</item>-->
+    <!--        <item name="android:layout_marginEnd">@dimen/dp_25</item>-->
+    <!--        <item name="android:layout_marginBottom">@dimen/dp_25</item>-->
+    <!--        <item name="android:textSize">@dimen/sp_12</item>-->
+    <!--        <item name="android:textColor">@color/font_white</item>-->
+    <!--        <item name="android:background">@drawable/sel_circle_blue</item>-->
+    <!--    </style>-->
+
+
+    <!--通用按钮样式-->
+
+    <style name="style_common_btn">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp_40</item>
+        <item name="android:background">@drawable/sel_btn_able</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:layout_marginStart">@dimen/dp_20</item>
+        <item name="android:layout_marginEnd">@dimen/dp_20</item>
+        <item name="android:layout_marginTop">@dimen/dp_20</item>
+        <item name="android:layout_marginBottom">@dimen/dp_20</item>
+        <item name="android:textColor">@color/font_white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+    <!--通用小按钮样式-->
+
+    <style name="style_common_btn_small" parent="style_common_btn">
+        <item name="android:layout_width">@dimen/dp_60</item>
+        <item name="android:layout_height">@dimen/dp_26</item>
+        <item name="android:background">@drawable/sel_btn_able_small</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginEnd">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+    </style>
+
+    <!--通用横线分割样式-->
+
+    <style name="style_line_horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:background">@color/color_line</item>
+    </style>
+
+    <!--通用竖线分割样式-->
+
+    <style name="style_line_vertical">
+        <item name="android:layout_width">0.5dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/color_line</item>
+    </style>
+</resources>

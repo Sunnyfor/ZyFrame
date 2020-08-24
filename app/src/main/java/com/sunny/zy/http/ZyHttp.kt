@@ -1,7 +1,7 @@
 package com.sunny.zy.http
 
 import com.sunny.zy.http.bean.HttpResultBean
-import com.sunny.zy.http.body.ProgressResponseBody
+import com.sunny.zy.http.interceptor.ZyNetworkInterceptor
 import com.sunny.zy.http.parser.GSonResponseParser
 import com.sunny.zy.http.parser.IResponseParser
 import com.sunny.zy.http.request.ZyRequest
@@ -45,29 +45,7 @@ object ZyHttp {
                 }).apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
-            .addNetworkInterceptor {
-
-                httpResultBean.url = it.request().url.toString()
-                val originalResponse = it.proceed(it.request())
-                originalResponse.newBuilder().body(
-                    ProgressResponseBody(
-                        originalResponse.body,
-                        object : ProgressResponseBody.ProgressResponseListener {
-
-                            override fun onResponseProgress(
-                                bytesRead: Long,
-                                contentLength: Long,
-                                done: Boolean
-                            ) {
-                                httpResultBean.contentLength = contentLength
-                                httpResultBean.readLength = bytesRead
-                                httpResultBean.done = done
-                                httpResultBean.notifyData(httpResultBean)
-                            }
-                        }
-                    )
-                ).build()
-            }
+            .addNetworkInterceptor(ZyNetworkInterceptor(httpResultBean))
             .hostnameVerifier(HostnameVerifier { _, _ -> true })
             .connectTimeout(10000L, TimeUnit.MILLISECONDS) //连接超时时间
             .readTimeout(10000L, TimeUnit.MILLISECONDS) //读取超时时间

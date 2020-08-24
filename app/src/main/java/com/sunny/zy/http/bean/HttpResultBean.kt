@@ -1,7 +1,5 @@
 package com.sunny.zy.http.bean
 
-import com.alibaba.android.arouter.launcher.ARouter
-import com.sunny.zy.utils.RouterPath
 import com.sunny.zy.utils.ToastUtil
 
 /**
@@ -26,9 +24,6 @@ abstract class HttpResultBean<T>(
             } else {
                 if (url.contains("login.html")) {
                     msg = "登录失效，请重新登录！"
-                    //跳转登录页面
-                    ARouter.getInstance().build(RouterPath.LOGIN_LOGIN_ACTIVITY)
-                        .withBoolean("logout", true).navigation()
                 }
             }
         }

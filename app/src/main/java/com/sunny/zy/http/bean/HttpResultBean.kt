@@ -1,6 +1,7 @@
 package com.sunny.zy.http.bean
 
-import com.sunny.zy.utils.ToastUtil
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 /**
  * Desc
@@ -13,31 +14,29 @@ abstract class HttpResultBean<T>(
 ) :
     BaseHttpResultBean<T>() {
 
-    var msg: String? = "OK"  //请求结果
+    var typeToken: Type
+
+    init {
+        val type = javaClass.genericSuperclass
+        val args = (type as ParameterizedType).actualTypeArguments
+        typeToken = args[0]
+    }
+
+
     var bean: T? = null //数据结果
 
-    fun isSuccess(): Boolean {
 
+    fun isSuccess(): Boolean {
         if (httpIsSuccess()) {
             if (exception == null) {
                 return true
-            } else {
-                if (url.contains("login.html")) {
-                    msg = "登录失效，请重新登录！"
-                }
             }
         }
-        ToastUtil.show(msg)
         return false
     }
 
-    override fun notifyData(baseHttpResultBean: BaseHttpResultBean<T>) {
-
-    }
-
     override fun toString(): String {
-        return "HttpResultBean(httpCode=$httpCode, msg='$msg', exception=$exception, bean=$bean)"
+        return "HttpResultBean(serializedName='$serializedName', typeToken=$typeToken, bean=$bean)"
     }
-
 
 }

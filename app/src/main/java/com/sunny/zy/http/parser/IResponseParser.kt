@@ -1,9 +1,9 @@
 package com.sunny.zy.http.parser
 
+import com.sunny.zy.http.bean.DownLoadResultBean
+import com.sunny.zy.http.bean.HttpResultBean
 import okhttp3.ResponseBody
 import java.io.File
-import java.io.InputStream
-import java.lang.reflect.Type
 
 /**
  * Desc 数据解析
@@ -12,5 +12,13 @@ import java.lang.reflect.Type
  * Date 2020/4/29 14:47
  */
 interface IResponseParser {
-    fun <T> parserResponse(responseBody: ResponseBody, type: Type, serializedName: String? = null): T
+    fun <T> parserHttpResponse(
+        responseBody: ResponseBody,
+        httpResultBean: HttpResultBean<T>
+    ): T
+
+    fun parserDownloadResponse(
+        responseBody: ResponseBody,
+        downLoadResultBean: DownLoadResultBean
+    ): File
 }

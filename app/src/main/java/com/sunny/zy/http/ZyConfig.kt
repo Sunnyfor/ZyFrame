@@ -1,8 +1,9 @@
 package com.sunny.zy.http
 
-import android.os.Environment
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.http.interceptor.HeaderInterceptor
+import com.sunny.zy.http.parser.IResponseParser
+import com.sunny.zy.http.parser.ZHResponseParser
 
 /**
  * 接口配置清单
@@ -40,6 +41,11 @@ object ZyConfig {
             return "$HOST_PREFIX://$IP:$PORT"
         }
 
+
+    var CONNECT_TIME_OUT = 10 * 1000L
+
+    var READ_TIME_OUT = 10 * 1000L
+
     /**
      * provider权限
      */
@@ -58,5 +64,14 @@ object ZyConfig {
     fun setHttpHeader(headerMap: HashMap<String, Any>) {
         headerInterceptor.setHttpHeader(headerMap)
     }
+
+    /**
+     *
+     */
+    var logoutCallback: (() -> Unit)? = null
+
+
+    //数据结果解析器
+    var iResponseParser: IResponseParser = ZHResponseParser()
 }
 

@@ -1,6 +1,6 @@
 package com.sunny.zy.http.interceptor
 
-import com.sunny.zy.http.bean.HttpResultBean
+import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.body.ProgressResponseBody
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -11,9 +11,8 @@ import okhttp3.Response
  * Mail zhangye98@foxmail.com
  * Date 2020/8/24 16:20
  */
-class ZyNetworkInterceptor<T>(var httpResultBean: HttpResultBean<T>) : Interceptor {
+class ZyNetworkInterceptor(var downLoadResultBean: DownLoadResultBean) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        httpResultBean.url = chain.request().url.toString()
         val originalResponse = chain.proceed(chain.request())
         return originalResponse.newBuilder().body(
             ProgressResponseBody(
@@ -24,10 +23,10 @@ class ZyNetworkInterceptor<T>(var httpResultBean: HttpResultBean<T>) : Intercept
                         contentLength: Long,
                         done: Boolean
                     ) {
-                        httpResultBean.contentLength = contentLength
-                        httpResultBean.readLength = bytesRead
-                        httpResultBean.done = done
-                        httpResultBean.notifyData(httpResultBean)
+                        downLoadResultBean.contentLength = contentLength
+                        downLoadResultBean.readLength = bytesRead
+                        downLoadResultBean.done = done
+                        downLoadResultBean.notifyData(downLoadResultBean)
                     }
                 }
             )

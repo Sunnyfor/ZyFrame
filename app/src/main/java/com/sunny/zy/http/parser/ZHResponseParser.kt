@@ -4,53 +4,60 @@ import com.google.gson.Gson
 import com.sunny.zy.base.BaseModel
 import com.sunny.zy.base.PageModel
 import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.http.bean.DownLoadResultBean
+import com.sunny.zy.http.bean.HttpResultBean
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 
 /**
- * Desc
+ * Desc 贞和科技数据解析器
  * Author 张野
  * Mail zhangye98@foxmail.com
  * Date 2020/4/29 14:51
  */
 @Suppress("UNCHECKED_CAST")
-class GSonResponseParser : IResponseParser {
+class ZHResponseParser : IResponseParser {
 
     private val mGSon = Gson()
 
-    override fun <T> parserResponse(
+    override fun <T> parserHttpResponse(
         responseBody: ResponseBody,
-        type: Type,
-        serializedName: String?
+        httpResultBean: HttpResultBean<T>
     ): T {
 
-        if (type is Class<*>) {
-            when (type.name) {
-                String::class.java.name -> {
-                    return responseBody.string() as T
-                }
+        val type = httpResultBean.typeToken
 
-                File::class.java.name -> {
-                    return writeResponseBodyToDisk(responseBody.byteStream(), serializedName) as T
+        //解析非泛型类
+        if (type is Class<*>) {
+            return when (type.name) {
+                String::class.java.name -> {
+                    responseBody.string() as T
+                }
+                else -> {
+                    mGSon.fromJson(responseBody.string(), type) as T
                 }
             }
         } else {
+            //解析泛型类
             val json = responseBody.string()
             if (type is ParameterizedType) {
                 val jsonObj = JSONObject(json)
                 when (type.rawType) {
+
                     BaseModel::class.java -> {
                         val childType = type.actualTypeArguments[0]
                         val baseModel = BaseModel<Any>()
                         baseModel.msg = jsonObj.optString("msg")
                         baseModel.code = jsonObj.optString("code")
                         val mData =
-                            mGSon.fromJson<Any>(jsonObj.optString(serializedName), childType)
+                            mGSon.fromJson<Any>(
+                                jsonObj.optString(httpResultBean.serializedName),
+                                childType
+                            )
                         baseModel.data = mData
                         return baseModel as T
                     }
@@ -65,13 +72,31 @@ class GSonResponseParser : IResponseParser {
         return mGSon.fromJson(responseBody.string(), type)
     }
 
+    override fun parserDownloadResponse(
+        responseBody: ResponseBody,
+        downLoadResultBean: DownLoadResultBean
+    ): File {
+        return writeResponseBodyToDisk(responseBody.byteStream(), downLoadResultBean)
+    }
 
-    private fun writeResponseBodyToDisk(data: InputStream, serializedName: String?): File {
+
+    /**
+     * 写入SDK
+     */
+    private fun writeResponseBodyToDisk(
+        data: InputStream,
+        downLoadResultBean: DownLoadResultBean
+    ): File {
         val pathFile = File(ZyConfig.TEMP)
         if (!pathFile.exists()) {
             pathFile.mkdirs()
         }
-        val file = File(pathFile, serializedName ?: "${System.currentTimeMillis()}.temp")
+
+        if (downLoadResultBean.fileName == null || downLoadResultBean.fileName?.isEmpty() == true) {
+            downLoadResultBean.fileName = "${System.currentTimeMillis()}.temp"
+        }
+
+        val file = File(pathFile, downLoadResultBean.fileName ?: "")
         if (file.exists()) {
             file.delete()
         }

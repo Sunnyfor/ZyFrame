@@ -12,7 +12,7 @@ import java.lang.reflect.Type
 abstract class HttpResultBean<T>(
     var serializedName: String = "data"
 ) :
-    BaseHttpResultBean<T>() {
+    BaseHttpResultBean() {
 
     var typeToken: Type
 
@@ -36,7 +36,8 @@ abstract class HttpResultBean<T>(
     }
 
     override fun toString(): String {
-        return "HttpResultBean(serializedName='$serializedName', typeToken=$typeToken, bean=$bean)"
+        return "${super.toString()} HttpResultBean(serializedName='$serializedName', typeToken=$typeToken, bean=$bean)"
     }
+
 
 }

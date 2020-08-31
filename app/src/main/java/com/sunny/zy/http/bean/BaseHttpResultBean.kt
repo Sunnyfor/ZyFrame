@@ -1,6 +1,6 @@
 package com.sunny.zy.http.bean
 
-abstract class BaseHttpResultBean<T> {
+abstract class BaseHttpResultBean {
 
     var url = "" //请求URL
     var httpCode = 0 //请求code

@@ -87,7 +87,11 @@ class ZHResponseParser : IResponseParser {
         data: InputStream,
         downLoadResultBean: DownLoadResultBean
     ): File {
-        val pathFile = File(ZyConfig.TEMP)
+        if (downLoadResultBean.filePath == null) {
+            downLoadResultBean.filePath = ZyConfig.TEMP
+        }
+
+        val pathFile = File(downLoadResultBean.filePath ?: "")
         if (!pathFile.exists()) {
             pathFile.mkdirs()
         }

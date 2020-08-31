@@ -30,10 +30,10 @@ object ZyHttp {
      * @param params 传递的数据map（key,value)
      * @param httpResultBean 包含解析结果的实体bean
      */
-    suspend fun <T> get(
+    suspend fun <T : BaseHttpResultBean> get(
         url: String,
         params: HashMap<String, String>? = null,
-        httpResultBean: HttpResultBean<T>
+        httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
@@ -49,10 +49,10 @@ object ZyHttp {
      * @param params 传递的数据map（key,value)
      * @param httpResultBean 包含解析结果的实体bean
      */
-    suspend fun <T> post(
+    suspend fun <T : BaseHttpResultBean> post(
         url: String,
         params: HashMap<String, String>?,
-        httpResultBean: HttpResultBean<T>
+        httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
@@ -62,10 +62,10 @@ object ZyHttp {
     }
 
 
-    suspend fun <T> patch(
+    suspend fun <T : BaseHttpResultBean> patch(
         url: String,
         params: HashMap<String, String>?,
-        httpResultBean: HttpResultBean<T>
+        httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
@@ -81,7 +81,7 @@ object ZyHttp {
      * @param json 传递的json字符串
      * @param httpResultBean 包含解析结果的实体bean
      */
-    suspend fun <T> postJson(url: String, json: String, httpResultBean: HttpResultBean<T>) {
+    suspend fun <T : BaseHttpResultBean> postJson(url: String, json: String, httpResultBean: T) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.postJsonRequest(url, json)
@@ -90,7 +90,7 @@ object ZyHttp {
     }
 
 
-    suspend fun <T> deleteJson(url: String, json: String, httpResultBean: HttpResultBean<T>) {
+    suspend fun <T : BaseHttpResultBean> deleteJson(url: String, json: String, httpResultBean: T) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.deleteJsonRequest(url, json)
@@ -100,7 +100,11 @@ object ZyHttp {
     }
 
 
-    suspend fun <T> formUpload(url: String, filePath: String, httpResultBean: HttpResultBean<T>) {
+    suspend fun <T : BaseHttpResultBean> formUpload(
+        url: String,
+        filePath: String,
+        httpResultBean: T
+    ) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.formUploadRequest(url, filePath)
@@ -112,36 +116,36 @@ object ZyHttp {
     /**
      * 执行网络请求并处理结果
      * @param request OkHttp请求对象
-     * @param baseHttpResultBean 包含解析结果的实体bean
+     * @param httpResultBean 包含解析结果的实体bean
      */
-    private fun <T> execution(
+    private fun <T : BaseHttpResultBean> execution(
         request: Request,
-        baseHttpResultBean: BaseHttpResultBean<T>
+        httpResultBean: T
     ) {
 
         try {
-
             //存储URL
-            baseHttpResultBean.url = request.url.toString()
+            httpResultBean.url = request.url.toString()
             //执行异步网络请求
-            if (baseHttpResultBean is DownLoadResultBean) {
-                executeDownload(request, baseHttpResultBean)
-            } else if (baseHttpResultBean is HttpResultBean) {
-                executeHttp(request, baseHttpResultBean)
+            if (httpResultBean is DownLoadResultBean) {
+                executeDownload(request, httpResultBean)
+            } else if (httpResultBean is HttpResultBean<*>) {
+                executeHttp(request, httpResultBean)
             }
-
         } catch (e: Exception) {
             //出现异常获取异常信息
-            baseHttpResultBean.exception = e
-            baseHttpResultBean.message = e.message ?: ""
+            httpResultBean.exception = e
+            httpResultBean.message = e.message ?: ""
         }
     }
 
     private fun executeDownload(request: Request, resultBean: DownLoadResultBean) {
+
         val response = clientFactory.createDownloadClient(resultBean).newCall(request).execute()
         if (response.isSuccessful) {
             response.body?.let {
                 resultBean.file = ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
+                resultBean.notifyData(resultBean)
             }
         }
 

@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.zy_activity_base.*
 abstract class BaseActivity : AppCompatActivity(), IBaseView,
     View.OnClickListener {
 
-    private var savedInstanceState: Bundle? = null
+    var savedInstanceState: Bundle? = null
 
     private val overlayViewBean = OverlayViewUtils()
 

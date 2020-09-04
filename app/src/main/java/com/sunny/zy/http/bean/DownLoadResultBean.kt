@@ -3,9 +3,8 @@ package com.sunny.zy.http.bean
 import java.io.File
 
 /**
- * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Desc 下载结果实体类
+ * Author Zy
  * Date 2020/8/24 18:37
  */
 abstract class DownLoadResultBean(var fileName: String? = null, var filePath: String? = null) :

@@ -12,9 +12,8 @@ import com.sunny.zy.R
 
 
 /**
- * Desc 下拉刷新
- * Author JoannChen
- * Mail yongzuo.chen@foxmail.com
+ * Desc 下拉刷新自定义View
+ * Author Zy
  * Date 2019/11/7 23:24
  */
 class PullRefreshRecyclerLayout : SmartRefreshLayout {

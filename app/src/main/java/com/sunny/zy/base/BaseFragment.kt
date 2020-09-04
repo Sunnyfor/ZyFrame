@@ -6,17 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import com.sunny.zy.widget.utils.OverlayViewUtils
+import com.sunny.zy.utils.OverlayViewUtil
 
 
 /**
  *
- * Created by zhangye on 2018/8/2.
+ * Created by Zy on 2018/8/2.
+ */
+/**
+ * Desc Fragment基类
+ * Author Zy
+ * Date 2018/8/2
  */
 abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     private var savedInstanceState: Bundle? = null
 
-    private val overlayViewBean = OverlayViewUtils()
+    private val overlayViewBean = OverlayViewUtil()
     private var rootView: FrameLayout? = null
     var bodyView: View? = null
 

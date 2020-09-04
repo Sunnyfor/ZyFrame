@@ -9,8 +9,7 @@ import java.util.*
 
 /**
  * Desc 调取系统日期
- * Author JoannChen
- * Mail yongzuo.chen@foxmail.com
+ * Author Zy
  * Date 2019/11/1 15:33
  */
 object TimerPackUtil {

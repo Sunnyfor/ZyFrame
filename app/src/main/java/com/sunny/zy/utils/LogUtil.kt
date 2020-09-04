@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanPrivate")
-
 package com.sunny.zy.utils
 
 import android.text.TextUtils
@@ -8,10 +6,11 @@ import com.sunny.zy.http.ZyConfig
 
 /**
  * 移植xUtils日志代码
- * Created by 张野 on 2017/10/12.
+ * Created by Zy on 2017/10/12.
  */
 
 object LogUtil {
+
     private var customTagPrefix = ""
     private var allowD = ZyConfig.isLog
     private var allowE = ZyConfig.isLog

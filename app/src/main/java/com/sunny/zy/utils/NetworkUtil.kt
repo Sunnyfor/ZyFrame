@@ -8,7 +8,7 @@ import com.sunny.zy.ZyFrameStore
 /**
  * 网络请求判断
  */
-class NetworkUtils {
+class NetworkUtil {
     private val manager: ConnectivityManager by lazy {
         ZyFrameStore.getContext()
             .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

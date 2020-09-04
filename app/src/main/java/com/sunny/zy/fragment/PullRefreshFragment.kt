@@ -10,9 +10,8 @@ import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.widget.PullRefreshRecyclerLayout
 
 /**
- * Desc
- * Author 张野
- * Mail zhangye98@foxmail.com
+ * Desc 下拉刷新，上拉加载
+ * Author Zy
  * Date 2020/6/4 16:05
  */
 open class PullRefreshFragment<T> : BaseFragment() {

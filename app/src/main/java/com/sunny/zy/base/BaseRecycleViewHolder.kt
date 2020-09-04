@@ -5,8 +5,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- *
- * Created by zhangye on 2018/1/5.
+ *  Holder基类
+ * Created by Zy on 2018/1/5.
  */
 @Suppress("UNCHECKED_CAST")
 class BaseRecycleViewHolder(

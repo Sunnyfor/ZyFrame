@@ -10,13 +10,11 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 /**
- * Desc
- * Author ZhangYe
- * Mail yongzuo.chen@foxmail.com
+ * Desc 生成网络请求
+ * Author Zy
  * Date 2020/4/29 12:22
  */
 class ZyRequest {
-
 
     private fun getUrlSb(url: String) = StringBuilder().apply {
         if (!url.contains("http://") && !url.contains("https://")) {
@@ -30,7 +28,6 @@ class ZyRequest {
     /**
      * GET请求生成
      */
-
     fun getRequest(url: String, params: HashMap<String, String>?): Request {
         val urlSb = getUrlSb(url)
         if (params?.isNotEmpty() == true) {

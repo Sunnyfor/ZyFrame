@@ -2,7 +2,7 @@ package com.sunny.zy.http
 
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.interceptor.ZyNetworkInterceptor
-import com.sunny.zy.utils.ZyCookieJar
+import com.sunny.zy.http.request.ZyCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,8 +11,7 @@ import javax.net.ssl.HostnameVerifier
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author Zy
  * Date 2020/8/24 17:06
  */
 class OkHttpClientFactory {
@@ -35,7 +34,7 @@ class OkHttpClientFactory {
             .hostnameVerifier(HostnameVerifier { _, _ -> true })
             .connectTimeout(ZyConfig.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS) //连接超时时间
             .readTimeout(ZyConfig.READ_TIME_OUT, TimeUnit.MILLISECONDS) //读取超时时间
-            .cookieJar(ZyCookieJar())
+            .cookieJar(ZyConfig.zyCookieJar)
     }
 
     /**

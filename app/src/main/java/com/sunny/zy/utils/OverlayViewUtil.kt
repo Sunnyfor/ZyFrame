@@ -1,4 +1,4 @@
-package com.sunny.zy.widget.utils
+package com.sunny.zy.utils
 
 import android.content.Context
 import android.view.View
@@ -9,15 +9,12 @@ import kotlinx.android.synthetic.main.zy_layout_error.view.*
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author Zy
  * Date 2020/4/27 21:09
  */
-class OverlayViewUtils {
-
+class OverlayViewUtil {
 
     private var viewStore = HashMap<Int, View>()
-
 
     //创建View并缓存
     private fun getView(context: Context, viewType: Int): View? {

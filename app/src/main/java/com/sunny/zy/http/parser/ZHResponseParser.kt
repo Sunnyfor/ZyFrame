@@ -14,9 +14,8 @@ import java.io.InputStream
 import java.lang.reflect.ParameterizedType
 
 /**
- * Desc 贞和科技数据解析器
- * Author 张野
- * Mail zhangye98@foxmail.com
+ * Desc 仅针对【贞和科技】数据解析器
+ * Author Zy
  * Date 2020/4/29 14:51
  */
 @Suppress("UNCHECKED_CAST")
@@ -24,10 +23,7 @@ class ZHResponseParser : IResponseParser {
 
     private val mGSon = Gson()
 
-    override fun <T> parserHttpResponse(
-        responseBody: ResponseBody,
-        httpResultBean: HttpResultBean<T>
-    ): T {
+    override fun <T> parserHttpResponse(responseBody: ResponseBody, httpResultBean: HttpResultBean<T>): T {
 
         val type = httpResultBean.typeToken
 
@@ -72,10 +68,7 @@ class ZHResponseParser : IResponseParser {
         return mGSon.fromJson(responseBody.string(), type)
     }
 
-    override fun parserDownloadResponse(
-        responseBody: ResponseBody,
-        downLoadResultBean: DownLoadResultBean
-    ): File {
+    override fun parserDownloadResponse(responseBody: ResponseBody, downLoadResultBean: DownLoadResultBean): File {
         return writeResponseBodyToDisk(responseBody.byteStream(), downLoadResultBean)
     }
 
@@ -83,10 +76,7 @@ class ZHResponseParser : IResponseParser {
     /**
      * 写入SDK
      */
-    private fun writeResponseBodyToDisk(
-        data: InputStream,
-        downLoadResultBean: DownLoadResultBean
-    ): File {
+    private fun writeResponseBodyToDisk(data: InputStream, downLoadResultBean: DownLoadResultBean): File {
         if (downLoadResultBean.filePath == null) {
             downLoadResultBean.filePath = ZyConfig.TEMP
         }

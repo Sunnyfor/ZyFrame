@@ -8,16 +8,11 @@ import com.sunny.zy.ZyFrameStore
 import java.lang.reflect.Type
 
 /**
- * Desc
- * Author 张野
- * Mail zhangye98@foxmail.com
+ * Desc SharedPreferences存储工具类
+ * Author Zy
  * Date 2020/6/8 17:17
  */
 object SpUtil {
-
-    const val username = "mUsername"
-    const val password = "mPassword"
-    const val userInfoBean = "mUserInfoBean"
 
     /**
      * 文件名

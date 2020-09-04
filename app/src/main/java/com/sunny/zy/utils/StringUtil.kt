@@ -5,9 +5,9 @@ import java.util.*
 
 /**
  * 字符串工具类
- * Created by zhangye on 2018/6/11.
+ * Created by Zy on 2018/6/11.
  */
-object StringUtils {
+object StringUtil {
     /**
      * 金额格式化
      * @param s 金额

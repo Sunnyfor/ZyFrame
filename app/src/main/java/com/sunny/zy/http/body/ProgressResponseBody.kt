@@ -4,10 +4,12 @@ import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
 
-class ProgressResponseBody(
-    var responseBody: ResponseBody?,
-    var progressListener: ProgressResponseListener
-) : ResponseBody() {
+/**
+ * Desc 下载进度
+ * Author Zy
+ * Date 2020.08.24
+ */
+class ProgressResponseBody(var responseBody: ResponseBody?, var progressListener: ProgressResponseListener) : ResponseBody() {
 
     //包装完成的BufferedSource
     var bufferedSource: BufferedSource? = null

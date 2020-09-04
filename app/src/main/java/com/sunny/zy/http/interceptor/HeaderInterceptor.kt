@@ -4,9 +4,9 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 /**
- * Desc
- * Author 张野
- * Mail zhangye98@foxmail.com
+ * Desc Header拦截器
+ * Author Zy
+ * Date 2020.08.24
  */
 class HeaderInterceptor : Interceptor {
 

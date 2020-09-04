@@ -1,9 +1,8 @@
 package com.sunny.zy.base
 
 /**
- * Desc
- * Author 张野
- * Mail zhangye98@foxmail.com
+ * Desc 分页公共实体类
+ * Author Zy
  * Date 2020/6/2 16:23
  */
 class PageModel<T> : BaseModel<PageModel.Page<T>>() {

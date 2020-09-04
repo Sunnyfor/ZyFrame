@@ -5,9 +5,9 @@ import java.security.NoSuchAlgorithmException
 
 /**
  * MD5加密
- * Created by zhangye on 2018/8/3.
+ * Created by Zy on 2018/8/3.
  */
-object DigestUtils {
+object DigestUtil {
 
     fun md5(message: String): String {
         try {

@@ -1,12 +1,8 @@
 package com.sunny.zy.base
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStoreOwner
-
-
 /**
- *
- * Created by zhangye on 2018/8/2.
+ * 接口 IView基类
+ * Created by Zy on 2018/8/2.
  */
 interface IBaseView {
 

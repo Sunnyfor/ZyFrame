@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * baseAdapter
- * Created by zhangye on 2018/1/5.
+ * Adapter基类
+ * Created by Zy on 2018/1/5.
  */
 abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
     RecyclerView.Adapter<BaseRecycleViewHolder>() {

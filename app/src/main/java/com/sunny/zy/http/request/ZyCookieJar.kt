@@ -1,23 +1,26 @@
-package com.sunny.zy.utils
+package com.sunny.zy.http.request
 
 import com.google.gson.reflect.TypeToken
+import com.sunny.zy.utils.SpUtil
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 
 /**
- * Desc
- * Author 张野
- * Mail zhangye98@foxmail.com
+ * Desc Cookie持久化存储
+ * Author Zy
  * Date 2020/6/12 11:44
  */
-class ZyCookieJar : CookieJar {
+abstract class ZyCookieJar : CookieJar {
 
     private val cookieStore = HashMap<String, List<Cookie>>()
 
+    abstract fun setCookies(url: HttpUrl, cookies: List<Cookie>): List<Cookie>?
+
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        cookieStore[url.host] = cookies
-        SpUtil.setObject(url.host, cookies)
+        val list = setCookies(url, cookies) ?: cookies
+        cookieStore[url.host] = list
+        SpUtil.setObject(url.host, list)
     }
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
@@ -25,12 +28,10 @@ class ZyCookieJar : CookieJar {
         var list = cookieStore[url.host]
 
         if (list == null) {
-            list = SpUtil.getObject(
-                url.host,
-                object : TypeToken<List<Cookie>>() {}.type
-            ) ?: arrayListOf()
+            list = SpUtil.getObject(url.host, object : TypeToken<List<Cookie>>() {}.type) ?: arrayListOf()
         }
         cookieStore[url.host] = list
         return list
     }
+
 }

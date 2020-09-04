@@ -4,12 +4,12 @@ import android.widget.Toast
 import com.sunny.zy.ZyFrameStore
 
 /**
- * Desc单例 Toast
- * Author JoannChen
- * Mail yongzuo.chen@foxmail.com
+ * Desc 单例Toast
+ * Author Zy
  * Date 2019/10/25 11:03
  */
 object ToastUtil {
+
     private var toast: Toast? = null
 
     /**

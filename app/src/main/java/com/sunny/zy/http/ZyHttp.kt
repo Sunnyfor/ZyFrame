@@ -10,8 +10,7 @@ import okhttp3.Request
 
 /**
  * Desc
- * Author 张野
- * Mail zhangye98@foxmail.com
+ * Author Zy
  * Date 2020/4/28 02:07
  */
 @Suppress("UNCHECKED_CAST")
@@ -20,7 +19,7 @@ object ZyHttp {
     //请求创建器
     private var zyRequest = ZyRequest()
 
-    private val clientFactory: OkHttpClientFactory by lazy {
+    val clientFactory: OkHttpClientFactory by lazy {
         OkHttpClientFactory()
     }
 

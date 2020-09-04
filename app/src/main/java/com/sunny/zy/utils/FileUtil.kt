@@ -11,7 +11,7 @@ import java.text.DecimalFormat
 /**
  * 文件操作相关工具类
  */
-object FileUtils {
+object FileUtil {
 
     /**
      * 获取换成你文件路径

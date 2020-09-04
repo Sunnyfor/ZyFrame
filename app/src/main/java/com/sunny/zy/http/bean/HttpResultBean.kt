@@ -4,9 +4,8 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
 /**
- * Desc
- * Author JoannChen
- * Mail yongzuo.chen@foxmail.com
+ * Desc 请求结果实体类
+ * Author Zy
  * Date 2020/4/29 12:37
  */
 abstract class HttpResultBean<T>(

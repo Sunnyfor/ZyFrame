@@ -4,10 +4,13 @@ import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.http.interceptor.HeaderInterceptor
 import com.sunny.zy.http.parser.IResponseParser
 import com.sunny.zy.http.parser.ZHResponseParser
+import com.sunny.zy.http.request.ZyCookieJar
+import okhttp3.Cookie
+import okhttp3.HttpUrl
 
 /**
- * 接口配置清单
- * Created by zhangye on 2017/10/12.
+ * 框架全局配置清单
+ * Created by Zy on 2017/10/12.
  */
 object ZyConfig {
 
@@ -73,5 +76,15 @@ object ZyConfig {
 
     //数据结果解析器
     var iResponseParser: IResponseParser = ZHResponseParser()
+
+
+    /**
+     * CookieJar配置
+     */
+    var zyCookieJar: ZyCookieJar = object : ZyCookieJar() {
+        override fun setCookies(url: HttpUrl, cookies: List<Cookie>): List<Cookie>? = null
+    }
+
+
 }
 

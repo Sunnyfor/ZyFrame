@@ -16,13 +16,13 @@ import androidx.core.content.ContextCompat
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.utils.ToastUtil
-import com.sunny.zy.widget.utils.OverlayViewUtils
+import com.sunny.zy.utils.OverlayViewUtil
 import kotlinx.android.synthetic.main.zy_activity_base.*
 
-
 /**
- *
- * Created by ZhangYe on 2018/8/2.
+ * Desc Activity基类
+ * Author Zy
+ * Date 2018/8/2
  */
 @SuppressLint("SourceLockedOrientationActivity")
 abstract class BaseActivity : AppCompatActivity(), IBaseView,
@@ -30,7 +30,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     var savedInstanceState: Bundle? = null
 
-    private val overlayViewBean = OverlayViewUtils()
+    private val overlayViewBean = OverlayViewUtil()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

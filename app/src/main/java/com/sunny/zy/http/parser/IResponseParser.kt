@@ -7,18 +7,13 @@ import java.io.File
 
 /**
  * Desc 数据解析
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author Zy
  * Date 2020/4/29 14:47
  */
 interface IResponseParser {
-    fun <T> parserHttpResponse(
-        responseBody: ResponseBody,
-        httpResultBean: HttpResultBean<T>
-    ): T
 
-    fun parserDownloadResponse(
-        responseBody: ResponseBody,
-        downLoadResultBean: DownLoadResultBean
-    ): File
+    fun <T> parserHttpResponse(responseBody: ResponseBody, httpResultBean: HttpResultBean<T>): T
+
+    fun parserDownloadResponse(responseBody: ResponseBody, downLoadResultBean: DownLoadResultBean): File
+
 }

@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
 /**
- * Presenter父类
- * Created by zhangye on 2018/8/2.
+ * Presenter基类
+ * Created by Zy on 2018/8/2.
  */
 abstract class BasePresenter<T : IBaseView>(var view: T?) : CoroutineScope by MainScope() {
 

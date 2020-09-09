@@ -89,6 +89,15 @@ object ZyHttp {
     }
 
 
+    suspend fun <T : BaseHttpResultBean> putJson(url: String, json: String, httpResultBean: T) {
+        return withContext(Dispatchers.IO) {
+            //创建okHttp请求
+            val request = zyRequest.putJsonRequest(url, json)
+            execution(request, httpResultBean)
+        }
+    }
+
+
     suspend fun <T : BaseHttpResultBean> deleteJson(url: String, json: String, httpResultBean: T) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求

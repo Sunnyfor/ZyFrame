@@ -67,6 +67,17 @@ class ZyRequest {
         return Request.Builder().url(urlSb.toString()).post(body.build()).build()
     }
 
+
+    /**
+     * POST-JSON请求生成
+     */
+    fun putJsonRequest(url: String, json: String): Request {
+        val urlSb = getUrlSb(url)
+        val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+        return Request.Builder().url(urlSb.toString()).put(body).build()
+    }
+
+
     /**
      * PATCH-Form请求生成
      */

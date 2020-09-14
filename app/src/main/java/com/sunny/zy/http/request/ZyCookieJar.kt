@@ -18,9 +18,10 @@ abstract class ZyCookieJar : CookieJar {
     abstract fun setCookies(url: HttpUrl, cookies: List<Cookie>): List<Cookie>?
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        val list = setCookies(url, cookies) ?: cookies
-        cookieStore[url.host] = list
-        SpUtil.setObject(url.host, list)
+        setCookies(url, cookies)?.let {
+            cookieStore[url.host] = it
+            SpUtil.setObject(url.host, it)
+        }
     }
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {

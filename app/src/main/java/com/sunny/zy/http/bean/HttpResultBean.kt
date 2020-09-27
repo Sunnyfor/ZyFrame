@@ -22,16 +22,18 @@ abstract class HttpResultBean<T>(
     }
 
 
-    var bean: T? = null //数据结果
+    var bean: T? = null
 
 
     fun isSuccess(): Boolean {
+        var isSuccess = false
         if (httpIsSuccess()) {
+            //执行未出现异常
             if (exception == null) {
-                return true
+                isSuccess = true
             }
         }
-        return false
+        return isSuccess
     }
 
     override fun toString(): String {

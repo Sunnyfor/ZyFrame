@@ -35,13 +35,12 @@ class ExampleInstrumentedTest {
         runBlocking {
             launch(Main) {
                 val httpResultBean = object : HttpResultBean<Any>() {}
-                val url = "https://10.0.0.153:8807/sys/login"
+                val url = "https://www.zhenhekj.com:8807/sys/login"
                 val params = JSONObject()
                 params.put("username", "123456")
                 params.put("password", "123456")
                 ZyHttp.postJson(url, params.toString(), httpResultBean)
                 Log.i("登录请求", httpResultBean.toString())
-
             }
         }
     }

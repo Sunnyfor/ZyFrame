@@ -145,27 +145,34 @@ object ZyHttp {
             httpResultBean.exception = e
             httpResultBean.message = e.message ?: ""
         }
+        ZyConfig.httpResultCallback?.invoke(httpResultBean)
     }
 
-    private fun executeDownload(request: Request, resultBean: DownLoadResultBean) {
 
+    private fun executeDownload(request: Request, resultBean: DownLoadResultBean) {
         val response = clientFactory.createDownloadClient(resultBean).newCall(request).execute()
+        //获取HTTP状态码
+        resultBean.httpCode = response.code
+        //获取Response回执信息
+        resultBean.message = response.message
+
         if (response.isSuccessful) {
             response.body?.let {
                 resultBean.file = ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
                 resultBean.notifyData(resultBean)
             }
         }
-
-        //获取HTTP状态码
-        resultBean.httpCode = response.code
-        //获取Response回执信息
-        resultBean.message = response.message
     }
 
 
     private fun <T> executeHttp(request: Request, resultBean: HttpResultBean<T>) {
         val response = clientFactory.getOkHttpClient().newCall(request).execute()
+
+        //获取HTTP状态码
+        resultBean.httpCode = response.code
+        //获取Response回执信息
+        resultBean.message = response.message
+
         if (response.isSuccessful) {
             response.body?.let {
                 resultBean.bean = ZyConfig.iResponseParser.parserHttpResponse(
@@ -173,9 +180,5 @@ object ZyHttp {
                 )
             }
         }
-        //获取HTTP状态码
-        resultBean.httpCode = response.code
-        //获取Response回执信息
-        resultBean.message = response.message
     }
 }

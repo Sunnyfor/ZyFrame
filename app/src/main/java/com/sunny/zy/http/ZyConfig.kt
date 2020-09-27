@@ -1,21 +1,21 @@
 package com.sunny.zy.http
 
 import com.sunny.zy.ZyFrameStore
+import com.sunny.zy.http.bean.BaseHttpResultBean
 import com.sunny.zy.http.interceptor.HeaderInterceptor
 import com.sunny.zy.http.parser.IResponseParser
 import com.sunny.zy.http.parser.ZHResponseParser
 import com.sunny.zy.http.request.ZyCookieJar
 import okhttp3.Cookie
 import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import javax.net.ssl.HostnameVerifier
 
 /**
  * 框架全局配置清单
  * Created by Zy on 2017/10/12.
  */
 object ZyConfig {
-
-    fun isDebug(): Boolean = true
-
     /**
      * 是否打印LOG
      */
@@ -54,7 +54,8 @@ object ZyConfig {
      */
     var authorities = "com.sunny.zy.provider"
 
-    val TEMP = ZyFrameStore.getContext().getExternalFilesDir("temp")?.path ?: "" //内存卡缓存路径
+
+    var TEMP = ZyFrameStore.getContext().getExternalFilesDir("temp")?.path ?: "" //内存卡缓存路径
 
 
     val headerInterceptor: HeaderInterceptor by lazy {
@@ -68,13 +69,10 @@ object ZyConfig {
         headerInterceptor.setHttpHeader(headerMap)
     }
 
+
     /**
-     *
+     * 数据结果解析器
      */
-    var logoutCallback: (() -> Unit)? = null
-
-
-    //数据结果解析器
     var iResponseParser: IResponseParser = ZHResponseParser()
 
 
@@ -85,6 +83,21 @@ object ZyConfig {
         override fun setCookies(url: HttpUrl, cookies: List<Cookie>): List<Cookie>? = null
     }
 
+    /**
+     * url验证
+     */
+    var hostnameVerifier: HostnameVerifier = HostnameVerifier { _, _ -> true }
 
+
+    /**
+     * 网络请求全局拦截器
+     */
+    var networkInterceptor: Interceptor? = null
+
+
+    /**
+     * 网络请求全局回调
+     */
+    var httpResultCallback: ((resultBean: BaseHttpResultBean) -> Unit)? = null
 }
 

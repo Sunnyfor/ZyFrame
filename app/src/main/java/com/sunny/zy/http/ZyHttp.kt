@@ -5,7 +5,6 @@ import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import com.sunny.zy.http.request.ZyRequest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 
@@ -131,9 +130,8 @@ object ZyHttp {
         request: Request,
         httpResultBean: T
     ) {
-
         try {
-            //存储URL
+            //请求URL赋值
             httpResultBean.url = request.url.toString()
             //执行异步网络请求
             if (httpResultBean is DownLoadResultBean) {
@@ -146,10 +144,10 @@ object ZyHttp {
             httpResultBean.exception = e
             httpResultBean.message = e.message ?: ""
         }
-        withContext(Main){
+
+        withContext(Dispatchers.Main) {
             ZyConfig.httpResultCallback?.invoke(httpResultBean)
         }
-
     }
 
 
@@ -159,7 +157,8 @@ object ZyHttp {
         resultBean.httpCode = response.code
         //获取Response回执信息
         resultBean.message = response.message
-
+        //获取请求URL
+        resultBean.url = request.url.toString()
         if (response.isSuccessful) {
             response.body?.let {
                 resultBean.file = ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
@@ -176,6 +175,8 @@ object ZyHttp {
         resultBean.httpCode = response.code
         //获取Response回执信息
         resultBean.message = response.message
+        //获取响应URL
+        resultBean.resUrl = response.request.url.toString()
 
         if (response.isSuccessful) {
             response.body?.let {

@@ -3,6 +3,7 @@ package com.sunny.zy.http.bean
 abstract class BaseHttpResultBean {
 
     var url = ""        //请求URL
+    var resUrl = ""      //响应URL
     var httpCode = 0    //请求code
     var message = "OK"
 
@@ -16,6 +17,6 @@ abstract class BaseHttpResultBean {
     }
 
     override fun toString(): String {
-        return "BaseHttpResultBean(url='$url', httpCode=$httpCode, message='$message', exception=$exception)"
+        return "BaseHttpResultBean(url='$url', resUrl='$resUrl', httpCode=$httpCode, message='$message', exception=$exception)"
     }
 }

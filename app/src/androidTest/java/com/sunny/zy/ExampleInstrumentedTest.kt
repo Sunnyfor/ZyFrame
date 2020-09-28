@@ -3,6 +3,7 @@ package com.sunny.zy
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.http.ZyHttp
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
@@ -34,8 +35,15 @@ class ExampleInstrumentedTest {
     fun login() {
         runBlocking {
             launch(Main) {
+
+                ZyConfig.httpResultCallback = {
+                    if ( it.resUrl.contains("login.html")){
+                        Log.i("退出登录成立","666666666666666666666666666666666")
+                    }
+                }
+
                 val httpResultBean = object : HttpResultBean<Any>() {}
-                val url = "https://www.zhenhekj.com:8807/sys/login"
+                val url = "http://10.0.0.58/app/appcarinoroutapply/list?proposer=&page=1"
                 val params = JSONObject()
                 params.put("username", "123456")
                 params.put("password", "123456")

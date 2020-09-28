@@ -35,13 +35,6 @@ class ExampleInstrumentedTest {
     fun login() {
         runBlocking {
             launch(Main) {
-
-                ZyConfig.httpResultCallback = {
-                    if ( it.resUrl.contains("login.html")){
-                        Log.i("退出登录成立","666666666666666666666666666666666")
-                    }
-                }
-
                 val httpResultBean = object : HttpResultBean<Any>() {}
                 val url = "http://10.0.0.58/app/appcarinoroutapply/list?proposer=&page=1"
                 val params = JSONObject()

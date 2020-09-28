@@ -34,8 +34,8 @@ dependencies {
 
     api 'com.squareup.okhttp3:okhttp:4.7.2'
     //okHttp的log日志
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
-    implementation "com.github.bumptech.glide:okhttp3-integration:4.11.0"
+    api 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    api "com.github.bumptech.glide:okhttp3-integration:4.11.0"
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.2.0'

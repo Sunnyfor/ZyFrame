@@ -33,7 +33,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //okHttp的log日志
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    api 'com.squareup.okhttp3:logging-interceptor:4.7.2'
     implementation "com.github.bumptech.glide:okhttp3-integration:4.11.0"
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'

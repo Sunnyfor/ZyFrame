@@ -5,6 +5,7 @@ import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import com.sunny.zy.http.request.ZyRequest
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 
@@ -126,7 +127,7 @@ object ZyHttp {
      * @param request OkHttp请求对象
      * @param httpResultBean 包含解析结果的实体bean
      */
-    private fun <T : BaseHttpResultBean> execution(
+    private suspend fun <T : BaseHttpResultBean> execution(
         request: Request,
         httpResultBean: T
     ) {
@@ -145,7 +146,10 @@ object ZyHttp {
             httpResultBean.exception = e
             httpResultBean.message = e.message ?: ""
         }
-        ZyConfig.httpResultCallback?.invoke(httpResultBean)
+        withContext(Main){
+            ZyConfig.httpResultCallback?.invoke(httpResultBean)
+        }
+
     }
 
 

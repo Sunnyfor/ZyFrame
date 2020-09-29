@@ -80,7 +80,7 @@ object ZyConfig {
      * CookieJar配置
      */
     var zyCookieJar: ZyCookieJar = object : ZyCookieJar() {
-        override fun setCookies(url: HttpUrl, cookies: List<Cookie>): List<Cookie>? = null
+        override fun setCookies(url: HttpUrl, cookies: List<Cookie>): List<Cookie>? = cookies
     }
 
     /**

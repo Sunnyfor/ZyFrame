@@ -3,7 +3,6 @@ package com.sunny.zy
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.http.ZyHttp
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
@@ -36,7 +35,7 @@ class ExampleInstrumentedTest {
         runBlocking {
             launch(Main) {
                 val httpResultBean = object : HttpResultBean<Any>() {}
-                val url = "http://10.0.0.58/app/appcarinoroutapply/list?proposer=&page=1"
+                val url = "http://10.0.0.58/sys/login"
                 val params = JSONObject()
                 params.put("username", "123456")
                 params.put("password", "123456")

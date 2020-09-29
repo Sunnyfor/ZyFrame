@@ -1,10 +1,10 @@
 package com.sunny.zy.http
 
 import com.sunny.zy.http.bean.DownLoadResultBean
+import com.sunny.zy.http.interceptor.ZyHttpLoggingInterceptor
 import com.sunny.zy.http.interceptor.ZyNetworkInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
-import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
 /**
@@ -23,14 +23,14 @@ class OkHttpClientFactory {
             OkHttpClient.Builder()
                 .addInterceptor(ZyConfig.headerInterceptor)
                 .addNetworkInterceptor(
-                    HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+                    ZyHttpLoggingInterceptor(object : ZyHttpLoggingInterceptor.Logger {
                         override fun log(message: String) {
                             if (ZyConfig.isLog) {
                                 Platform.get().log(message, Platform.WARN, null)
                             }
                         }
                     }).apply {
-                        level = HttpLoggingInterceptor.Level.BODY
+                        level = ZyHttpLoggingInterceptor.Level.BODY
                     })
 
                 .hostnameVerifier(ZyConfig.hostnameVerifier)

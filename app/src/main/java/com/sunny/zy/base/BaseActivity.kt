@@ -15,8 +15,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.utils.ToastUtil
 import com.sunny.zy.utils.OverlayViewUtil
+import com.sunny.zy.utils.ToastUtil
 import kotlinx.android.synthetic.main.zy_activity_base.*
 
 /**
@@ -27,6 +27,8 @@ import kotlinx.android.synthetic.main.zy_activity_base.*
 @SuppressLint("SourceLockedOrientationActivity")
 abstract class BaseActivity : AppCompatActivity(), IBaseView,
     View.OnClickListener {
+
+    var taskTag = "DefaultActivity"
 
     var savedInstanceState: Bundle? = null
 

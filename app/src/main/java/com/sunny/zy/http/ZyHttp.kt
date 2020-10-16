@@ -17,7 +17,7 @@ import okhttp3.Request
 object ZyHttp {
 
     //请求创建器
-    private var zyRequest = ZyRequest()
+    var zyRequest = ZyRequest()
 
     val clientFactory: OkHttpClientFactory by lazy {
         OkHttpClientFactory()

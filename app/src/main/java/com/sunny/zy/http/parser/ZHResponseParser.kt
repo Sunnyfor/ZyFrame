@@ -21,7 +21,7 @@ import java.lang.reflect.ParameterizedType
 @Suppress("UNCHECKED_CAST")
 class ZHResponseParser : IResponseParser {
 
-    private val mGSon = Gson()
+    val mGSon = Gson()
 
     override fun <T> parserHttpResponse(responseBody: ResponseBody, httpResultBean: HttpResultBean<T>): T {
 

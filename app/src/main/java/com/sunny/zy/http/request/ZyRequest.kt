@@ -17,7 +17,7 @@ import java.io.File
 class ZyRequest {
 
     private fun getUrlSb(url: String) = StringBuilder().apply {
-        if (!url.contains("http://") && !url.contains("https://")) {
+        if (!url.contains("://")) {
             append(ZyConfig.HOST)
             append("/")
         }

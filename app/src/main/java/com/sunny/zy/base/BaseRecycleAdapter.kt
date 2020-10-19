@@ -41,6 +41,10 @@ abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
         list.addAll(arrayList)
     }
 
+    fun addData(index: Int, arrayList: ArrayList<T>) {
+        list.addAll(index, arrayList)
+    }
+
     fun deleteData(position: Int) {
         list.removeAt(position)
     }

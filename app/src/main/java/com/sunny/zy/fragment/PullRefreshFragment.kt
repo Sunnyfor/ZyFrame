@@ -27,14 +27,17 @@ open class PullRefreshFragment<T> : BaseFragment() {
         PullRefreshRecyclerLayout(context)
     }
 
+    val recyclerView: RecyclerView
+        get() = pullRefreshLayout.recyclerView
+
     override fun setLayout(): Int = 0
 
     override fun initView() {
         setLayoutView(pullRefreshLayout)
         pullRefreshLayout.isShowEmptyView = isShowEmptyView
         pullRefreshLayout.setUnEnableRefreshAndLoad(enableRefresh, enableLoadMore)
-        pullRefreshLayout.recyclerView.adapter = adapter
-        pullRefreshLayout.recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = layoutManager
 
         pullRefreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -61,8 +64,11 @@ open class PullRefreshFragment<T> : BaseFragment() {
 
     }
 
-
     fun addData(data: ArrayList<T>) {
+        addData(-1, data)
+    }
+
+    fun addData(index: Int, data: ArrayList<T>) {
         if (page == 1) {
             adapter?.clearData()
             pullRefreshLayout.finishRefresh()
@@ -75,7 +81,11 @@ open class PullRefreshFragment<T> : BaseFragment() {
                 pullRefreshLayout.finishLoadMore()
             }
         }
-        adapter?.addData(data)
+        if (index < 0) {
+            adapter?.addData(data)
+        } else {
+            adapter?.addData(index, data)
+        }
         adapter?.notifyDataSetChanged()
     }
 

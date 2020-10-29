@@ -20,7 +20,7 @@ abstract class ZyCookieJar : CookieJar {
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         setCookies(url, cookies)?.let {
             cookieStore[url.host] = it
-            SpUtil.setObject(url.host, it)
+            SpUtil.get().setObject(url.host, it)
         }
     }
 
@@ -29,7 +29,7 @@ abstract class ZyCookieJar : CookieJar {
         var list = cookieStore[url.host]
 
         if (list == null) {
-            list = SpUtil.getObject(url.host, object : TypeToken<List<Cookie>>() {}.type) ?: arrayListOf()
+            list = SpUtil.get().getObject(url.host, object : TypeToken<List<Cookie>>() {}.type) ?: arrayListOf()
         }
         cookieStore[url.host] = list
         return list

@@ -102,6 +102,28 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     }
 
 
+    fun simpleTitle(title: String, vararg menuItem: BaseMenuBean) {
+        getBaseActivity().let {
+            it.clearMenu()
+            it.simpleTitle(title, *menuItem)
+        }
+    }
+
+
+    fun defaultTitle(title: String, vararg menuItem: BaseMenuBean) {
+        getBaseActivity().let {
+            it.clearMenu()
+            it.defaultTitle(title, *menuItem)
+        }
+    }
+
+    fun showTitle(){
+        getBaseActivity().let {
+
+        }
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         close()

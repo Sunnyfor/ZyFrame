@@ -1,11 +1,7 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="ZyTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimaryDark">@color/color_theme</item>
-        <item name="colorAccent">@color/color_theme</item>
-        <item name="actionMenuTextColor">@color/color_white</item>
-    </style>
+    <style name="ZyTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+
 
     <!--通用图标样式-->
 
@@ -146,21 +142,8 @@
         <item name="contentDescription">@string/placeholder</item>
     </style>
 
-    <!--    &lt;!&ndash;Menu菜单子项&ndash;&gt;-->
-    <!--    <style name="style_btn_menu">-->
-    <!--        <item name="android:layout_width">@dimen/dp_48</item>-->
-    <!--        <item name="android:layout_height">@dimen/dp_48</item>-->
-    <!--        <item name="android:layout_gravity">bottom|end</item>-->
-    <!--        <item name="android:layout_marginEnd">@dimen/dp_25</item>-->
-    <!--        <item name="android:layout_marginBottom">@dimen/dp_25</item>-->
-    <!--        <item name="android:textSize">@dimen/sp_12</item>-->
-    <!--        <item name="android:textColor">@color/font_white</item>-->
-    <!--        <item name="android:background">@drawable/sel_circle_blue</item>-->
-    <!--    </style>-->
-
 
     <!--通用按钮样式-->
-
     <style name="style_common_btn">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dp_40</item>
@@ -202,5 +185,10 @@
         <item name="android:layout_width">0.5dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/color_line</item>
+    </style>
+
+
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
     </style>
 </resources>

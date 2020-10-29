@@ -5,14 +5,16 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.ActionBarContainer
+import androidx.appcompat.widget.ActionBarOverlayLayout
+import androidx.appcompat.widget.ContentFrameLayout
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.utils.OverlayViewUtil
@@ -30,6 +32,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     var taskTag = "DefaultActivity"
 
+    private val menuItemList = ArrayList<BaseMenuBean>()
+
+    private var toolbar: Toolbar? = null
+
+    private var title = ""
+
     var savedInstanceState: Bundle? = null
 
     private val overlayViewBean = OverlayViewUtil()
@@ -38,22 +46,26 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
-        window.statusBarColor = ContextCompat.getColor(this, R.color.color_theme)
+
+        if (!initTitle()) {
+            supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+        }
+
         setContentView(R.layout.zy_activity_base)
-        if (setLayout() != 0) {
-            val bodyView = LayoutInflater.from(this).inflate(setLayout(), null, false)
+        if (initLayout() != 0) {
+            val bodyView = LayoutInflater.from(this).inflate(initLayout(), null, false)
             frameBody.addView(bodyView)
         }
-        ZyFrameStore.addActivity(this)
-
+        initToolbar()
         initView()
         loadData()
+        ZyFrameStore.addActivity(this)
     }
 
     /**
      * 设置布局操作
      */
-    abstract fun setLayout(): Int
+    abstract fun initLayout(): Int
 
     /**
      * 初始化View操作
@@ -70,24 +82,15 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      */
     abstract fun onClickEvent(view: View)
 
-    abstract fun close()
+    abstract fun onClose()
 
-    /**
-     * 获取title容器
-     */
-    fun getToolBar(): Toolbar = findViewById(R.id.toolbar)
-
-
-    fun getTitleView() = findViewById<TextView>(R.id.tv_title)
+    open fun initTitle() = true
 
     /**
      * 获取body容器
      */
     fun getFrameBody(): FrameLayout = findViewById(R.id.frameBody)
 
-    fun setSupportActionBar() {
-        setSupportActionBar(getToolBar())
-    }
 
     /**
      * 显示loading覆盖层
@@ -142,49 +145,70 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         onClickEvent(view)
     }
 
-
     /**
      * 只有文字标题的toolbar
      */
-    fun simpleTitle(title: String): Toolbar {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = title
-        toolbar.visibility = View.VISIBLE
-        getRightImageView().visibility = View.GONE
-        setSupportActionBar()
-        return toolbar
+    private fun initToolbar() {
+        getFrameBody().parent?.let {
+            if (it is ContentFrameLayout) {
+                val actionBarOverlayLayout = it.parent
+                if (actionBarOverlayLayout is ActionBarOverlayLayout) {
+                    val actionBarLayout =
+                        actionBarOverlayLayout.findViewById<ActionBarContainer>(R.id.action_bar_container)
+                    toolbar = actionBarLayout.findViewById(R.id.action_bar)
+                }
+            }
+        }
+    }
+
+    /**
+     * 只有标题的toolbar
+     */
+    fun simpleTitle(title: String, vararg menuItem: BaseMenuBean) {
+        this.title = title
+        menuItemList.addAll(menuItem)
     }
 
     /**
      * 带返回键的toolbar
      */
-    fun defaultTitle(
-        title: String
-    ): Toolbar {
-        val toolbar = simpleTitle(title)
-        toolbar.setNavigationIcon(R.drawable.svg_title_white)
-        toolbar.setNavigationOnClickListener {
+    fun defaultTitle(title: String, vararg menuItem: BaseMenuBean) {
+        this.title = title
+        menuItemList.addAll(menuItem)
+        toolbar?.setNavigationIcon(R.drawable.svg_title_back)
+        toolbar?.setNavigationOnClickListener {
             finish()
         }
-        return toolbar
+
     }
 
+    fun showTitle() {
+        toolbar?.visibility = View.VISIBLE
+    }
 
-    fun rightTitle(
-        title: String,
-        res: Int,
-        onClickListener: View.OnClickListener? = null
-    ): Toolbar {
-        val toolbar = defaultTitle(title)
-        getRightImageView().apply {
-            visibility = View.VISIBLE
-            setImageResource(res)
-            setOnClickListener(onClickListener)
+    fun hideTitle() {
+        toolbar?.visibility = View.GONE
+    }
+
+    fun clearMenu() {
+        menuItemList.clear()
+        toolbar?.menu?.clear()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuItemList.forEach { bean ->
+            toolbar?.menu?.add(bean.title)?.let { menuItem ->
+                menuItem.setOnMenuItemClickListener {
+                    bean.onClickListener.invoke()
+                    return@setOnMenuItemClickListener true
+                }
+                menuItem.setIcon(bean.icon)
+                menuItem.setShowAsAction(bean.showAsAction)
+            }
         }
-        return toolbar
+        toolbar?.title = title
+        return super.onCreateOptionsMenu(menu)
     }
-
-    private fun getRightImageView() = toolbar.findViewById<ImageView>(R.id.iv_right)
 
 
     /**
@@ -200,7 +224,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     override fun onDestroy() {
         super.onDestroy()
-        close()
+        onClose()
         ZyFrameStore.removeActivity(this)
     }
 }

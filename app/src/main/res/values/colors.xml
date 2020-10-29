@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#ffffff</color>
-    <color name="black">#333333</color>
-    <color name="gray9">#999999</color>
-    <color name="gray6">#666666</color>
-    <color name="grayE0">#E0E0E0</color>
-    <color name="grayBF">#BFBFBF</color>
-    <color name="grayFA">#FAFAFA</color>
-    <color name="grayD">#BFBFBF</color>
-    <color name="red">#D8253B</color>
-    <color name="grayBtn">#C5C5C5</color>
-    <color name="iconColor">#BFBFBF</color>
 
+    <color name="colorPrimary">@color/color_theme</color>
+    <color name="colorPrimaryDark">@color/color_theme</color>
+    <color name="colorAccent">@color/color_theme</color>
 
+    <!--标题栏图标颜色-->
+    <color name="color_title_icon">@color/color_white</color>
+    <!--标题栏文字颜色-->
+    <color name="color_title_text">@color/color_white</color>
+
+    <color name="color_theme">#2A90FC</color>
+    <color name="color_toolbar_menu_text">@color/font_white</color>
 
     <color name="font_black">#404040</color>
     <color name="font_white">#ffffff</color>
@@ -23,8 +22,6 @@
     <color name="color_line">#d9d9d9</color>
     <color name="color_layout">#CAE3ED</color>
 
-
-    <color name="color_theme">#2A90FC</color>
     <color name="color_black">#000000</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_transparent">#00000000</color>

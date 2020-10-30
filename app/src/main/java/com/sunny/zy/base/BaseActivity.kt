@@ -34,7 +34,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     private val menuItemList = ArrayList<BaseMenuBean>()
 
-    private var toolbar: Toolbar? = null
+    var toolbar: Toolbar? = null
 
     private var title = ""
 

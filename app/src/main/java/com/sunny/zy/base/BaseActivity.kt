@@ -38,8 +38,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     var toolbar: Toolbar? = null
 
-    private var title = ""
-
     var savedInstanceState: Bundle? = null
 
     private val overlayViewBean = OverlayViewUtil()
@@ -48,16 +46,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.i("Activity", "onCreate ----------------------------------------")
-
         this.savedInstanceState = savedInstanceState
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
         val viewStub = ViewStub(this)
         setContentView(viewStub)
         initSysLayout()
         initTitle()
-
         when (val layoutView = initLayout()) {
             is Int -> {
                 if (layoutView != 0) {
@@ -65,7 +59,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
                     viewStub.inflate()
                 }
             }
-
             is View -> {
                 contentLayout?.removeView(viewStub)
                 contentLayout?.addView(layoutView)
@@ -77,12 +70,33 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
                     .add(contentLayout?.id ?: return, layoutView).commit()
             }
         }
-
         initView()
         loadData()
 
         ZyFrameStore.addActivity(this)
     }
+
+    private fun initSysLayout() {
+        val sysLinearLayout = (window.decorView as ViewGroup).getChildAt(0) as LinearLayout
+        var sysFrameLayout: FrameLayout? = null
+
+        findFrame@ for (i in 0 until sysLinearLayout.childCount) {
+            val childView = sysLinearLayout.getChildAt(i)
+            if (childView is FrameLayout) {
+                sysFrameLayout = childView
+                break@findFrame
+            }
+        }
+        val actionBarOverlayLayout =
+            sysFrameLayout?.findViewById<ActionBarOverlayLayout>(R.id.decor_content_parent)
+
+        val actionBarContainer =
+            actionBarOverlayLayout?.findViewById<ActionBarContainer>(R.id.action_bar_container)
+        toolbar = actionBarContainer?.findViewById(R.id.action_bar)
+        contentLayout = actionBarOverlayLayout?.findViewById(android.R.id.content)
+    }
+
+    open fun initTitle() {}
 
     /**
      * 设置布局操作
@@ -106,29 +120,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     abstract fun onClose()
 
-    private fun initSysLayout() {
-        val sysLinearLayout = (window.decorView as ViewGroup).getChildAt(0) as LinearLayout
-        var sysFrameLayout: FrameLayout? = null
-
-        findFrame@ for (i in 0 until sysLinearLayout.childCount) {
-            val childView = sysLinearLayout.getChildAt(i)
-            if (childView is FrameLayout) {
-                sysFrameLayout = childView
-                break@findFrame
-            }
-        }
-        val actionBarOverlayLayout =
-            sysFrameLayout?.findViewById<ActionBarOverlayLayout>(R.id.decor_content_parent)
-
-        val actionBarContainer =
-            actionBarOverlayLayout?.findViewById<ActionBarContainer>(R.id.action_bar_container)
-        toolbar = actionBarContainer?.findViewById(R.id.action_bar)
-        contentLayout = actionBarOverlayLayout?.findViewById(android.R.id.content)
-    }
-
-    open fun initTitle() {
-
-    }
 
     /**
      * 获取body容器
@@ -226,9 +217,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         toolbar?.menu?.clear()
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuItemList.forEach { bean ->
-            toolbar?.menu?.add(bean.title)?.let { menuItem ->
+            menu?.add(bean.title)?.let { menuItem ->
                 menuItem.setOnMenuItemClickListener {
                     bean.onClickListener.invoke()
                     return@setOnMenuItemClickListener true
@@ -237,8 +229,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
                 menuItem.setShowAsAction(bean.showAsAction)
             }
         }
-        toolbar?.title = title
-        return super.onCreateOptionsMenu(menu)
+        return true
     }
 
 

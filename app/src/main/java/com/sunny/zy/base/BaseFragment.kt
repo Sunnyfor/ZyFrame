@@ -1,5 +1,6 @@
 package com.sunny.zy.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.sunny.zy.utils.OverlayViewUtil
+import com.sunny.zy.utils.ToastUtil
 
 
 /**
@@ -22,8 +24,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     private var savedInstanceState: Bundle? = null
 
     private val overlayViewBean = OverlayViewUtil()
-    private var rootView: FrameLayout? = null
-    var bodyView: View? = null
+    private var rootView: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,9 +33,17 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     ): View? {
         this.savedInstanceState = savedInstanceState
         rootView = FrameLayout(requireContext())
-        if (setLayout() != 0) {
-            bodyView = inflater.inflate(setLayout(), container, false)
-            rootView?.addView(bodyView)
+
+        when (val layoutView = initLayout()) {
+            is Int -> {
+                if (layoutView != 0) {
+                    rootView = inflater.inflate(layoutView, container, false)
+                }
+            }
+
+            is View -> {
+                rootView = layoutView
+            }
         }
         return rootView
     }
@@ -45,6 +54,12 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         loadData()
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        onFragmentCreate(savedInstanceState)
+    }
+
+    open fun onFragmentCreate(savedInstanceState: Bundle?) {}
 
     fun getBaseActivity(): BaseActivity = requireActivity() as BaseActivity
 
@@ -60,7 +75,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     }
 
 
-    abstract fun setLayout(): Int
+    abstract fun initLayout(): Any
 
     abstract fun initView()
 
@@ -68,33 +83,33 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
 
     abstract fun loadData()
 
-    fun setLayoutView(view: View) {
-        rootView?.let {
-            if (view.parent != null) {
-                (view.parent as ViewGroup).removeView(view)
-            }
-            it.addView(view)
-        }
-    }
 
     override fun showMessage(message: String) {
         getBaseActivity().showMessage(message)
     }
 
     override fun showLoading() {
-        overlayViewBean.showView(rootView ?: return, ErrorViewType.loading)
+        if (rootView is ViewGroup) {
+            overlayViewBean.showView(rootView as ViewGroup, ErrorViewType.loading)
+        }
     }
 
     override fun hideLoading() {
-        overlayViewBean.hideView(rootView ?: return, ErrorViewType.loading)
+        if (rootView is ViewGroup) {
+            overlayViewBean.hideView(rootView as ViewGroup, ErrorViewType.loading)
+        }
     }
 
     override fun showError(errorType: ErrorViewType) {
-        overlayViewBean.showView(rootView ?: return, ErrorViewType.networkError)
+        if (rootView is ViewGroup) {
+            overlayViewBean.showView(rootView as ViewGroup, ErrorViewType.error)
+        }
     }
 
     override fun hideError(errorType: ErrorViewType) {
-        overlayViewBean.hideView(rootView ?: return, ErrorViewType.networkError)
+        if (rootView is ViewGroup) {
+            overlayViewBean.hideView(rootView as ViewGroup, ErrorViewType.error)
+        }
     }
 
     override fun onClick(v: View) {
@@ -117,12 +132,17 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         }
     }
 
-    fun showTitle(){
+    fun showTitle() {
         getBaseActivity().let {
 
         }
     }
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        ToastUtil.show("我成功的依芙拉")
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

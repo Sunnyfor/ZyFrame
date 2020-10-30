@@ -1,6 +1,8 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="ZyTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+    <style name="ZyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+    </style>
 
 
     <!--通用图标样式-->

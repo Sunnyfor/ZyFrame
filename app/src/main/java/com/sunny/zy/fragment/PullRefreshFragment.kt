@@ -15,24 +15,23 @@ import com.sunny.zy.widget.PullRefreshRecyclerLayout
  * Date 2020/6/4 16:05
  */
 open class PullRefreshFragment<T> : BaseFragment() {
-    var adapter: BaseRecycleAdapter<T>? = null
-    var page = 1
-    var loadData: (() -> Unit)? = null
-    var enableRefresh: Boolean = true
-    var enableLoadMore: Boolean = true
-    var isShowEmptyView = true
+    open var adapter: BaseRecycleAdapter<T>? = null
+    open var page = 1
+    open var loadData: (() -> Unit)? = null
+    open var enableRefresh: Boolean = true
+    open var enableLoadMore: Boolean = true
+    open var isShowEmptyView = true
 
     private val pullRefreshLayout: PullRefreshRecyclerLayout by lazy {
         PullRefreshRecyclerLayout(context)
     }
 
-    val recyclerView: RecyclerView
+    open val recyclerView: RecyclerView
         get() = pullRefreshLayout.recyclerView
 
-    override fun setLayout(): Int = 0
+    override fun initLayout() = pullRefreshLayout
 
     override fun initView() {
-        setLayoutView(pullRefreshLayout)
         pullRefreshLayout.isShowEmptyView = isShowEmptyView
         pullRefreshLayout.setUnEnableRefreshAndLoad(enableRefresh, enableLoadMore)
         if (adapter != null) {
@@ -66,11 +65,11 @@ open class PullRefreshFragment<T> : BaseFragment() {
 
     }
 
-    fun addData(data: ArrayList<T>) {
+    open fun addData(data: ArrayList<T>) {
         addData(-1, data)
     }
 
-    fun addData(index: Int, data: ArrayList<T>) {
+    open fun addData(index: Int, data: ArrayList<T>) {
         if (page == 1) {
             adapter?.clearData()
             pullRefreshLayout.finishRefresh()
@@ -91,13 +90,13 @@ open class PullRefreshFragment<T> : BaseFragment() {
         adapter?.notifyDataSetChanged()
     }
 
-    fun deleteData(index: Int) {
+    open fun deleteData(index: Int) {
         adapter?.deleteData(index)
         adapter?.notifyDataSetChanged()
         updateEmptyView()
     }
 
-    fun deleteData(data: T) {
+    open fun deleteData(data: T) {
         adapter?.deleteData(data)
         adapter?.notifyDataSetChanged()
         updateEmptyView()
@@ -113,5 +112,5 @@ open class PullRefreshFragment<T> : BaseFragment() {
     }
 
 
-    fun getAllData() = adapter?.getData()
+    open fun getAllData() = adapter?.getData()
 }

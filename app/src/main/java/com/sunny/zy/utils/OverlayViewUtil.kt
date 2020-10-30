@@ -27,7 +27,7 @@ class OverlayViewUtil {
             else -> View.inflate(context, R.layout.zy_layout_error, null).apply {
 
                 when (viewType) {
-                    ErrorViewType.networkError -> {
+                    ErrorViewType.error -> {
                         tvDesc.text = "连接服务器异常！"
                     }
                     ErrorViewType.emptyData -> {

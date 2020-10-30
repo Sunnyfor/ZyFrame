@@ -4,17 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.view.Window
+import android.view.ViewGroup
+import android.view.ViewStub
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.ActionBarContainer
 import androidx.appcompat.widget.ActionBarOverlayLayout
-import androidx.appcompat.widget.ContentFrameLayout
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.utils.OverlayViewUtil
@@ -42,30 +44,50 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     private val overlayViewBean = OverlayViewUtil()
 
+    private var contentLayout: FrameLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.i("Activity", "onCreate ----------------------------------------")
+
         this.savedInstanceState = savedInstanceState
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
+        val viewStub = ViewStub(this)
+        setContentView(viewStub)
+        initSysLayout()
+        initTitle()
 
-        if (!initTitle()) {
-            supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+        when (val layoutView = initLayout()) {
+            is Int -> {
+                if (layoutView != 0) {
+                    viewStub.layoutResource = layoutView
+                    viewStub.inflate()
+                }
+            }
+
+            is View -> {
+                contentLayout?.removeView(viewStub)
+                contentLayout?.addView(layoutView)
+            }
+
+            is Fragment -> {
+                contentLayout?.removeView(viewStub)
+                supportFragmentManager.beginTransaction()
+                    .add(contentLayout?.id ?: return, layoutView).commit()
+            }
         }
 
-        setContentView(R.layout.zy_activity_base)
-        if (initLayout() != 0) {
-            val bodyView = LayoutInflater.from(this).inflate(initLayout(), null, false)
-            frameBody.addView(bodyView)
-        }
-        initToolbar()
         initView()
         loadData()
+
         ZyFrameStore.addActivity(this)
     }
 
     /**
      * 设置布局操作
      */
-    abstract fun initLayout(): Int
+    abstract fun initLayout(): Any
 
     /**
      * 初始化View操作
@@ -84,12 +106,34 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     abstract fun onClose()
 
-    open fun initTitle() = true
+    private fun initSysLayout() {
+        val sysLinearLayout = (window.decorView as ViewGroup).getChildAt(0) as LinearLayout
+        var sysFrameLayout: FrameLayout? = null
+
+        findFrame@ for (i in 0 until sysLinearLayout.childCount) {
+            val childView = sysLinearLayout.getChildAt(i)
+            if (childView is FrameLayout) {
+                sysFrameLayout = childView
+                break@findFrame
+            }
+        }
+        val actionBarOverlayLayout =
+            sysFrameLayout?.findViewById<ActionBarOverlayLayout>(R.id.decor_content_parent)
+
+        val actionBarContainer =
+            actionBarOverlayLayout?.findViewById<ActionBarContainer>(R.id.action_bar_container)
+        toolbar = actionBarContainer?.findViewById(R.id.action_bar)
+        contentLayout = actionBarOverlayLayout?.findViewById(android.R.id.content)
+    }
+
+    open fun initTitle() {
+
+    }
 
     /**
      * 获取body容器
      */
-    fun getFrameBody(): FrameLayout = findViewById(R.id.frameBody)
+    fun getFrameBody(): FrameLayout? = contentLayout
 
 
     /**
@@ -117,7 +161,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 隐藏error覆盖层
      */
     override fun hideError(errorType: ErrorViewType) {
-        overlayViewBean.hideView(frameBody, ErrorViewType.networkError)
+        overlayViewBean.hideView(frameBody, ErrorViewType.error)
     }
 
     /**
@@ -145,21 +189,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         onClickEvent(view)
     }
 
-    /**
-     * 只有文字标题的toolbar
-     */
-    private fun initToolbar() {
-        getFrameBody().parent?.let {
-            if (it is ContentFrameLayout) {
-                val actionBarOverlayLayout = it.parent
-                if (actionBarOverlayLayout is ActionBarOverlayLayout) {
-                    val actionBarLayout =
-                        actionBarOverlayLayout.findViewById<ActionBarContainer>(R.id.action_bar_container)
-                    toolbar = actionBarLayout.findViewById(R.id.action_bar)
-                }
-            }
-        }
-    }
 
     /**
      * 只有标题的toolbar
@@ -167,6 +196,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     fun simpleTitle(title: String, vararg menuItem: BaseMenuBean) {
         this.title = title
         menuItemList.addAll(menuItem)
+        toolbar?.navigationIcon = null
+        toolbar?.setNavigationOnClickListener(null)
     }
 
     /**
@@ -183,11 +214,11 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     }
 
     fun showTitle() {
-        toolbar?.visibility = View.VISIBLE
+        supportActionBar?.show()
     }
 
     fun hideTitle() {
-        toolbar?.visibility = View.GONE
+        supportActionBar?.hide()
     }
 
     fun clearMenu() {

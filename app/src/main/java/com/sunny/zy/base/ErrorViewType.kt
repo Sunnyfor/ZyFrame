@@ -9,7 +9,7 @@ data class ErrorViewType(var errorCode: Int, var errorMessage: String, var error
     companion object {
         const val loading = 10000 //加载View
         const val emptyData = 10001 //没有数据
-        const val networkError = 10002 //网络错误的View
+        const val error = 10002 //发生错误
     }
 
 }

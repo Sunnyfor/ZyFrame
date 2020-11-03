@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import com.sunny.zy.R
 import com.sunny.zy.base.BaseFragment
 import com.sunny.zy.base.BaseRecycleAdapter
+import com.sunny.zy.base.PlaceholderBean
 import com.sunny.zy.widget.PullRefreshRecyclerLayout
 
 /**
@@ -105,9 +107,11 @@ open class PullRefreshFragment<T> : BaseFragment() {
 
     private fun updateEmptyView(data: ArrayList<T>? = null) {
         if ((data ?: getAllData())?.isEmpty() == true) {
-            pullRefreshLayout.showEmptyView()
+            val bean = PlaceholderBean(PlaceholderBean.emptyData)
+            bean.text = getString(R.string.emptyData)
+            showPlaceholder(pullRefreshLayout.rootView, bean)
         } else {
-            pullRefreshLayout.hideEmptyView()
+            hidePlaceholder(PlaceholderBean.emptyData)
         }
     }
 

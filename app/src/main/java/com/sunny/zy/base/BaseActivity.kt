@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +18,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.utils.OverlayViewUtil
+import com.sunny.zy.utils.PlaceholderViewUtil
 import com.sunny.zy.utils.ToastUtil
-import kotlinx.android.synthetic.main.zy_activity_base.*
 
 /**
  * Desc Activity基类
@@ -40,7 +38,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     var savedInstanceState: Bundle? = null
 
-    private val overlayViewBean = OverlayViewUtil()
+    private val overlayViewBeanUtil = PlaceholderViewUtil()
 
     private var contentLayout: FrameLayout? = null
 
@@ -131,28 +129,32 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 显示loading覆盖层
      */
     override fun showLoading() {
-        overlayViewBean.showView(frameBody, ErrorViewType.loading)
+        PlaceholderBean(PlaceholderBean.loading).let {
+            it.text = getString(R.string.emptyData)
+            overlayViewBeanUtil.showView(getFrameBody() ?: return, it)
+        }
+
     }
 
     /**
      * 隐藏loading覆盖层
      */
     override fun hideLoading() {
-        overlayViewBean.hideView(frameBody, ErrorViewType.loading)
+        overlayViewBeanUtil.hideView(getFrameBody() ?: return, PlaceholderBean.loading)
     }
 
     /**
      * 显示error覆盖层
      */
-    override fun showError(errorType: ErrorViewType) {
-        overlayViewBean.showView(frameBody, errorType.errorCode)
+    override fun showPlaceholder(viewGroup: ViewGroup?, placeholderBean: PlaceholderBean) {
+        overlayViewBeanUtil.showView(viewGroup ?: getFrameBody() ?: return, placeholderBean)
     }
 
     /**
      * 隐藏error覆盖层
      */
-    override fun hideError(errorType: ErrorViewType) {
-        overlayViewBean.hideView(frameBody, ErrorViewType.error)
+    override fun hidePlaceholder(overlayViewType: Int) {
+        overlayViewBeanUtil.hideView(getFrameBody() ?: return, overlayViewType)
     }
 
     /**
@@ -204,14 +206,23 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     }
 
+    /**
+     * 显示标题栏
+     */
     fun showTitle() {
         supportActionBar?.show()
     }
 
+    /**
+     * 隐藏标题栏
+     */
     fun hideTitle() {
         supportActionBar?.hide()
     }
 
+    /**
+     * 清理标题菜单
+     */
     fun clearMenu() {
         menuItemList.clear()
         toolbar?.menu?.clear()

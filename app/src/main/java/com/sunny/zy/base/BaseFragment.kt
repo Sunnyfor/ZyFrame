@@ -1,14 +1,11 @@
 package com.sunny.zy.base
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import com.sunny.zy.utils.OverlayViewUtil
-import com.sunny.zy.utils.ToastUtil
+import com.sunny.zy.utils.PlaceholderViewUtil
 
 
 /**
@@ -23,7 +20,7 @@ import com.sunny.zy.utils.ToastUtil
 abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     private var savedInstanceState: Bundle? = null
 
-    private val overlayViewBean = OverlayViewUtil()
+    private val overlayViewBean = PlaceholderViewUtil()
     private var rootView: View? = null
 
     override fun onCreateView(
@@ -32,8 +29,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         this.savedInstanceState = savedInstanceState
-        rootView = FrameLayout(requireContext())
-
         when (val layoutView = initLayout()) {
             is Int -> {
                 if (layoutView != 0) {
@@ -54,15 +49,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         loadData()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        onFragmentCreate(savedInstanceState)
-    }
 
-    open fun onFragmentCreate(savedInstanceState: Bundle?) {}
-
-    fun getBaseActivity(): BaseActivity = requireActivity() as BaseActivity
-
+    open fun getBaseActivity(): BaseActivity = requireActivity() as BaseActivity
 
     /**
      * 批量注册点击事件
@@ -90,25 +78,28 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
 
     override fun showLoading() {
         if (rootView is ViewGroup) {
-            overlayViewBean.showView(rootView as ViewGroup, ErrorViewType.loading)
+            overlayViewBean.showView(
+                rootView as ViewGroup,
+                PlaceholderBean(PlaceholderBean.loading)
+            )
         }
     }
 
     override fun hideLoading() {
         if (rootView is ViewGroup) {
-            overlayViewBean.hideView(rootView as ViewGroup, ErrorViewType.loading)
+            overlayViewBean.hideView(rootView as ViewGroup, PlaceholderBean.loading)
         }
     }
 
-    override fun showError(errorType: ErrorViewType) {
+    override fun showPlaceholder(viewGroup: ViewGroup?, placeholderBean: PlaceholderBean) {
         if (rootView is ViewGroup) {
-            overlayViewBean.showView(rootView as ViewGroup, ErrorViewType.error)
+            this.overlayViewBean.showView(rootView as ViewGroup, placeholderBean)
         }
     }
 
-    override fun hideError(errorType: ErrorViewType) {
+    override fun hidePlaceholder(overlayViewType: Int) {
         if (rootView is ViewGroup) {
-            overlayViewBean.hideView(rootView as ViewGroup, ErrorViewType.error)
+            overlayViewBean.hideView(rootView as ViewGroup, overlayViewType)
         }
     }
 
@@ -132,17 +123,14 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         }
     }
 
+    fun hideTitle() {
+        getBaseActivity().hideTitle()
+    }
+
     fun showTitle() {
-        getBaseActivity().let {
-
-        }
+        getBaseActivity().showTitle()
     }
 
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        ToastUtil.show("我成功的依芙拉")
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -2,13 +2,11 @@ package com.sunny.zy.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.sunny.zy.R
 
 
 /**
@@ -18,16 +16,12 @@ import com.sunny.zy.R
  */
 class PullRefreshRecyclerLayout : SmartRefreshLayout {
 
-    private val fmLayout: FrameLayout by lazy {
+    val rootView: FrameLayout by lazy {
         FrameLayout(context)
     }
 
     val recyclerView: RecyclerView by lazy {
         RecyclerView(context)
-    }
-
-    private val emptyView: View by lazy {
-        View.inflate(context, R.layout.zy_layout_error, null)
     }
 
     private val layoutParams =
@@ -42,8 +36,8 @@ class PullRefreshRecyclerLayout : SmartRefreshLayout {
         setRefreshHeader(ClassicsHeader(context))
         setRefreshFooter(ClassicsFooter(context))
         setEnableAutoLoadMore(true)//开启自动加载功能
-        fmLayout.addView(recyclerView, layoutParams)
-        addView(fmLayout, layoutParams)
+        rootView.addView(recyclerView, layoutParams)
+        addView(rootView, layoutParams)
     }
 
     /**
@@ -52,19 +46,5 @@ class PullRefreshRecyclerLayout : SmartRefreshLayout {
     fun setUnEnableRefreshAndLoad(enableRefresh: Boolean, enableLoadMore: Boolean) {
         setEnableRefresh(enableRefresh)
         setEnableLoadMore(enableLoadMore)
-    }
-
-    fun showEmptyView() {
-        if (isShowEmptyView){
-            hideEmptyView()
-            fmLayout.addView(emptyView, layoutParams)
-        }
-
-    }
-
-    fun hideEmptyView() {
-        if (isShowEmptyView){
-            fmLayout.removeView(emptyView)
-        }
     }
 }

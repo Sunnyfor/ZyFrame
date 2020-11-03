@@ -1,10 +1,15 @@
 package com.sunny.zy.base
 
+import com.sunny.zy.R
+
 /**
  * 枚举：错误View的类型
  * Created by Zy on 2018/8/2.
  */
-data class ErrorViewType(var errorCode: Int, var errorMessage: String, var errorIcon: Int = 0) {
+data class PlaceholderBean(var viewType: Int) {
+
+    var text: String = ""
+    var icon: Int = R.drawable.svg_placeholder_view
 
     companion object {
         const val loading = 10000 //加载View

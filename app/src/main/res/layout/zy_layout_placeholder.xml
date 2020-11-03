@@ -10,10 +10,10 @@
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/svg_empty_view" />
+        android:src="@drawable/svg_placeholder_view" />
 
     <TextView
-        android:id="@+id/tvDesc"
+        android:id="@+id/tv_desc"
         style="@style/style_font_black"
         android:layout_below="@id/iv_icon"
         android:layout_centerHorizontal="true"

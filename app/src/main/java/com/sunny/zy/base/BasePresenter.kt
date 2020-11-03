@@ -1,5 +1,6 @@
 package com.sunny.zy.base
 
+import android.view.ViewGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
@@ -10,16 +11,12 @@ import kotlinx.coroutines.MainScope
 abstract class BasePresenter<T : IBaseView>(var view: T?) : CoroutineScope by MainScope() {
 
 
-    fun showError(code: Int, message: String) {
-        val errorViewType = ErrorViewType(code, message)
-        when (code) {
-            0 -> view?.showError(errorViewType)
-        }
-
+    fun showError(viewGroup: ViewGroup? = null, placeholderBean: PlaceholderBean) {
+        view?.showPlaceholder(viewGroup, placeholderBean)
     }
 
-    fun hideError() {
-        view?.hideError(ErrorViewType(0, "message"))
+    fun hideError(overlayViewType: Int) {
+        view?.hidePlaceholder(overlayViewType)
     }
 
     fun showMessage(message: String) {

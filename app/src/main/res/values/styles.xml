@@ -33,7 +33,7 @@
         <item name="android:gravity">top</item>
         <item name="android:textSize">@dimen/sp_14</item>
         <item name="android:inputType">textMultiLine</item>
-        <item name="android:background">@drawable/sel_border_gray</item>
+        <item name="android:background">@drawable/sel_corners_dp2_border_1dp_e9</item>
     </style>
 
     <!--通用黑色字体-->

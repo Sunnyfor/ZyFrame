@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">内务管理</string>
+    <string name="app_name">ZyFrame</string>
     <string name="placeholder">占位符</string>
 
 
@@ -14,9 +14,4 @@
     <string name="clearComplete">清理完成!</string>
 
     <string name="dialogDownload">正在下载… </string>
-
-    <!--底部导航-->
-    <string name="workbench">工作</string>
-    <string name="message">消息</string>
-    <string name="mine">我的</string>
 </resources>

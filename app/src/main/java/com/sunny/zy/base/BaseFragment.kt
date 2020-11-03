@@ -20,7 +20,7 @@ import com.sunny.zy.utils.PlaceholderViewUtil
 abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     private var savedInstanceState: Bundle? = null
 
-    private val overlayViewBean = PlaceholderViewUtil()
+    private val placeholderViewUtil = PlaceholderViewUtil()
     private var rootView: View? = null
 
     override fun onCreateView(
@@ -47,6 +47,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         initView()
         loadData()
+        getBaseActivity().onFragmentLoadFinish(this)
     }
 
 
@@ -78,7 +79,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
 
     override fun showLoading() {
         if (rootView is ViewGroup) {
-            overlayViewBean.showView(
+            placeholderViewUtil.showView(
                 rootView as ViewGroup,
                 PlaceholderBean(PlaceholderBean.loading)
             )
@@ -87,19 +88,19 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
 
     override fun hideLoading() {
         if (rootView is ViewGroup) {
-            overlayViewBean.hideView(rootView as ViewGroup, PlaceholderBean.loading)
+            placeholderViewUtil.hideView(rootView as ViewGroup, PlaceholderBean.loading)
         }
     }
 
     override fun showPlaceholder(viewGroup: ViewGroup?, placeholderBean: PlaceholderBean) {
         if (rootView is ViewGroup) {
-            this.overlayViewBean.showView(rootView as ViewGroup, placeholderBean)
+            this.placeholderViewUtil.showView(rootView as ViewGroup, placeholderBean)
         }
     }
 
     override fun hidePlaceholder(overlayViewType: Int) {
         if (rootView is ViewGroup) {
-            overlayViewBean.hideView(rootView as ViewGroup, overlayViewType)
+            placeholderViewUtil.hideView(rootView as ViewGroup, overlayViewType)
         }
     }
 

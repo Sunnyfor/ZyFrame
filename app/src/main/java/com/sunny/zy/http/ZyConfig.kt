@@ -1,6 +1,8 @@
 package com.sunny.zy.http
 
+import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
+import com.sunny.zy.base.PlaceholderBean
 import com.sunny.zy.http.bean.BaseHttpResultBean
 import com.sunny.zy.http.interceptor.HeaderInterceptor
 import com.sunny.zy.http.parser.IResponseParser
@@ -99,5 +101,30 @@ object ZyConfig {
      * 网络请求全局回调
      */
     var httpResultCallback: ((resultBean: BaseHttpResultBean) -> Unit)? = null
+
+
+    /**
+     *  无数据展示布局
+     */
+    var emptyLayoutRes = R.layout.zy_layout_placeholder
+    var emptyPlaceholderBean = PlaceholderBean(PlaceholderBean.emptyData).apply {
+        viewIdMap[R.id.tv_desc] = R.string.emptyData
+        viewIdMap[R.id.iv_icon] = R.drawable.svg_placeholder
+    }
+
+    /**
+     *  发生错误展示布局
+     */
+    var errorLayoutRes = R.layout.zy_layout_placeholder
+    var errorPlaceholderBean = PlaceholderBean(PlaceholderBean.error).apply {
+        viewIdMap[R.id.tv_desc] = ""
+        viewIdMap[R.id.iv_icon] = R.drawable.svg_placeholder
+    }
+
+    /**
+     *  加载数据展示布局
+     */
+    var loadingLayoutRes = R.layout.zy_layout_loading
+    var loadingPlaceholderBean = PlaceholderBean(PlaceholderBean.loading)
 }
 

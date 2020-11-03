@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
+import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.utils.PlaceholderViewUtil
 import com.sunny.zy.utils.ToastUtil
 
@@ -129,10 +130,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 显示loading覆盖层
      */
     override fun showLoading() {
-        PlaceholderBean(PlaceholderBean.loading).let {
-            it.text = getString(R.string.emptyData)
-            overlayViewBeanUtil.showView(getFrameBody() ?: return, it)
-        }
+        overlayViewBeanUtil.showView(getFrameBody() ?: return, ZyConfig.loadingPlaceholderBean)
 
     }
 
@@ -254,6 +252,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
             InputMethodManager.HIDE_NOT_ALWAYS
         )
     }
+
+    /**
+     * fragment加载完成后进行回调
+     */
+    open fun onFragmentLoadFinish(fragment: Fragment) {}
+
 
     override fun onDestroy() {
         super.onDestroy()

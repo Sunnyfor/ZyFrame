@@ -9,6 +9,7 @@ import com.sunny.zy.R
 import com.sunny.zy.base.BaseFragment
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.PlaceholderBean
+import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.widget.PullRefreshRecyclerLayout
 
 /**
@@ -107,9 +108,7 @@ open class PullRefreshFragment<T> : BaseFragment() {
 
     private fun updateEmptyView(data: ArrayList<T>? = null) {
         if ((data ?: getAllData())?.isEmpty() == true) {
-            val bean = PlaceholderBean(PlaceholderBean.emptyData)
-            bean.text = getString(R.string.emptyData)
-            showPlaceholder(pullRefreshLayout.rootView, bean)
+            showPlaceholder(pullRefreshLayout.rootView, ZyConfig.emptyPlaceholderBean)
         } else {
             hidePlaceholder(PlaceholderBean.emptyData)
         }

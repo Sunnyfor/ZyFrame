@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical">
 
-
     <ImageView
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/svg_placeholder_view" />
+        android:src="@drawable/svg_placeholder"
+        android:contentDescription="@string/placeholder" />
 
     <TextView
         android:id="@+id/tv_desc"
@@ -18,5 +18,6 @@
         android:layout_below="@id/iv_icon"
         android:layout_centerHorizontal="true"
         android:textSize="@dimen/sp_16"
-        android:text="@string/emptyData" />
+        android:text="@string/emptyData"
+        android:layout_marginTop="@dimen/dp_15"/>
 </RelativeLayout>

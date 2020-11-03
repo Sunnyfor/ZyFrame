@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.sunny.zy.R
 import com.sunny.zy.base.PlaceholderBean
+import com.sunny.zy.http.ZyConfig
 
 /**
  * Desc
@@ -17,15 +18,30 @@ class PlaceholderViewUtil {
 
     private var viewStore = HashMap<Int, View>()
 
+    private val layoutParams = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT
+    )
+
+
     //创建View并缓存
     private fun getView(context: Context, viewType: Int): View? {
         if (viewStore.containsKey(viewType)) {
             return viewStore[viewType]
         }
-
         val view = when (viewType) {
-            PlaceholderBean.loading -> View.inflate(context, R.layout.zy_layout_loading, null)
-            else -> View.inflate(context, R.layout.zy_layout_placeholder, null)
+            PlaceholderBean.loading -> {
+                View.inflate(context, ZyConfig.loadingLayoutRes, null)
+            }
+            PlaceholderBean.error -> {
+                View.inflate(context, ZyConfig.errorLayoutRes, null)
+            }
+            PlaceholderBean.emptyData -> {
+                View.inflate(context, ZyConfig.emptyLayoutRes, null)
+            }
+            else -> {
+                View.inflate(context, R.layout.zy_layout_placeholder, null)
+            }
         }
         view?.let {
             viewStore.put(viewType, view)
@@ -43,10 +59,26 @@ class PlaceholderViewUtil {
         placeholderBean: PlaceholderBean
     ) {
         val view = getView(viewGroup.context, placeholderBean.viewType)
-        view?.findViewById<TextView>(R.id.tv_desc)?.text = placeholderBean.text
-        view?.findViewById<ImageView>(R.id.iv_icon)?.setImageResource(placeholderBean.icon)
+        placeholderBean.viewIdMap.forEach {
+            when (val itemView = view?.findViewById<View>(it.key)) {
+                is TextView -> {
+                    if (it.value is Int) {
+                        itemView.text = view.context.getString(it.value as Int)
+                    }
+                    if (it.value is String) {
+                        itemView.text = it.value.toString()
+                    }
+                }
+
+                is ImageView -> {
+                    if (it.value is Int) {
+                        itemView.setImageResource(it.value as Int)
+                    }
+                }
+            }
+        }
         if (view?.parent == null) {
-            viewGroup.addView(view)
+            viewGroup.addView(view, layoutParams)
         }
     }
 

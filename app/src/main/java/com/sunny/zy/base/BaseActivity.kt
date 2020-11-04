@@ -32,8 +32,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     var taskTag = "DefaultActivity"
 
-    private val menuItemList = ArrayList<BaseMenuBean>()
-
     var toolbar: Toolbar? = null
 
     var savedInstanceState: Bundle? = null
@@ -236,7 +234,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 清理标题菜单
      */
     fun clearMenu() {
-        menuItemList.clear()
         toolbar?.menu?.clear()
     }
 

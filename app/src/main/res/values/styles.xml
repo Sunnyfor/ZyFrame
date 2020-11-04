@@ -2,8 +2,16 @@
     <!-- Base application theme. -->
     <style name="ZyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ZyNoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <!--通用图标样式-->
 

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
@@ -185,23 +184,38 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 只有标题的toolbar
      */
     fun simpleTitle(title: String, vararg menuItem: BaseMenuBean) {
-        this.title = title
-        menuItemList.addAll(menuItem)
+        setTitle(title)
         toolbar?.navigationIcon = null
         toolbar?.setNavigationOnClickListener(null)
+        createMenu(*menuItem)
     }
 
     /**
      * 带返回键的toolbar
      */
     fun defaultTitle(title: String, vararg menuItem: BaseMenuBean) {
-        this.title = title
-        menuItemList.addAll(menuItem)
+        setTitle(title)
         toolbar?.setNavigationIcon(R.drawable.svg_title_back)
         toolbar?.setNavigationOnClickListener {
             finish()
         }
+        createMenu(*menuItem)
+    }
 
+    /**
+     * 创建toolbar菜单
+     */
+    private fun createMenu(vararg menuItem: BaseMenuBean) {
+        menuItem.forEach { bean ->
+            toolbar?.menu?.add(bean.title)?.let { menuItem ->
+                menuItem.setOnMenuItemClickListener {
+                    bean.onClickListener.invoke()
+                    return@setOnMenuItemClickListener true
+                }
+                menuItem.setIcon(bean.icon)
+                menuItem.setShowAsAction(bean.showAsAction)
+            }
+        }
     }
 
     /**
@@ -224,21 +238,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     fun clearMenu() {
         menuItemList.clear()
         toolbar?.menu?.clear()
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuItemList.forEach { bean ->
-            menu?.add(bean.title)?.let { menuItem ->
-                menuItem.setOnMenuItemClickListener {
-                    bean.onClickListener.invoke()
-                    return@setOnMenuItemClickListener true
-                }
-                menuItem.setIcon(bean.icon)
-                menuItem.setShowAsAction(bean.showAsAction)
-            }
-        }
-        return true
     }
 
 

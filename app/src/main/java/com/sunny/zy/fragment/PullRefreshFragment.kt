@@ -64,7 +64,7 @@ open class PullRefreshFragment<T> : BaseFragment() {
 
     }
 
-    override fun close() {
+    override fun onClose() {
 
     }
 

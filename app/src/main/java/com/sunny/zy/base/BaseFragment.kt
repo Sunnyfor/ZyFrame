@@ -135,10 +135,10 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        close()
+        onClose()
     }
 
-    abstract fun close()
+    abstract fun onClose()
 
 
 }

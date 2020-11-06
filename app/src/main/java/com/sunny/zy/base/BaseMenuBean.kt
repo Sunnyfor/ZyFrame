@@ -14,7 +14,7 @@ class BaseMenuBean {
         //表示永远显示在菜单中
         const val NEVER = MenuItem.SHOW_AS_ACTION_NEVER
 
-        //表示如果空间充足就显示在Toolar，否则显示在菜单中
+        //表示如果空间充足就显示在Toolbar，否则显示在菜单中
         const val IF_ROOM = MenuItem.SHOW_AS_ACTION_IF_ROOM
 
         //表示永远显示在Toolbar中，如果屏幕空间不够则不显示

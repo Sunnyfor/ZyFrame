@@ -1,16 +1,12 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="ZyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="ZyTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="ZyNoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextAppearance">@style/ZyMenuTextStyle</item>
+        <item name="actionMenuTextColor">@color/textColorPrimary</item>
     </style>
 
     <!--通用图标样式-->
@@ -197,6 +193,11 @@
         <item name="android:background">@color/color_line</item>
     </style>
 
+
+    <style name="ZyMenuTextStyle">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textSize">@dimen/dp_14</item>
+    </style>
 
     <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
         <item name="overlapAnchor">false</item>

@@ -4,16 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewStub
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.ActionBarContainer
-import androidx.appcompat.widget.ActionBarOverlayLayout
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.widget.ContentFrameLayout
 import androidx.fragment.app.Fragment
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
@@ -28,17 +23,23 @@ import com.sunny.zy.utils.ToastUtil
  */
 @SuppressLint("SourceLockedOrientationActivity")
 abstract class BaseActivity : AppCompatActivity(), IBaseView,
-    View.OnClickListener {
+    View.OnClickListener, OnTitleListener {
 
     var taskTag = "DefaultActivity"
 
-    var toolbar: Toolbar? = null
+    var toolbar: ZyToolBar? = null
 
     var savedInstanceState: Bundle? = null
 
-    private val overlayViewBeanUtil = PlaceholderViewUtil()
+    var menuList = ArrayList<BaseMenuBean>()
 
-    private var contentLayout: FrameLayout? = null
+    private var isCustomToolbar = false
+
+    private val placeholderViewUtil = PlaceholderViewUtil()
+
+    private var contentLayout: ContentFrameLayout? = null
+
+    private var bodyView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,53 +47,51 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
         val viewStub = ViewStub(this)
         setContentView(viewStub)
-        initSysLayout()
-        initTitle()
+        contentLayout = viewStub.parent as ContentFrameLayout
         when (val layoutView = initLayout()) {
             is Int -> {
                 if (layoutView != 0) {
-                    viewStub.layoutResource = layoutView
-                    viewStub.inflate()
+                    bodyView = LayoutInflater.from(this).inflate(layoutView, null, false)
+                    contentLayout?.removeView(viewStub)
+                    contentLayout?.addView(bodyView)
                 }
             }
             is View -> {
+                bodyView = layoutView
                 contentLayout?.removeView(viewStub)
-                contentLayout?.addView(layoutView)
+                contentLayout?.addView(bodyView)
             }
 
             is Fragment -> {
+                bodyView = FrameLayout(this)
+                bodyView?.id = R.id.frameContent
                 contentLayout?.removeView(viewStub)
+                contentLayout?.addView(bodyView)
                 supportFragmentManager.beginTransaction()
-                    .add(contentLayout?.id ?: return, layoutView).commit()
+                    .add(bodyView?.id ?: return, layoutView).commit()
             }
         }
+
         initView()
         loadData()
 
         ZyFrameStore.addActivity(this)
     }
 
-    private fun initSysLayout() {
-        val sysLinearLayout = (window.decorView as ViewGroup).getChildAt(0) as LinearLayout
-        var sysFrameLayout: FrameLayout? = null
 
-        findFrame@ for (i in 0 until sysLinearLayout.childCount) {
-            val childView = sysLinearLayout.getChildAt(i)
-            if (childView is FrameLayout) {
-                sysFrameLayout = childView
-                break@findFrame
-            }
+    @SuppressLint("PrivateResource")
+    private fun initTitle() {
+        if (toolbar == null) {
+            val layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+            toolbar = ZyToolBar(this, isCustomToolbar)
+            contentLayout?.addView(toolbar, layoutParams)
+            (contentLayout?.getChildAt(0)?.layoutParams as FrameLayout.LayoutParams).topMargin =
+                resources.getDimension(R.dimen.abc_action_bar_default_height_material).toInt()
+            setSupportActionBar(toolbar)
         }
-        val actionBarOverlayLayout =
-            sysFrameLayout?.findViewById<ActionBarOverlayLayout>(R.id.decor_content_parent)
-
-        val actionBarContainer =
-            actionBarOverlayLayout?.findViewById<ActionBarContainer>(R.id.action_bar_container)
-        toolbar = actionBarContainer?.findViewById(R.id.action_bar)
-        contentLayout = actionBarOverlayLayout?.findViewById(android.R.id.content)
     }
-
-    open fun initTitle() {}
 
     /**
      * 设置布局操作
@@ -120,14 +119,14 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     /**
      * 获取body容器
      */
-    fun getFrameBody(): FrameLayout? = contentLayout
+    fun getFrameBody(): ViewGroup? = bodyView as ViewGroup
 
 
     /**
      * 显示loading覆盖层
      */
     override fun showLoading() {
-        overlayViewBeanUtil.showView(getFrameBody() ?: return, ZyConfig.loadingPlaceholderBean)
+        placeholderViewUtil.showView(getFrameBody() ?: return, ZyConfig.loadingPlaceholderBean)
 
     }
 
@@ -135,21 +134,26 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 隐藏loading覆盖层
      */
     override fun hideLoading() {
-        overlayViewBeanUtil.hideView(getFrameBody() ?: return, PlaceholderBean.loading)
+        placeholderViewUtil.hideView(PlaceholderBean.loading)
+    }
+
+
+    fun showPlaceholder(placeholderBean: PlaceholderBean) {
+        placeholderViewUtil.showView(getFrameBody() ?: return, placeholderBean)
     }
 
     /**
      * 显示error覆盖层
      */
-    override fun showPlaceholder(viewGroup: ViewGroup?, placeholderBean: PlaceholderBean) {
-        overlayViewBeanUtil.showView(viewGroup ?: getFrameBody() ?: return, placeholderBean)
+    override fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
+        placeholderViewUtil.showView(viewGroup, placeholderBean)
     }
 
     /**
      * 隐藏error覆盖层
      */
-    override fun hidePlaceholder(overlayViewType: Int) {
-        overlayViewBeanUtil.hideView(getFrameBody() ?: return, overlayViewType)
+    override fun hidePlaceholder(placeholderType: Int) {
+        placeholderViewUtil.hideView(placeholderType)
     }
 
     /**
@@ -181,62 +185,53 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     /**
      * 只有标题的toolbar
      */
-    fun simpleTitle(title: String, vararg menuItem: BaseMenuBean) {
+    override fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
+        initTitle()
         setTitle(title)
         toolbar?.navigationIcon = null
         toolbar?.setNavigationOnClickListener(null)
         createMenu(*menuItem)
     }
 
+    override fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
+        isCustomToolbar = true
+        titleSimple(title, *menuItem)
+    }
+
     /**
      * 带返回键的toolbar
      */
-    fun defaultTitle(title: String, vararg menuItem: BaseMenuBean) {
-        setTitle(title)
+    override fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
+        titleSimple(title, *menuItem)
         toolbar?.setNavigationIcon(R.drawable.svg_title_back)
         toolbar?.setNavigationOnClickListener {
             finish()
         }
-        createMenu(*menuItem)
     }
+
+    override fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
+        isCustomToolbar = true
+        titleDefault(title, *menuItem)
+    }
+
+    override fun titleSearch(title: String, vararg menuItem: BaseMenuBean) {}
+
 
     /**
      * 创建toolbar菜单
      */
-    private fun createMenu(vararg menuItem: BaseMenuBean) {
-        menuItem.forEach { bean ->
-            toolbar?.menu?.add(bean.title)?.let { menuItem ->
-                menuItem.setOnMenuItemClickListener {
-                    bean.onClickListener.invoke()
-                    return@setOnMenuItemClickListener true
-                }
-                menuItem.setIcon(bean.icon)
-                menuItem.setShowAsAction(bean.showAsAction)
-            }
-        }
+    fun createMenu(vararg menuItem: BaseMenuBean) {
+        menuList.clear()
+        menuList.addAll(menuItem)
     }
 
     /**
-     * 显示标题栏
+     * 清理Toolbar菜单
      */
-    fun showTitle() {
-        supportActionBar?.show()
-    }
-
-    /**
-     * 隐藏标题栏
-     */
-    fun hideTitle() {
-        supportActionBar?.hide()
-    }
-
-    /**
-     * 清理标题菜单
-     */
-    fun clearMenu() {
+    open fun clearMenu() {
+        menuList.clear()
         toolbar?.menu?.clear()
     }
-
 
     /**
      * 隐藏输入法键盘
@@ -255,9 +250,25 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     open fun onFragmentLoadFinish(fragment: Fragment) {}
 
 
+    fun setPlaceholderBackground(resInt: Int, viewType: Int) {
+        placeholderViewUtil.setBackgroundResources(resInt, viewType)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        toolbar?.addMenu(menuList)
+        return true
+    }
+
+    fun setSupportActionBar(toolbar: ZyToolBar?) {
+        this.toolbar = toolbar
+        super.setSupportActionBar(toolbar)
+    }
+
+
     override fun onDestroy() {
         super.onDestroy()
-        onClose()
+        placeholderViewUtil.clear()
         ZyFrameStore.removeActivity(this)
+        onClose()
     }
 }

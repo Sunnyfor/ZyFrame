@@ -12,9 +12,9 @@ interface IBaseView {
 
     fun hideLoading()
 
-    fun showPlaceholder(viewGroup: ViewGroup? = null, placeholderBean: PlaceholderBean)
+    fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean)
 
-    fun hidePlaceholder(overlayViewType: Int)
+    fun hidePlaceholder(placeholderType: Int)
 
     fun showMessage(message: String)
 }

@@ -1,10 +1,13 @@
 package com.sunny.zy.base
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import com.sunny.zy.R
 import com.sunny.zy.utils.PlaceholderViewUtil
 
 
@@ -17,11 +20,14 @@ import com.sunny.zy.utils.PlaceholderViewUtil
  * Author Zy
  * Date 2018/8/2
  */
-abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
+abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTitleListener {
     private var savedInstanceState: Bundle? = null
-
     private val placeholderViewUtil = PlaceholderViewUtil()
-    private var rootView: View? = null
+    private var rootView: FrameLayout? = null
+    private var bodyView: View? = null
+    private var toolbar: ZyToolBar? = null
+    private var menuList = ArrayList<BaseMenuBean>()
+    private var isCustomToolbar = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,17 +35,22 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         this.savedInstanceState = savedInstanceState
+
+        rootView = FrameLayout(requireContext())
+
         when (val layoutView = initLayout()) {
             is Int -> {
                 if (layoutView != 0) {
-                    rootView = inflater.inflate(layoutView, container, false)
+                    bodyView = inflater.inflate(layoutView, container, false)
+
                 }
             }
 
             is View -> {
-                rootView = layoutView
+                bodyView = layoutView
             }
         }
+        rootView?.addView(bodyView)
         return rootView
     }
 
@@ -57,7 +68,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
      * 批量注册点击事件
      * @param views 注册事件的View
      */
-    fun setOnClickListener(vararg views: View, onClickListener: View.OnClickListener? = this) {
+    open fun setOnClickListener(vararg views: View, onClickListener: View.OnClickListener? = this) {
         views.forEach {
             it.setOnClickListener(onClickListener)
         }
@@ -77,8 +88,24 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
         getBaseActivity().showMessage(message)
     }
 
+
+    @SuppressLint("PrivateResource")
+    private fun initTitle() {
+        if (toolbar == null) {
+            val layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+            toolbar = ZyToolBar(requireContext(), isCustomToolbar)
+            rootView?.addView(toolbar, layoutParams)
+            (bodyView?.layoutParams as FrameLayout.LayoutParams).topMargin =
+                resources.getDimension(R.dimen.abc_action_bar_default_height_material).toInt()
+            getBaseActivity().setSupportActionBar(toolbar)
+        }
+    }
+
+
     override fun showLoading() {
-        if (rootView is ViewGroup) {
+        if (bodyView is ViewGroup) {
             placeholderViewUtil.showView(
                 rootView as ViewGroup,
                 PlaceholderBean(PlaceholderBean.loading)
@@ -87,20 +114,25 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     }
 
     override fun hideLoading() {
-        if (rootView is ViewGroup) {
-            placeholderViewUtil.hideView(rootView as ViewGroup, PlaceholderBean.loading)
+        if (bodyView is ViewGroup) {
+            placeholderViewUtil.hideView(PlaceholderBean.loading)
         }
     }
 
-    override fun showPlaceholder(viewGroup: ViewGroup?, placeholderBean: PlaceholderBean) {
-        if (rootView is ViewGroup) {
-            this.placeholderViewUtil.showView(rootView as ViewGroup, placeholderBean)
+
+    fun showPlaceholder(placeholderBean: PlaceholderBean) {
+        showPlaceholder(bodyView as ViewGroup, placeholderBean)
+    }
+
+    override fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
+        if (bodyView is ViewGroup) {
+            placeholderViewUtil.showView(viewGroup, placeholderBean)
         }
     }
 
-    override fun hidePlaceholder(overlayViewType: Int) {
-        if (rootView is ViewGroup) {
-            placeholderViewUtil.hideView(rootView as ViewGroup, overlayViewType)
+    override fun hidePlaceholder(placeholderType: Int) {
+        if (bodyView is ViewGroup) {
+            placeholderViewUtil.hideView(placeholderType)
         }
     }
 
@@ -109,34 +141,52 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener {
     }
 
 
-    fun simpleTitle(title: String, vararg menuItem: BaseMenuBean) {
-        getBaseActivity().let {
-            it.clearMenu()
-            it.simpleTitle(title, *menuItem)
+    /**
+     * 只有标题的toolbar
+     */
+    override fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
+        initTitle()
+        getBaseActivity().title = title
+        toolbar?.navigationIcon = null
+        toolbar?.setNavigationOnClickListener(null)
+        getBaseActivity().createMenu(*menuItem)
+    }
+
+    override fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
+        isCustomToolbar = true
+        titleSimple(title, *menuItem)
+    }
+
+    /**
+     * 带返回键的toolbar
+     */
+    override fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
+        titleSimple(title, *menuItem)
+        toolbar?.setNavigationIcon(R.drawable.svg_title_back)
+        toolbar?.setNavigationOnClickListener {
+            getBaseActivity().finish()
         }
     }
 
-
-    fun defaultTitle(title: String, vararg menuItem: BaseMenuBean) {
-        getBaseActivity().let {
-            it.clearMenu()
-            it.defaultTitle(title, *menuItem)
-        }
+    override fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
+        isCustomToolbar = true
+        titleDefault(title, *menuItem)
     }
 
-    fun hideTitle() {
-        getBaseActivity().hideTitle()
-    }
+    override fun titleSearch(title: String, vararg menuItem: BaseMenuBean) {}
 
-    fun showTitle() {
-        getBaseActivity().showTitle()
-    }
 
+    fun setPlaceholderBackground(resInt: Int, viewType: Int) {
+        placeholderViewUtil.setBackgroundResources(resInt, viewType)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        toolbar = null
         onClose()
+
     }
+
 
     abstract fun onClose()
 

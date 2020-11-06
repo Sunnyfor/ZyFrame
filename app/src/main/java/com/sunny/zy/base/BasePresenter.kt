@@ -11,11 +11,11 @@ import kotlinx.coroutines.MainScope
 abstract class BasePresenter<T : IBaseView>(var view: T?) : CoroutineScope by MainScope() {
 
 
-    fun showError(viewGroup: ViewGroup? = null, placeholderBean: PlaceholderBean) {
+    fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
         view?.showPlaceholder(viewGroup, placeholderBean)
     }
 
-    fun hideError(overlayViewType: Int) {
+    fun hidePlaceholder(overlayViewType: Int) {
         view?.hidePlaceholder(overlayViewType)
     }
 

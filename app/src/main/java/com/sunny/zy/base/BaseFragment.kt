@@ -163,9 +163,10 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        rootView?.removeView(bodyView)
         getBaseActivity().toolbarUtil.onDestroy(rootView)
         onClose()
+        super.onDestroyView()
     }
 
 

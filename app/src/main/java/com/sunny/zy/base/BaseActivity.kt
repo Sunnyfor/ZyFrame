@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +18,7 @@ import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.utils.PlaceholderViewUtil
 import com.sunny.zy.utils.ToastUtil
+import com.sunny.zy.utils.ToolbarUtil
 
 /**
  * Desc Activity基类
@@ -27,71 +31,49 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     var taskTag = "DefaultActivity"
 
-    var toolbar: ZyToolBar? = null
-
     var savedInstanceState: Bundle? = null
 
-    var menuList = ArrayList<BaseMenuBean>()
-
-    private var isCustomToolbar = false
+    val toolbarUtil: ToolbarUtil by lazy {
+        ToolbarUtil(this)
+    }
 
     private val placeholderViewUtil = PlaceholderViewUtil()
 
-    private var contentLayout: ContentFrameLayout? = null
+    var contentLayout: ContentFrameLayout? = null
 
-    private var bodyView: View? = null
+    private val bodyView: FrameLayout by lazy {
+        FrameLayout(this).apply {
+            id = R.id.frameBody
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
-        val viewStub = ViewStub(this)
-        setContentView(viewStub)
-        contentLayout = viewStub.parent as ContentFrameLayout
+        setContentView(bodyView)
+        contentLayout = bodyView.parent as ContentFrameLayout
+
         when (val layoutView = initLayout()) {
             is Int -> {
                 if (layoutView != 0) {
-                    bodyView = LayoutInflater.from(this).inflate(layoutView, null, false)
-                    contentLayout?.removeView(viewStub)
-                    contentLayout?.addView(bodyView)
+                    bodyView.addView(LayoutInflater.from(this).inflate(layoutView, null, false))
                 }
             }
             is View -> {
-                bodyView = layoutView
-                contentLayout?.removeView(viewStub)
-                contentLayout?.addView(bodyView)
+                bodyView.addView(layoutView)
             }
 
             is Fragment -> {
-                bodyView = FrameLayout(this)
-                bodyView?.id = R.id.frameContent
-                contentLayout?.removeView(viewStub)
-                contentLayout?.addView(bodyView)
                 supportFragmentManager.beginTransaction()
-                    .add(bodyView?.id ?: return, layoutView).commit()
+                    .add(bodyView.id, layoutView).commit()
             }
         }
-
         initView()
         loadData()
-
         ZyFrameStore.addActivity(this)
     }
 
-
-    @SuppressLint("PrivateResource")
-    private fun initTitle() {
-        if (toolbar == null) {
-            val layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
-            )
-            toolbar = ZyToolBar(this, isCustomToolbar)
-            contentLayout?.addView(toolbar, layoutParams)
-            (contentLayout?.getChildAt(0)?.layoutParams as FrameLayout.LayoutParams).topMargin =
-                resources.getDimension(R.dimen.abc_action_bar_default_height_material).toInt()
-            setSupportActionBar(toolbar)
-        }
-    }
 
     /**
      * 设置布局操作
@@ -186,52 +168,30 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 只有标题的toolbar
      */
     override fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
-        initTitle()
-        setTitle(title)
-        toolbar?.navigationIcon = null
-        toolbar?.setNavigationOnClickListener(null)
-        createMenu(*menuItem)
+        toolbarUtil.initToolbar(contentLayout ?: return, bodyView ?: return)
+        toolbarUtil.titleSimple(title, *menuItem)
     }
 
     override fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
-        isCustomToolbar = true
-        titleSimple(title, *menuItem)
+        toolbarUtil.initToolbar(contentLayout ?: return, bodyView ?: return, true)
+        toolbarUtil.titleSimple(title, *menuItem)
     }
 
     /**
      * 带返回键的toolbar
      */
     override fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
-        titleSimple(title, *menuItem)
-        toolbar?.setNavigationIcon(R.drawable.svg_title_back)
-        toolbar?.setNavigationOnClickListener {
-            finish()
-        }
+        toolbarUtil.initToolbar(contentLayout ?: return, bodyView ?: return)
+        toolbarUtil.titleDefault(title, *menuItem)
     }
 
     override fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
-        isCustomToolbar = true
-        titleDefault(title, *menuItem)
+        toolbarUtil.initToolbar(contentLayout ?: return, bodyView ?: return, true)
+        toolbarUtil.titleDefault(title, *menuItem)
     }
 
     override fun titleSearch(title: String, vararg menuItem: BaseMenuBean) {}
 
-
-    /**
-     * 创建toolbar菜单
-     */
-    fun createMenu(vararg menuItem: BaseMenuBean) {
-        menuList.clear()
-        menuList.addAll(menuItem)
-    }
-
-    /**
-     * 清理Toolbar菜单
-     */
-    open fun clearMenu() {
-        menuList.clear()
-        toolbar?.menu?.clear()
-    }
 
     /**
      * 隐藏输入法键盘
@@ -255,19 +215,15 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        toolbar?.addMenu(menuList)
+        toolbarUtil.createMenu()
         return true
-    }
-
-    fun setSupportActionBar(toolbar: ZyToolBar?) {
-        this.toolbar = toolbar
-        super.setSupportActionBar(toolbar)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
         placeholderViewUtil.clear()
+        toolbarUtil.onDestroy()
         ZyFrameStore.removeActivity(this)
         onClose()
     }

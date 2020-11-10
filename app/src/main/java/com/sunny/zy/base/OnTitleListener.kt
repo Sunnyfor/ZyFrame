@@ -8,13 +8,14 @@ package com.sunny.zy.base
  */
 interface OnTitleListener {
 
-    fun titleDefault(title: String, vararg menuItem: BaseMenuBean)
-
     fun titleSimple(title: String, vararg menuItem: BaseMenuBean)
 
-    fun titleSearch(title: String, vararg menuItem: BaseMenuBean)
+    fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean)
+
+    fun titleDefault(title: String, vararg menuItem: BaseMenuBean)
 
     fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean)
 
-    fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean)
+    fun titleSearch(title: String, vararg menuItem: BaseMenuBean)
+
 }

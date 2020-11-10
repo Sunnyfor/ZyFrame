@@ -1,13 +1,11 @@
 package com.sunny.zy.base
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import com.sunny.zy.R
 import com.sunny.zy.utils.PlaceholderViewUtil
 
 
@@ -25,9 +23,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     private val placeholderViewUtil = PlaceholderViewUtil()
     private var rootView: FrameLayout? = null
     private var bodyView: View? = null
-    private var toolbar: ZyToolBar? = null
-    private var menuList = ArrayList<BaseMenuBean>()
-    private var isCustomToolbar = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -89,21 +84,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
 
-    @SuppressLint("PrivateResource")
-    private fun initTitle() {
-        if (toolbar == null) {
-            val layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
-            )
-            toolbar = ZyToolBar(requireContext(), isCustomToolbar)
-            rootView?.addView(toolbar, layoutParams)
-            (bodyView?.layoutParams as FrameLayout.LayoutParams).topMargin =
-                resources.getDimension(R.dimen.abc_action_bar_default_height_material).toInt()
-            getBaseActivity().setSupportActionBar(toolbar)
-        }
-    }
-
-
     override fun showLoading() {
         if (bodyView is ViewGroup) {
             placeholderViewUtil.showView(
@@ -145,32 +125,34 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
      * 只有标题的toolbar
      */
     override fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
-        initTitle()
-        getBaseActivity().title = title
-        toolbar?.navigationIcon = null
-        toolbar?.setNavigationOnClickListener(null)
-        getBaseActivity().createMenu(*menuItem)
+        getBaseActivity().let {
+            it.toolbarUtil.initToolbar(rootView ?: return, bodyView ?: return)
+            it.toolbarUtil.titleSimple(title, *menuItem)
+        }
     }
 
     override fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
-        isCustomToolbar = true
-        titleSimple(title, *menuItem)
+        getBaseActivity().let {
+            it.toolbarUtil.initToolbar(rootView ?: return, bodyView ?: return, true)
+            it.toolbarUtil.titleSimple(title, *menuItem)
+        }
     }
 
     /**
      * 带返回键的toolbar
      */
     override fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
-        titleSimple(title, *menuItem)
-        toolbar?.setNavigationIcon(R.drawable.svg_title_back)
-        toolbar?.setNavigationOnClickListener {
-            getBaseActivity().finish()
+        getBaseActivity().let {
+            it.toolbarUtil.initToolbar(rootView ?: return, bodyView ?: return)
+            it.toolbarUtil.titleDefault(title, *menuItem)
         }
     }
 
     override fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
-        isCustomToolbar = true
-        titleDefault(title, *menuItem)
+        getBaseActivity().let {
+            it.toolbarUtil.initToolbar(rootView ?: return, bodyView ?: return, true)
+            it.toolbarUtil.titleDefault(title, *menuItem)
+        }
     }
 
     override fun titleSearch(title: String, vararg menuItem: BaseMenuBean) {}
@@ -182,9 +164,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
     override fun onDestroyView() {
         super.onDestroyView()
-        toolbar = null
+        getBaseActivity().toolbarUtil.onDestroy(rootView)
         onClose()
-
     }
 
 

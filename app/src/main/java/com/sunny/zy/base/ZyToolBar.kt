@@ -122,7 +122,7 @@ class ZyToolBar : Toolbar {
     }
 
 
-    fun addMenu(menuItem: ArrayList<BaseMenuBean>) {
+    fun createMenu(menuItem: ArrayList<BaseMenuBean>) {
         menuItem.forEach { bean ->
             menu?.add(bean.title)?.let { menuItem ->
                 menuItem.setOnMenuItemClickListener {

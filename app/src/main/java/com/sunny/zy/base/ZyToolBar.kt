@@ -86,7 +86,11 @@ class ZyToolBar : Toolbar {
         if (!isCustomToolbar) {
             super.setNavigationIcon(resId)
         } else {
-            titleView.findViewById<AppCompatImageButton>(R.id.zy_ib_back).setImageResource(resId)
+            titleView.findViewById<AppCompatImageButton>(R.id.zy_ib_back).let {
+                it.visibility = View.VISIBLE
+                it.setImageResource(resId)
+            }
+
         }
     }
 
@@ -94,7 +98,10 @@ class ZyToolBar : Toolbar {
         if (!isCustomToolbar) {
             super.setNavigationIcon(icon)
         } else {
-            titleView.findViewById<AppCompatImageButton>(R.id.zy_ib_back).setImageDrawable(icon)
+            titleView.findViewById<AppCompatImageButton>(R.id.zy_ib_back).let {
+                it.visibility = View.VISIBLE
+                it.setImageDrawable(icon)
+            }
         }
     }
 

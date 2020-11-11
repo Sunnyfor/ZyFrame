@@ -164,7 +164,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun onDestroyView() {
-        getBaseActivity().toolbarUtil.onDestroy(rootView)
         rootView?.removeAllViews()
         rootView = null
         bodyView = null

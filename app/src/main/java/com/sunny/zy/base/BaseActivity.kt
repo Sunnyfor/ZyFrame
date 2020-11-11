@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -34,23 +33,23 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     var savedInstanceState: Bundle? = null
 
     val toolbarUtil: ToolbarUtil by lazy {
-        ToolbarUtil(this)
+        ToolbarUtil()
     }
 
-    private val placeholderViewUtil = PlaceholderViewUtil()
-
-    var contentLayout: ContentFrameLayout? = null
-
-    private val bodyView: FrameLayout by lazy {
-        FrameLayout(this).apply {
-            id = R.id.frameBody
-        }
+    private val placeholderViewUtil: PlaceholderViewUtil by lazy {
+        PlaceholderViewUtil()
     }
+
+    private lateinit var contentLayout: ContentFrameLayout
+
+    private lateinit var bodyView: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
+        bodyView = FrameLayout(this)
+        bodyView.id = R.id.frameBody
         setContentView(bodyView)
         contentLayout = bodyView.parent as ContentFrameLayout
 
@@ -168,7 +167,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 只有标题的toolbar
      */
     override fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(contentLayout ?: return, bodyView ?: return)
+        toolbarUtil.initToolbar(contentLayout ?: return, bodyView)
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
@@ -214,16 +213,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         placeholderViewUtil.setBackgroundResources(resInt, viewType)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        toolbarUtil.createMenu()
-        return true
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
         placeholderViewUtil.clear()
-        toolbarUtil.onDestroy()
         ZyFrameStore.removeActivity(this)
         onClose()
     }

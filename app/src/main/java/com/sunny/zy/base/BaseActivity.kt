@@ -222,7 +222,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
                 bitmapUtil.getCroppedBitmap(drawable, 0, statusBarHeight + toolbarHeight, 0, 0)
             it.background = (BitmapDrawable(resources, relevantViewBitmap))
         }
-        bitmapUtil.destroy()
     }
 
     /**

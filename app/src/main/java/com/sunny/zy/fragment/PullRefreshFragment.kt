@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
-import com.sunny.zy.R
 import com.sunny.zy.base.BaseFragment
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.PlaceholderBean
@@ -19,37 +18,54 @@ import com.sunny.zy.widget.PullRefreshRecyclerLayout
  */
 open class PullRefreshFragment<T> : BaseFragment() {
     open var adapter: BaseRecycleAdapter<T>? = null
+    open var layoutManager: RecyclerView.LayoutManager? = null
     open var page = 1
     open var loadData: (() -> Unit)? = null
     open var enableRefresh: Boolean = true
     open var enableLoadMore: Boolean = true
-    open var isShowEmptyView = true
+    open var isShowEmptyView = true //是否显示占位图
+    open var isReverse = false //如果为true 就标识下拉加载  上拉刷新
 
     private val pullRefreshLayout: PullRefreshRecyclerLayout by lazy {
         PullRefreshRecyclerLayout(context)
     }
 
+    /**
+     * 此view的操作需要在Fragment加载完成后进行
+     */
     open val recyclerView: RecyclerView
         get() = pullRefreshLayout.recyclerView
+
 
     override fun initLayout() = pullRefreshLayout
 
     override fun initView() {
-        pullRefreshLayout.isShowEmptyView = isShowEmptyView
+
         pullRefreshLayout.setUnEnableRefreshAndLoad(enableRefresh, enableLoadMore)
         if (adapter != null) {
             recyclerView.adapter = adapter
         }
-        if (recyclerView.layoutManager == null) {
-            recyclerView.layoutManager = LinearLayoutManager(context)
+        if (layoutManager == null) {
+            layoutManager = LinearLayoutManager(context)
         }
+        recyclerView.layoutManager = layoutManager
         pullRefreshLayout.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onLoadMore(refreshLayout: RefreshLayout) {
-                page++
+                if (isReverse) {
+                    page = 1
+                } else {
+                    page++
+                }
+
                 loadData?.invoke()
             }
 
             override fun onRefresh(refreshLayout: RefreshLayout) {
+                if (isReverse) {
+                    page++
+                } else {
+                    page = 1
+                }
                 page = 1
                 loadData?.invoke()
             }
@@ -107,10 +123,12 @@ open class PullRefreshFragment<T> : BaseFragment() {
 
 
     private fun updateEmptyView(data: ArrayList<T>? = null) {
-        if ((data ?: getAllData())?.isEmpty() == true) {
-            showPlaceholder(pullRefreshLayout.rootView, ZyConfig.emptyPlaceholderBean)
-        } else {
-            hidePlaceholder(PlaceholderBean.emptyData)
+        if (isShowEmptyView) {
+            if ((data ?: getAllData())?.isEmpty() == true) {
+                showPlaceholder(pullRefreshLayout.rootView, ZyConfig.emptyPlaceholderBean)
+            } else {
+                hidePlaceholder(PlaceholderBean.emptyData)
+            }
         }
     }
 

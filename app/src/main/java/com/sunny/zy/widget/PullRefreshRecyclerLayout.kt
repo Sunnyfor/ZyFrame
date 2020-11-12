@@ -30,8 +30,6 @@ class PullRefreshRecyclerLayout : SmartRefreshLayout {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
-    var isShowEmptyView = true
-
     init {
         setRefreshHeader(ClassicsHeader(context))
         setRefreshFooter(ClassicsFooter(context))

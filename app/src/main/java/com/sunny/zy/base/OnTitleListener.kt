@@ -1,5 +1,7 @@
 package com.sunny.zy.base
 
+import android.view.View
+
 /**
  * Desc
  * Author ZhangYe
@@ -16,6 +18,9 @@ interface OnTitleListener {
 
     fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean)
 
-    fun titleSearch(title: String, vararg menuItem: BaseMenuBean)
+    fun titleCustom(layoutRes: Int)
 
+    fun setStatusColor(color: Int)
+
+    fun setStatusDrawable(drawable: Int, relevantView: View? = null)
 }

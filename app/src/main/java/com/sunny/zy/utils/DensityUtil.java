@@ -1,11 +1,9 @@
 package com.sunny.zy.utils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -123,17 +121,6 @@ public class DensityUtil {
         return location;
     }
 
-    /**
-     * 获取屏幕状态栏高度
-     *
-     * @param activity 获取屏幕高度对应的Activity
-     * @return 状态栏高度
-     */
-    public static int getStatusHeight(Activity activity) {
-        Rect rect = new Rect();
-        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-        return rect.top;
-    }
 
     /**
      * 获取设备的尺寸
@@ -173,6 +160,14 @@ public class DensityUtil {
             int height = resources.getDimensionPixelSize(resourceId);
             Log.v("dbw", "Status height:" + height);
             return height;
+        }
+        return 0;
+    }
+
+    public static int getToolBarHeight(Context context) {
+        TypedValue tv = new TypedValue();
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
         }
         return 0;
     }

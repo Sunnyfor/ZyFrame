@@ -11,8 +11,8 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        android:src="@drawable/svg_title_back"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
     <androidx.appcompat.widget.AppCompatTextView

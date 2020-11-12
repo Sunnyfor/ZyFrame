@@ -195,7 +195,6 @@
 
 
     <style name="ZyMenuTextStyle">
-        <item name="android:textColor">@color/textColorPrimary</item>
         <item name="android:textSize">@dimen/dp_14</item>
     </style>
 

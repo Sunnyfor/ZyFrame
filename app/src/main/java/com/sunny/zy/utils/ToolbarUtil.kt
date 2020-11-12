@@ -1,11 +1,9 @@
 package com.sunny.zy.utils
 
-import android.content.res.TypedArray
-import android.view.KeyEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout.LayoutParams
 import com.sunny.zy.R
+import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.base.BaseMenuBean
 import com.sunny.zy.base.ZyToolBar
 
@@ -16,41 +14,48 @@ import com.sunny.zy.base.ZyToolBar
  * Mail zhangye98@foxmail.com
  * Date 2020/11/9 14:49
  */
-class ToolbarUtil {
+class ToolbarUtil(var activity: BaseActivity) {
 
     var toolbar: ZyToolBar? = null
+
+    private val menuList = ArrayList<BaseMenuBean>()
 
     /**
      * 初始化Toolbar
      */
-    fun initToolbar(rootView: ViewGroup, bodyView: View, isCustomToolbar: Boolean = false) {
+    fun initToolbar(fl_toolbar: ViewGroup, layoutRes: Int = 0) {
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
         )
-        toolbar = ZyToolBar(rootView.context ?: return, isCustomToolbar)
-        rootView.addView(toolbar, layoutParams)
-        val styledAttributes: TypedArray =
-            rootView.context?.theme?.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-                ?: return
-        styledAttributes.getDimension(0, 0f).toInt().let {
-            styledAttributes.recycle()
-            (bodyView.layoutParams as LayoutParams).topMargin = it
+
+        if (toolbar != null) {
+            fl_toolbar.removeAllViews()
         }
+        toolbar = ZyToolBar(fl_toolbar.context ?: return, layoutRes)
+        fl_toolbar.addView(toolbar, layoutParams)
+        activity.setSupportActionBar(toolbar)
     }
 
     fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
-        toolbar?.title = title
-        val menuList = ArrayList<BaseMenuBean>()
+        menuList.clear()
         menuList.addAll(menuItem)
-        toolbar?.createMenu(menuList)
+        toolbar?.title = title
+        toolbar?.navigationIcon = null
+        toolbar?.setNavigationOnClickListener(null)
     }
 
 
     fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
-        titleSimple(title, *menuItem)
+        menuList.clear()
+        menuList.addAll(menuItem)
+        toolbar?.title = title
         toolbar?.setNavigationIcon(R.drawable.svg_title_back)
         toolbar?.setNavigationOnClickListener {
-            Runtime.getRuntime().exec("input keyevent " + KeyEvent.KEYCODE_BACK)
+            activity.finish()
         }
+    }
+
+    fun createMenu() {
+        toolbar?.createMenu(menuList)
     }
 }

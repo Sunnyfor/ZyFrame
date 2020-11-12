@@ -22,24 +22,22 @@ import com.sunny.zy.R
  */
 class ZyToolBar : Toolbar {
 
-    private var isCustomToolbar = false
+    private var layoutRes = 0
 
-    var layoutRes = R.layout.zy_default_title
+    private lateinit var titleView: View
 
-    private val titleView: View by lazy {
-        LayoutInflater.from(context).inflate(layoutRes, this, false)
-    }
+    constructor(context: Context, layoutRes: Int) : super(context) {
+        this.layoutRes = layoutRes
 
-    constructor(context: Context, isCustomToolbar: Boolean) : super(context) {
-        this.isCustomToolbar = isCustomToolbar
-        if (isCustomToolbar) {
+        if (layoutRes != 0) {
             setContentInsetsAbsolute(0, 0)
             setContentInsetsRelative(0, 0)
+            titleView = LayoutInflater.from(context).inflate(layoutRes, this, false)
             addView(titleView)
         }
         setBackgroundResource(R.color.colorPrimary)
-        setTitleTextColor(ContextCompat.getColor(context,R.color.textColorPrimary))
-        setSubtitleTextColor(ContextCompat.getColor(context,R.color.textColorPrimary))
+        setTitleTextColor(ContextCompat.getColor(context, R.color.textColorPrimary))
+        setSubtitleTextColor(ContextCompat.getColor(context, R.color.textColorPrimary))
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -50,82 +48,114 @@ class ZyToolBar : Toolbar {
     )
 
     override fun setTitle(resId: Int) {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             super.setTitle(resId)
-        } else {
-            titleView.findViewById<TextView>(R.id.zy_tv_title).text = resources.getString(resId)
+            return
+        }
+        if (layoutRes == R.layout.zy_default_title) {
+            getView<TextView>(R.id.zy_tv_title).text = resources.getString(resId)
+            return
         }
     }
 
     override fun setTitle(title: CharSequence?) {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             super.setTitle(title)
-        } else {
-            titleView.findViewById<TextView>(R.id.zy_tv_title).text = title
+            return
+        }
+        if (layoutRes == R.layout.zy_default_title) {
+            getView<TextView>(R.id.zy_tv_title).text = title
+            return
         }
     }
 
     override fun setTitleTextColor(color: ColorStateList) {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             super.setTitleTextColor(color)
-        } else {
-            titleView.findViewById<TextView>(R.id.zy_tv_title).setTextColor(color)
+            return
+        }
+        if (layoutRes == R.layout.zy_default_title) {
+            getView<TextView>(R.id.zy_tv_title).setTextColor(color)
+            return
         }
     }
 
     override fun setTitleTextColor(color: Int) {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             super.setTitleTextColor(color)
-        } else {
-            titleView.findViewById<TextView>(R.id.zy_tv_title).setTextColor(color)
+            return
         }
-
+        if (layoutRes == R.layout.zy_default_title) {
+            getView<TextView>(R.id.zy_tv_title).setTextColor(color)
+            return
+        }
     }
 
     override fun setNavigationIcon(resId: Int) {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             super.setNavigationIcon(resId)
-        } else {
-            titleView.findViewById<AppCompatImageButton>(R.id.zy_ib_back).let {
-                it.visibility = View.VISIBLE
+            return
+        }
+        if (layoutRes == R.layout.zy_default_title) {
+            getView<AppCompatImageButton>(R.id.zy_ib_back).let {
+                if (resId != 0) {
+                    it.visibility = View.VISIBLE
+                } else {
+                    it.visibility = View.GONE
+                }
                 it.setImageResource(resId)
             }
-
+            return
         }
     }
 
     override fun setNavigationIcon(icon: Drawable?) {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             super.setNavigationIcon(icon)
-        } else {
-            titleView.findViewById<AppCompatImageButton>(R.id.zy_ib_back).let {
-                it.visibility = View.VISIBLE
+            return
+        }
+        if (layoutRes == R.layout.zy_default_title) {
+            getView<AppCompatImageButton>(R.id.zy_ib_back).let {
+                if (icon != null) {
+                    it.visibility = View.VISIBLE
+                } else {
+                    it.visibility = View.GONE
+                }
                 it.setImageDrawable(icon)
             }
+            return
         }
     }
 
     override fun setNavigationOnClickListener(listener: OnClickListener?) {
 
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             super.setNavigationOnClickListener(listener)
-        } else {
-            titleView.findViewById<AppCompatImageButton>(R.id.zy_ib_back)
-                .setOnClickListener(listener)
+            return
+        }
+        if (layoutRes == R.layout.zy_default_title) {
+            getView<AppCompatImageButton>(R.id.zy_ib_back).setOnClickListener(listener)
+            return
         }
     }
 
     override fun inflateMenu(resId: Int) {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0 || layoutRes == R.layout.zy_default_title) {
             super.inflateMenu(resId)
+            return
         }
     }
 
     override fun getMenu(): Menu? {
-        if (!isCustomToolbar) {
+        if (layoutRes == 0) {
             return super.getMenu()
         }
-        return titleView.findViewById<ActionMenuView>(R.id.zy_menu_view).menu
+
+        if (layoutRes == R.layout.zy_default_title) {
+            return getView<ActionMenuView>(R.id.zy_menu_view).menu
+        }
+
+        return null
     }
 
 
@@ -142,7 +172,8 @@ class ZyToolBar : Toolbar {
         }
     }
 
-    fun initToolbar(){
 
+    private fun <T : View> getView(id: Int): T {
+        return titleView.findViewById(id)
     }
 }

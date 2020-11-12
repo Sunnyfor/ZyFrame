@@ -120,35 +120,39 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     /**
      * 只有标题的toolbar
      */
-    override fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
-        getBaseActivity().titleSimple(title, *menuItem)
+    override fun setTitleSimple(title: String, vararg menuItem: BaseMenuBean) {
+        getBaseActivity().setTitleSimple(title, *menuItem)
     }
 
-    override fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
-        getBaseActivity().titleCenterSimple(title, *menuItem)
+    override fun setTitleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
+        getBaseActivity().setTitleCenterSimple(title, *menuItem)
     }
 
     /**
      * 带返回键的toolbar
      */
-    override fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
-        getBaseActivity().titleDefault(title, *menuItem)
+    override fun setTitleDefault(title: String, vararg menuItem: BaseMenuBean) {
+        getBaseActivity().setTitleDefault(title, *menuItem)
     }
 
-    override fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
-        getBaseActivity().titleCenterDefault(title, *menuItem)
+    override fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
+        getBaseActivity().setTitleCenterDefault(title, *menuItem)
     }
 
-    override fun titleCustom(layoutRes: Int) {
-        getBaseActivity().titleCustom(layoutRes)
+    override fun setTitleCustom(layoutRes: Int) {
+        getBaseActivity().setTitleCustom(layoutRes)
     }
 
-    override fun setStatusColor(color: Int) {
-        getBaseActivity().setStatusColor(color)
+    override fun setStatusBarColor(color: Int) {
+        getBaseActivity().setStatusBarColor(color)
     }
 
-    override fun setStatusDrawable(drawable: Int, relevantView: View?) {
-        getBaseActivity().setStatusDrawable(drawable,relevantView)
+    override fun setStatusBarDrawable(drawable: Int, relevantView: View?) {
+        getBaseActivity().setStatusBarDrawable(drawable,relevantView)
+    }
+
+    override fun setStatusBarTextModel(isDark: Boolean) {
+        getBaseActivity().setStatusBarTextModel(isDark)
     }
 
 

@@ -53,10 +53,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
         window.statusBarColor = Color.TRANSPARENT
 
-        @Suppress("DEPRECATION")
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
+        setStatusBarTextModel(false)
         setContentView(R.layout.zy_root_layout)
 
         when (val layoutView = initLayout()) {
@@ -171,12 +168,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     /**
      * 只有标题的toolbar
      */
-    override fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleSimple(title: String, vararg menuItem: BaseMenuBean) {
         toolbarUtil.initToolbar(fl_toolbar)
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
-    override fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
         toolbarUtil.initToolbar(fl_toolbar, R.layout.zy_default_title)
         toolbarUtil.titleSimple(title, *menuItem)
     }
@@ -184,25 +181,25 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     /**
      * 带返回键的toolbar
      */
-    override fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleDefault(title: String, vararg menuItem: BaseMenuBean) {
         toolbarUtil.initToolbar(fl_toolbar)
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
-    override fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
         toolbarUtil.initToolbar(fl_toolbar, R.layout.zy_default_title)
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
-    override fun titleCustom(layoutRes: Int) {
+    override fun setTitleCustom(layoutRes: Int) {
         toolbarUtil.initToolbar(fl_toolbar, layoutRes)
     }
 
-    override fun setStatusColor(color: Int) {
+    override fun setStatusBarColor(color: Int) {
         view_status_bar.setBackgroundResource(color)
     }
 
-    override fun setStatusDrawable(drawable: Int, relevantView: View?) {
+    override fun setStatusBarDrawable(drawable: Int, relevantView: View?) {
         val statusBarHeight = DensityUtil.getStatusBarHeight(this)
         val statusBarBitmap =
             bitmapUtil.getCroppedBitmap(drawable, 0, 0, 0, statusBarHeight)
@@ -221,6 +218,21 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
             val relevantViewBitmap =
                 bitmapUtil.getCroppedBitmap(drawable, 0, statusBarHeight + toolbarHeight, 0, 0)
             it.background = (BitmapDrawable(resources, relevantViewBitmap))
+        }
+    }
+
+    /**
+     * 设置状态栏文字颜色
+     *  @param isDark true为黑色 false为白色
+     */
+    @Suppress("DEPRECATION")
+    override fun setStatusBarTextModel(isDark: Boolean) {
+        window.decorView.systemUiVisibility = if (isDark) {
+            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        } else {
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
     }
 

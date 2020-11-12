@@ -10,17 +10,19 @@ import android.view.View
  */
 interface OnTitleListener {
 
-    fun titleSimple(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleSimple(title: String, vararg menuItem: BaseMenuBean)
 
-    fun titleCenterSimple(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleCenterSimple(title: String, vararg menuItem: BaseMenuBean)
 
-    fun titleDefault(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleDefault(title: String, vararg menuItem: BaseMenuBean)
 
-    fun titleCenterDefault(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean)
 
-    fun titleCustom(layoutRes: Int)
+    fun setTitleCustom(layoutRes: Int)
 
-    fun setStatusColor(color: Int)
+    fun setStatusBarColor(color: Int)
 
-    fun setStatusDrawable(drawable: Int, relevantView: View? = null)
+    fun setStatusBarDrawable(drawable: Int, relevantView: View? = null)
+
+    fun setStatusBarTextModel(isDark: Boolean)
 }

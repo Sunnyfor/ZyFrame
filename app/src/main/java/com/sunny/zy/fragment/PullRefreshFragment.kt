@@ -92,7 +92,6 @@ open class PullRefreshFragment<T> : BaseFragment() {
         if (page == 1) {
             adapter?.clearData()
             pullRefreshLayout.finishRefresh()
-            updateEmptyView(data)
         } else {
             if (data.isEmpty()) {
                 page--
@@ -106,6 +105,7 @@ open class PullRefreshFragment<T> : BaseFragment() {
         } else {
             adapter?.addData(index, data)
         }
+        updateEmptyView()
         adapter?.notifyDataSetChanged()
     }
 
@@ -122,9 +122,9 @@ open class PullRefreshFragment<T> : BaseFragment() {
     }
 
 
-    private fun updateEmptyView(data: ArrayList<T>? = null) {
+    private fun updateEmptyView() {
         if (isShowEmptyView) {
-            if ((data ?: getAllData())?.isEmpty() == true) {
+            if (getAllData()?.isEmpty() == true) {
                 showPlaceholder(pullRefreshLayout.rootView, ZyConfig.emptyPlaceholderBean)
             } else {
                 hidePlaceholder(PlaceholderBean.emptyData)

@@ -22,7 +22,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     private var savedInstanceState: Bundle? = null
     private var placeholderViewUtil: PlaceholderViewUtil? = null
 
-    private lateinit var bodyView: FrameLayout
+    private var bodyView: FrameLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,13 +38,13 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         when (val layoutView = initLayout()) {
             is Int -> {
                 if (layoutView != 0) {
-                    bodyView.addView(inflater.inflate(layoutView, container, false))
+                    bodyView?.addView(inflater.inflate(layoutView, container, false))
 
                 }
             }
 
             is View -> {
-                bodyView.addView(layoutView)
+                bodyView?.addView(layoutView)
             }
         }
         return bodyView
@@ -87,7 +87,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
     override fun showLoading() {
         placeholderViewUtil?.showView(
-            bodyView,
+            bodyView ?: return,
             PlaceholderBean(PlaceholderBean.loading)
         )
     }
@@ -99,7 +99,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
 
     fun showPlaceholder(placeholderBean: PlaceholderBean) {
-        showPlaceholder(bodyView as ViewGroup, placeholderBean)
+        showPlaceholder(bodyView ?: return, placeholderBean)
     }
 
     override fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
@@ -148,7 +148,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun setStatusBarDrawable(drawable: Int, relevantView: View?) {
-        getBaseActivity().setStatusBarDrawable(drawable,relevantView)
+        getBaseActivity().setStatusBarDrawable(drawable, relevantView)
     }
 
     override fun setStatusBarTextModel(isDark: Boolean) {
@@ -161,7 +161,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun onDestroyView() {
-        bodyView.removeAllViews()
+        bodyView?.removeAllViews()
+        bodyView = null
         placeholderViewUtil?.clear()
         onClose()
         super.onDestroyView()

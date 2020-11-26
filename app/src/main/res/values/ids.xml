@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <item name="viewLine" type="id" />
-
-    <!--FrameLayout-->
-    <item name="toolbar" type="id" />
-    <item name="frameBody" type="id" />
-    <item name="frameContent" type="id" />
-    <item name="viewStub" type="id" />
-
-    <!--Title-->
-    <item name="tv_left" type="id" />
-    <item name="tv_title" type="id" />
-    <item name="tv_subtitle" type="id" />
-
-    <!---->
-    <item name="recyclerView" type="id" />
-    <item name="placeholderView" type="id" />
-    <item name="bodyView" type="id" />
-
+    <item name="zy_fl_toolbar" type="id" />
+    <item name="zy_fl_body" type="id" />
+    <item name="zy_ib_back" type="id" />
+    <item name="zy_tv_title" type="id" />
+    <item name="zy_menu_view" type="id" />
 </resources>

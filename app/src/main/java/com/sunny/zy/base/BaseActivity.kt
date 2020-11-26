@@ -65,16 +65,16 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         when (val layoutView = initLayout()) {
             is Int -> {
                 if (layoutView != 0) {
-                    fl_body.addView(LayoutInflater.from(this).inflate(layoutView, null, false))
+                    zy_fl_body.addView(LayoutInflater.from(this).inflate(layoutView, null, false))
                 }
             }
             is View -> {
-                fl_body.addView(layoutView)
+                zy_fl_body.addView(layoutView)
             }
 
             is Fragment -> {
                 supportFragmentManager.beginTransaction()
-                    .add(fl_body.id, layoutView).commit()
+                    .add(zy_fl_body.id, layoutView).commit()
             }
         }
         initView()
@@ -109,7 +109,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     /**
      * 获取body容器
      */
-    fun getFrameBody(): FrameLayout = fl_body
+    fun getFrameBody(): FrameLayout = zy_fl_body
 
 
     /**
@@ -182,12 +182,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 只有标题的toolbar
      */
     override fun setTitleSimple(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(fl_toolbar)
+        toolbarUtil.initToolbar(zy_fl_toolbar)
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
     override fun setTitleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(fl_toolbar, R.layout.zy_default_title)
+        toolbarUtil.initToolbar(zy_fl_toolbar, R.layout.zy_default_title)
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
@@ -195,17 +195,17 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 带返回键的toolbar
      */
     override fun setTitleDefault(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(fl_toolbar)
+        toolbarUtil.initToolbar(zy_fl_toolbar)
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
     override fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(fl_toolbar, R.layout.zy_default_title)
+        toolbarUtil.initToolbar(zy_fl_toolbar, R.layout.zy_default_title)
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
     override fun setTitleCustom(layoutRes: Int) {
-        toolbarUtil.initToolbar(fl_toolbar, layoutRes)
+        toolbarUtil.initToolbar(zy_fl_toolbar, layoutRes)
     }
 
     override fun setTitleBackground(textColor: Int, backgroundColor: Int) {
@@ -230,7 +230,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
         var toolbarHeight = 0
 
-        if (fl_toolbar.childCount != 0) {
+        if (zy_fl_toolbar.childCount != 0) {
             toolbarHeight = DensityUtil.getToolBarHeight(this)
             val toolBarBitmap =
                 bitmapUtil.getCroppedBitmap(drawable, 0, statusBarHeight, 0, toolbarHeight)

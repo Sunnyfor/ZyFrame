@@ -1,5 +1,6 @@
 package com.sunny.zy.utils
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout.LayoutParams
 import com.sunny.zy.R
@@ -37,8 +38,10 @@ class ToolbarUtil(var activity: BaseActivity) {
     }
 
     fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
+        show()
         menuList.clear()
         menuList.addAll(menuItem)
+        toolbar?.visibility = View.VISIBLE
         toolbar?.title = title
         toolbar?.navigationIcon = null
         toolbar?.setNavigationOnClickListener(null)
@@ -46,6 +49,7 @@ class ToolbarUtil(var activity: BaseActivity) {
 
 
     fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
+        show()
         menuList.clear()
         menuList.addAll(menuItem)
         toolbar?.title = title
@@ -53,6 +57,15 @@ class ToolbarUtil(var activity: BaseActivity) {
         toolbar?.setNavigationOnClickListener {
             activity.finish()
         }
+    }
+
+
+    fun hide() {
+        toolbar?.visibility = View.GONE
+    }
+
+    fun show() {
+        toolbar?.visibility = View.VISIBLE
     }
 
     fun createMenu() {

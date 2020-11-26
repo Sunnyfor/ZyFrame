@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
@@ -36,7 +37,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     var savedInstanceState: Bundle? = null
 
-    val toolbarUtil: ToolbarUtil by lazy {
+    private val toolbarUtil: ToolbarUtil by lazy {
         ToolbarUtil(this)
     }
 
@@ -47,6 +48,9 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     val placeholderViewUtil: PlaceholderViewUtil by lazy {
         PlaceholderViewUtil()
     }
+
+    val toolbar: ZyToolBar?
+        get() = toolbarUtil.toolbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,6 +170,13 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         onClickEvent(view)
     }
 
+    override fun hideTitle() {
+        toolbarUtil.hide()
+    }
+
+    override fun showTitle() {
+        toolbarUtil.show()
+    }
 
     /**
      * 只有标题的toolbar
@@ -195,6 +206,16 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
     override fun setTitleCustom(layoutRes: Int) {
         toolbarUtil.initToolbar(fl_toolbar, layoutRes)
+    }
+
+    override fun setTitleBackground(textColor: Int, backgroundColor: Int) {
+        if (backgroundColor != 0) {
+            toolbar?.setBackgroundResource(backgroundColor)
+            setStatusBarColor(backgroundColor)
+        }
+        if (textColor != 0) {
+            toolbar?.setTitleTextColor(ContextCompat.getColor(this, textColor))
+        }
     }
 
     override fun setStatusBarColor(color: Int) {

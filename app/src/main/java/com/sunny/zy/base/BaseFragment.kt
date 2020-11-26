@@ -20,11 +20,15 @@ import com.sunny.zy.utils.PlaceholderViewUtil
  * Date 2018/8/2
  */
 abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTitleListener {
+
     private var savedInstanceState: Bundle? = null
 
     private var bodyView: FrameLayout? = null
 
     var placeholderViewUtil: PlaceholderViewUtil? = null
+
+    val toolbar: ZyToolBar?
+        get() = getBaseActivity().toolbar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -118,6 +122,14 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
 
+    override fun hideTitle() {
+        getBaseActivity().hideTitle()
+    }
+
+    override fun showTitle() {
+        getBaseActivity().showTitle()
+    }
+
     /**
      * 只有标题的toolbar
      */
@@ -142,6 +154,10 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
     override fun setTitleCustom(layoutRes: Int) {
         getBaseActivity().setTitleCustom(layoutRes)
+    }
+
+    override fun setTitleBackground(textColor: Int, backgroundColor: Int) {
+        getBaseActivity().setTitleBackground(textColor, backgroundColor)
     }
 
     override fun setStatusBarColor(color: Int) {

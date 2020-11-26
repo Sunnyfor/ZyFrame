@@ -99,6 +99,7 @@ class ZyToolBar : Toolbar {
         }
     }
 
+
     override fun setNavigationIcon(resId: Int) {
         if (layoutRes == 0) {
             super.setNavigationIcon(resId)

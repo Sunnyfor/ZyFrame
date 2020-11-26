@@ -30,11 +30,12 @@ class ZyToolBar : Toolbar {
         this.layoutRes = layoutRes
 
         if (layoutRes != 0) {
-            setContentInsetsAbsolute(0, 0)
-            setContentInsetsRelative(0, 0)
             titleView = LayoutInflater.from(context).inflate(layoutRes, this, false)
             addView(titleView)
         }
+        setContentInsetsAbsolute(0, 0)
+        setContentInsetsRelative(0, 0)
+        contentInsetStartWithNavigation = 0
         setBackgroundResource(R.color.colorPrimary)
         setTitleTextColor(ContextCompat.getColor(context, R.color.textColorPrimary))
         setSubtitleTextColor(ContextCompat.getColor(context, R.color.textColorPrimary))

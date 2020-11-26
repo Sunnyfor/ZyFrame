@@ -59,7 +59,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //强制屏幕
         window.statusBarColor = Color.TRANSPARENT
 
-        setStatusBarTextModel(false)
+        setStatusBarTextModel(ZyConfig.statusBarIsDark)
         setContentView(R.layout.zy_root_layout)
 
         when (val layoutView = initLayout()) {

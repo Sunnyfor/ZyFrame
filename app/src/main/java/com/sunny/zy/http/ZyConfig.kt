@@ -60,6 +60,10 @@ object ZyConfig {
 
     var TEMP = ZyFrameStore.getContext().getExternalFilesDir("temp")?.path ?: "" //内存卡缓存路径
 
+    /**
+     * 设置StatusBar文字颜色
+     */
+    var statusBarIsDark = false
 
     val headerInterceptor: HeaderInterceptor by lazy {
         HeaderInterceptor()

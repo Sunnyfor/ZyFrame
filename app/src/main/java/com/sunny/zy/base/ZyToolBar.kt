@@ -92,10 +92,12 @@ class ZyToolBar : Toolbar {
     override fun setTitleTextColor(color: Int) {
         if (layoutRes == 0) {
             super.setTitleTextColor(color)
+            navigationIcon?.setTint(color)
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
             getView<TextView>(R.id.zy_tv_title).setTextColor(color)
+            getView<AppCompatImageButton>(R.id.zy_ib_back).drawable?.setTint(color)
             return
         }
     }

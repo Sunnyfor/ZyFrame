@@ -26,15 +26,15 @@ class ZyToolBar : Toolbar {
 
     private lateinit var titleView: View
 
+
     constructor(context: Context, layoutRes: Int) : super(context) {
         this.layoutRes = layoutRes
 
         if (layoutRes != 0) {
+            setContentInsetsRelative(0, 0)
             titleView = LayoutInflater.from(context).inflate(layoutRes, this, false)
             addView(titleView)
         }
-        setContentInsetsAbsolute(0, 0)
-        setContentInsetsRelative(0, 0)
         contentInsetStartWithNavigation = 0
         setBackgroundResource(R.color.colorPrimary)
         setTitleTextColor(ContextCompat.getColor(context, R.color.textColorPrimary))
@@ -92,12 +92,12 @@ class ZyToolBar : Toolbar {
     override fun setTitleTextColor(color: Int) {
         if (layoutRes == 0) {
             super.setTitleTextColor(color)
-            navigationIcon?.setTint(color)
+            navigationIcon?.mutate()?.setTint(color)
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
             getView<TextView>(R.id.zy_tv_title).setTextColor(color)
-            getView<AppCompatImageButton>(R.id.zy_ib_back).drawable?.setTint(color)
+            getView<AppCompatImageButton>(R.id.zy_ib_back).drawable?.mutate()?.setTint(color)
             return
         }
     }
@@ -106,6 +106,11 @@ class ZyToolBar : Toolbar {
     override fun setNavigationIcon(resId: Int) {
         if (layoutRes == 0) {
             super.setNavigationIcon(resId)
+            if (resId != 0) {
+                setContentInsetsRelative(0, 0)
+            } else {
+                setContentInsetsRelative(Int.MIN_VALUE, Int.MIN_VALUE)
+            }
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
@@ -124,6 +129,11 @@ class ZyToolBar : Toolbar {
     override fun setNavigationIcon(icon: Drawable?) {
         if (layoutRes == 0) {
             super.setNavigationIcon(icon)
+            if (icon != null) {
+                setContentInsetsRelative(0, 0)
+            } else {
+                setContentInsetsRelative(Int.MIN_VALUE, Int.MIN_VALUE)
+            }
             return
         }
         if (layoutRes == R.layout.zy_default_title) {

@@ -13,4 +13,10 @@
     <item name="tv_left" type="id" />
     <item name="tv_title" type="id" />
     <item name="tv_subtitle" type="id" />
+
+    <!---->
+    <item name="recyclerView" type="id" />
+    <item name="placeholderView" type="id" />
+    <item name="bodyView" type="id" />
+
 </resources>

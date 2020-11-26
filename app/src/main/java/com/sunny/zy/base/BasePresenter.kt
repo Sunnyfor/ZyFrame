@@ -1,8 +1,8 @@
 package com.sunny.zy.base
 
-import android.view.ViewGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 
 /**
  * Presenter基类
@@ -10,24 +10,8 @@ import kotlinx.coroutines.MainScope
  */
 abstract class BasePresenter<T : IBaseView>(var view: T?) : CoroutineScope by MainScope() {
 
-
-    fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
-        view?.showPlaceholder(viewGroup, placeholderBean)
-    }
-
-    fun hidePlaceholder(overlayViewType: Int) {
-        view?.hidePlaceholder(overlayViewType)
-    }
-
-    fun showMessage(message: String) {
-        view?.showMessage(message)
-    }
-
-    fun showLoading() {
-        view?.showLoading()
-    }
-
-    fun hideLoading() {
-        view?.hideLoading()
+    fun cancel() {
+        view = null
+        cancel(null)
     }
 }

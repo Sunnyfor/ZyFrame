@@ -48,6 +48,10 @@ class ZyToolBar : Toolbar {
     )
 
     override fun setTitle(resId: Int) {
+        if (resId == R.string.app_name) {
+            return
+        }
+
         if (layoutRes == 0) {
             super.setTitle(resId)
             return
@@ -59,6 +63,10 @@ class ZyToolBar : Toolbar {
     }
 
     override fun setTitle(title: CharSequence?) {
+        if (title == context.getString(R.string.app_name)) {
+            return
+        }
+
         if (layoutRes == 0) {
             super.setTitle(title)
             return

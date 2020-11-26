@@ -14,7 +14,7 @@ interface IBaseView {
 
     fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean)
 
-    fun hidePlaceholder(placeholderType: Int)
+    fun hidePlaceholder(viewType: Int)
 
     fun showMessage(message: String)
 }

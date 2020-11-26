@@ -1,5 +1,6 @@
 package com.sunny.zy.http
 
+import android.util.Log
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.PlaceholderBean
@@ -102,6 +103,11 @@ object ZyConfig {
      */
     var httpResultCallback: ((resultBean: BaseHttpResultBean) -> Unit)? = null
 
+
+    /**
+     * 设置Glide的日志级别
+     */
+    var glideLogLevel = Log.ERROR
 
     /**
      *  无数据展示布局

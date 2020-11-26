@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.utils.PlaceholderViewUtil
 
 
@@ -20,15 +21,17 @@ import com.sunny.zy.utils.PlaceholderViewUtil
  */
 abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTitleListener {
     private var savedInstanceState: Bundle? = null
-    private var placeholderViewUtil: PlaceholderViewUtil? = null
 
     private var bodyView: FrameLayout? = null
+
+    var placeholderViewUtil: PlaceholderViewUtil? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         this.savedInstanceState = savedInstanceState
 
         placeholderViewUtil = PlaceholderViewUtil()
@@ -71,7 +74,7 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
 
-    abstract fun initLayout(): Any
+    abstract fun initLayout(): Any?
 
     abstract fun initView()
 
@@ -86,15 +89,14 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
 
     override fun showLoading() {
-        placeholderViewUtil?.showView(
+        showPlaceholder(
             bodyView ?: return,
-            PlaceholderBean(PlaceholderBean.loading)
+            ZyConfig.loadingPlaceholderBean
         )
     }
 
     override fun hideLoading() {
-        placeholderViewUtil?.hideView(PlaceholderBean.loading)
-
+        hidePlaceholder(ZyConfig.loadingPlaceholderBean.viewType)
     }
 
 
@@ -107,9 +109,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
     }
 
-    override fun hidePlaceholder(placeholderType: Int) {
-        placeholderViewUtil?.hideView(placeholderType)
-
+    override fun hidePlaceholder(viewType: Int) {
+        placeholderViewUtil?.hideView(viewType)
     }
 
     override fun onClick(v: View) {
@@ -156,13 +157,10 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
 
-    fun setPlaceholderBackground(resInt: Int, viewType: Int) {
-        placeholderViewUtil?.setBackgroundResources(resInt, viewType)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         placeholderViewUtil?.clear()
+        placeholderViewUtil = null
         bodyView?.removeAllViews()
         bodyView = null
         onClose()

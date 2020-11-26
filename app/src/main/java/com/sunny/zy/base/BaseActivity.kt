@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.zy_root_layout.*
  * Author Zy
  * Date 2018/8/2
  */
+@Suppress("MemberVisibilityCanBePrivate")
 @SuppressLint("SourceLockedOrientationActivity")
 abstract class BaseActivity : AppCompatActivity(), IBaseView,
     View.OnClickListener, OnTitleListener {
@@ -38,11 +40,11 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         ToolbarUtil(this)
     }
 
-    val bitmapUtil: BitmapUtil by lazy {
+    private val bitmapUtil: BitmapUtil by lazy {
         BitmapUtil()
     }
 
-    private val placeholderViewUtil: PlaceholderViewUtil by lazy {
+    val placeholderViewUtil: PlaceholderViewUtil by lazy {
         PlaceholderViewUtil()
     }
 
@@ -110,14 +112,14 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * 显示loading覆盖层
      */
     override fun showLoading() {
-        placeholderViewUtil.showView(getFrameBody(), ZyConfig.loadingPlaceholderBean)
+        showPlaceholder(getFrameBody(), ZyConfig.loadingPlaceholderBean)
     }
 
     /**
      * 隐藏loading覆盖层
      */
     override fun hideLoading() {
-        placeholderViewUtil.hideView(PlaceholderBean.loading)
+        hidePlaceholder(ZyConfig.loadingPlaceholderBean.viewType)
     }
 
 
@@ -135,8 +137,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     /**
      * 隐藏error覆盖层
      */
-    override fun hidePlaceholder(placeholderType: Int) {
-        placeholderViewUtil.hideView(placeholderType)
+    override fun hidePlaceholder(viewType: Int) {
+        placeholderViewUtil.hideView(viewType)
     }
 
     /**
@@ -228,8 +230,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     @Suppress("DEPRECATION")
     override fun setStatusBarTextModel(isDark: Boolean) {
         window.decorView.systemUiVisibility = if (isDark) {
-            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            } else {
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            }
         } else {
             View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -251,11 +257,6 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
      * fragment加载完成后进行回调
      */
     open fun onFragmentLoadFinish(fragment: Fragment) {}
-
-
-    fun setPlaceholderBackground(resInt: Int, viewType: Int) {
-        placeholderViewUtil.setBackgroundResources(resInt, viewType)
-    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

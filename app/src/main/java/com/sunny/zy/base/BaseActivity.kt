@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.ContentFrameLayout
 import androidx.appcompat.widget.FitWindowsLinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,7 +21,6 @@ import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.utils.*
-import kotlinx.android.synthetic.main.zy_root_layout.*
 
 
 /**
@@ -62,6 +61,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         View(this)
     }
 
+    lateinit var frameBody:ViewGroup
+
     var screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +78,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         mStatusBarColor = R.color.colorPrimary
         setStatusBarColor(mStatusBarColor)
         setStatusBarTextModel(ZyConfig.statusBarIsDark)
+        frameBody = findViewById(android.R.id.content)
 
         when (val layoutView = initLayout()) {
             is Int -> {
@@ -123,16 +125,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
 
     /**
-     * 获取body容器
-     */
-    fun getFrameBody(): FrameLayout = zy_fl_body
-
-
-    /**
      * 显示loading覆盖层
      */
     override fun showLoading() {
-        showPlaceholder(getFrameBody(), ZyConfig.loadingPlaceholderBean)
+        showPlaceholder(frameBody, ZyConfig.loadingPlaceholderBean)
     }
 
     /**
@@ -144,7 +140,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
 
 
     fun showPlaceholder(placeholderBean: PlaceholderBean) {
-        placeholderViewUtil.showView(getFrameBody(), placeholderBean)
+        placeholderViewUtil.showView(frameBody, placeholderBean)
     }
 
     /**

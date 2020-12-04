@@ -162,15 +162,12 @@ object ZyHttp {
         if (response.isSuccessful) {
             response.body?.let {
                 resultBean.file = ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
-                resultBean.notifyData(resultBean)
             }
         }
     }
 
-
     private fun <T> executeHttp(request: Request, resultBean: HttpResultBean<T>) {
         val response = clientFactory.getOkHttpClient().newCall(request).execute()
-
         //获取HTTP状态码
         resultBean.httpCode = response.code
         //获取Response回执信息

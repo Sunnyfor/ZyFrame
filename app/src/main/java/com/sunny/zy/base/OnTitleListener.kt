@@ -31,4 +31,8 @@ interface OnTitleListener {
     fun setStatusBarDrawable(drawable: Int, relevantView: View? = null)
 
     fun setStatusBarTextModel(isDark: Boolean)
+
+    fun showStatusBar(showText: Boolean? = true)
+
+    fun hideStatusBar(showText: Boolean? = true)
 }

@@ -24,16 +24,16 @@ class ToolbarUtil(var activity: BaseActivity) {
     /**
      * 初始化Toolbar
      */
-    fun initToolbar(fl_toolbar: ViewGroup, layoutRes: Int = 0) {
+    fun initToolbar(rootLayout: ViewGroup, layoutRes: Int = 0) {
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT
         )
 
         if (toolbar != null) {
-            fl_toolbar.removeAllViews()
+            rootLayout.removeView(toolbar)
         }
-        toolbar = ZyToolBar(fl_toolbar.context ?: return, layoutRes)
-        fl_toolbar.addView(toolbar, layoutParams)
+        toolbar = ZyToolBar(rootLayout.context ?: return, layoutRes)
+        rootLayout.addView(toolbar, 1, layoutParams)
         activity.setSupportActionBar(toolbar)
     }
 

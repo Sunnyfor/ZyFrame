@@ -14,12 +14,13 @@ abstract class DownLoadResultBean(var fileName: String? = null, var filePath: St
     var readLength = 0L  //当前读取长度
     var done = false //是否完成
     var file: File? = null //下载后的文件对象
+    var progress = 0 //下载进度百分比
+
 
     abstract fun notifyData(downLoadResultBean: DownLoadResultBean)
 
     override fun toString(): String {
-        return "${super.toString()} DownLoadResultBean(fileName=$fileName, filePath='$filePath', contentLength=$contentLength, readLength=$readLength, done=$done, file=$file)"
+        return "${super.toString()} DownLoadResultBean(fileName=$fileName, filePath=$filePath, contentLength=$contentLength, readLength=$readLength, done=$done, file=$file, progress=$progress)"
     }
-
 
 }

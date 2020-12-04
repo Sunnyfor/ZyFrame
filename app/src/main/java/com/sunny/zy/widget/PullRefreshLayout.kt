@@ -141,7 +141,7 @@ class PullRefreshLayout : SmartRefreshLayout {
         } else {
             adapter.addData(index, data)
         }
-        updateEmptyView(data)
+        updateEmptyView(adapter.getData())
         adapter.notifyDataSetChanged()
     }
 

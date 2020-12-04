@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.utils.PlaceholderViewUtil
@@ -23,7 +22,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
     private var savedInstanceState: Bundle? = null
 
-    private var bodyView: FrameLayout? = null
 
     var placeholderViewUtil: PlaceholderViewUtil? = null
 
@@ -40,21 +38,17 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
         placeholderViewUtil = PlaceholderViewUtil()
 
-        bodyView = FrameLayout(requireContext())
+        val layoutView = initLayout()
 
-        when (val layoutView = initLayout()) {
-            is Int -> {
-                if (layoutView != 0) {
-                    bodyView?.addView(inflater.inflate(layoutView, container, false))
-
-                }
-            }
-
-            is View -> {
-                bodyView?.addView(layoutView)
-            }
+        if (layoutView is Int) {
+            return inflater.inflate(layoutView, container, false)
         }
-        return bodyView
+
+        if (layoutView is View) {
+            return layoutView
+        }
+
+        return null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,10 +87,13 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
 
     override fun showLoading() {
-        showPlaceholder(
-            bodyView ?: return,
-            ZyConfig.loadingPlaceholderBean
-        )
+        if (view is ViewGroup) {
+            showPlaceholder(
+                view as ViewGroup,
+                ZyConfig.loadingPlaceholderBean
+            )
+        }
+
     }
 
     override fun hideLoading() {
@@ -105,7 +102,9 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
 
     fun showPlaceholder(placeholderBean: PlaceholderBean) {
-        showPlaceholder(bodyView ?: return, placeholderBean)
+        if (view is ViewGroup) {
+            showPlaceholder(view as ViewGroup, placeholderBean)
+        }
     }
 
     override fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
@@ -172,13 +171,18 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         getBaseActivity().setStatusBarTextModel(isDark)
     }
 
+    override fun showStatusBar(showText: Boolean?) {
+        getBaseActivity().showStatusBar(showText)
+    }
+
+    override fun hideStatusBar(showText: Boolean?) {
+        getBaseActivity().hideStatusBar(showText)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         placeholderViewUtil?.clear()
         placeholderViewUtil = null
-        bodyView?.removeAllViews()
-        bodyView = null
         onClose()
     }
 

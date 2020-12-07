@@ -10,10 +10,8 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.ContentFrameLayout
 import androidx.appcompat.widget.FitWindowsLinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -61,7 +59,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
         View(this)
     }
 
-    lateinit var frameBody:ViewGroup
+    lateinit var frameBody: ViewGroup
 
     var screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -74,7 +72,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
             LinearLayout.LayoutParams.MATCH_PARENT,
             DensityUtil.getStatusBarHeight(this)
         )
-        getRootView().addView(statusBar, 0,statusBarParams)
+        getRootView().addView(statusBar, 0, statusBarParams)
         mStatusBarColor = R.color.colorPrimary
         setStatusBarColor(mStatusBarColor)
         setStatusBarTextModel(ZyConfig.statusBarIsDark)

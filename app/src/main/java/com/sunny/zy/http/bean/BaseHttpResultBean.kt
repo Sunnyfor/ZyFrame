@@ -1,6 +1,6 @@
 package com.sunny.zy.http.bean
 
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
 
 abstract class BaseHttpResultBean {
 
@@ -8,7 +8,7 @@ abstract class BaseHttpResultBean {
     var resUrl = ""      //响应URL
     var httpCode = 0    //请求code
     var message = "OK"
-    var scope = MainScope()
+    var scope: CoroutineScope? = null
     var exception: Exception? = null //网络请求异常信息
 
     fun httpIsSuccess(): Boolean {

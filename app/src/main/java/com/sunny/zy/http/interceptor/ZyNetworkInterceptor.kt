@@ -2,7 +2,7 @@ package com.sunny.zy.http.interceptor
 
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.body.ProgressResponseBody
-import com.sunny.zy.utils.LogUtil
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -28,7 +28,7 @@ class ZyNetworkInterceptor(var downLoadResultBean: DownLoadResultBean) : Interce
                         if (contentLength == 0L) {
                             return
                         }
-                        downLoadResultBean.scope.launch {
+                        downLoadResultBean.scope?.launch(Main) {
                             downLoadResultBean.contentLength = contentLength
                             downLoadResultBean.readLength = bytesRead
                             val progress = (bytesRead * 100L / contentLength).toInt() / 2

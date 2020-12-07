@@ -34,45 +34,39 @@ class ZHResponseParser : IResponseParser {
 
         val type = httpResultBean.typeToken
 
+        val body = responseBody.string()
         //解析非泛型类
         if (type is Class<*>) {
-            return when (type.name) {
-                String::class.java.name -> {
-                    responseBody.string() as T
+            if (type.name == String::class.java.name)
+                return body as T
+        }
+        //解析泛型类
+        if (type is ParameterizedType) {
+            when (type.rawType) {
+                BaseModel::class.java -> {
+                    val jsonObj = JSONObject(body)
+                    val childType = type.actualTypeArguments[0]
+                    val baseModel = BaseModel<Any>()
+                    baseModel.msg = jsonObj.optString("msg")
+                    baseModel.code = jsonObj.optString("code")
+                    val mData =
+                        mGSon.fromJson<Any>(
+                            jsonObj.optString(httpResultBean.serializedName),
+                            childType
+                        )
+                    baseModel.data = mData
+                    return baseModel as T
                 }
-                else -> {
-                    mGSon.fromJson(responseBody.string(), type) as T
-                }
-            }
-        } else {
-            //解析泛型类
-            val json = responseBody.string()
-            if (type is ParameterizedType) {
-                val jsonObj = JSONObject(json)
-                when (type.rawType) {
-
-                    BaseModel::class.java -> {
-                        val childType = type.actualTypeArguments[0]
-                        val baseModel = BaseModel<Any>()
-                        baseModel.msg = jsonObj.optString("msg")
-                        baseModel.code = jsonObj.optString("code")
-                        val mData =
-                            mGSon.fromJson<Any>(
-                                jsonObj.optString(httpResultBean.serializedName),
-                                childType
-                            )
-                        baseModel.data = mData
-                        return baseModel as T
-                    }
-                    PageModel::class.java -> {
-                        jsonObj.put("data", jsonObj.optJSONObject("page"))
-                        jsonObj.remove("page")
-                        return mGSon.fromJson(jsonObj.toString(), type)
-                    }
+                PageModel::class.java -> {
+                    val jsonObj = JSONObject(body)
+                    jsonObj.put("data", jsonObj.optJSONObject("page"))
+                    jsonObj.remove("page")
+                    return mGSon.fromJson(jsonObj.toString(), type)
                 }
             }
         }
-        return mGSon.fromJson(responseBody.string(), type)
+
+        return mGSon.fromJson(body, type)
     }
 
     override fun parserDownloadResponse(
@@ -114,29 +108,26 @@ class ZHResponseParser : IResponseParser {
 
         var totalRead = 0L
 
-        downLoadResultBean.scope.launch {
-            withContext(IO) {
-                while (true) {
-                    val read = data.read(byte)
-                    if (read == -1) {
-                        break
-                    }
-                    totalRead += read
-                    outputStream.write(byte, 0, read)
+        downLoadResultBean.scope?.launch(IO) {
+            while (true) {
+                val read = data.read(byte)
+                if (read == -1) {
+                    break
+                }
+                totalRead += read
+                outputStream.write(byte, 0, read)
 
-                    val progress =
-                        50 + (totalRead * 100 / downLoadResultBean.contentLength).toInt() / 2
-                    if (progress != downLoadResultBean.progress) {
-                        withContext(Main) {
-                            downLoadResultBean.progress = progress
-                            downLoadResultBean.done = totalRead == downLoadResultBean.contentLength
-                            downLoadResultBean.notifyData(downLoadResultBean)
-                        }
+                val progress =
+                    50 + (totalRead * 100 / downLoadResultBean.contentLength).toInt() / 2
+                if (progress != downLoadResultBean.progress) {
+                    withContext(Main) {
+                        downLoadResultBean.progress = progress
+                        downLoadResultBean.done = totalRead == downLoadResultBean.contentLength
+                        downLoadResultBean.notifyData(downLoadResultBean)
                     }
                 }
             }
         }
-
         outputStream.flush()
         return file
     }

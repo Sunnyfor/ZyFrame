@@ -4,6 +4,7 @@ import com.sunny.zy.http.bean.BaseHttpResultBean
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import com.sunny.zy.http.request.ZyRequest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
@@ -37,7 +38,7 @@ object ZyHttp {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.getRequest(url, params)
-            execution(request, httpResultBean)
+            execution(request, httpResultBean, this)
         }
     }
 
@@ -56,7 +57,7 @@ object ZyHttp {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.postFormRequest(url, params)
-            execution(request, httpResultBean)
+            execution(request, httpResultBean, this)
         }
     }
 
@@ -69,7 +70,7 @@ object ZyHttp {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.patchFormRequest(url, params)
-            execution(request, httpResultBean)
+            execution(request, httpResultBean, this)
         }
     }
 
@@ -84,7 +85,7 @@ object ZyHttp {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.postJsonRequest(url, json)
-            execution(request, httpResultBean)
+            execution(request, httpResultBean, this)
         }
     }
 
@@ -93,7 +94,7 @@ object ZyHttp {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.putJsonRequest(url, json)
-            execution(request, httpResultBean)
+            execution(request, httpResultBean, this)
         }
     }
 
@@ -102,7 +103,7 @@ object ZyHttp {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.deleteJsonRequest(url, json)
-            execution(request, httpResultBean)
+            execution(request, httpResultBean, this)
         }
 
     }
@@ -116,7 +117,7 @@ object ZyHttp {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
             val request = zyRequest.formUploadRequest(url, filePath)
-            execution(request, httpResultBean)
+            execution(request, httpResultBean, this)
         }
     }
 
@@ -128,9 +129,11 @@ object ZyHttp {
      */
     private suspend fun <T : BaseHttpResultBean> execution(
         request: Request,
-        httpResultBean: T
+        httpResultBean: T,
+        scope: CoroutineScope
     ) {
         try {
+            httpResultBean.scope = scope
             //请求URL赋值
             httpResultBean.url = request.url.toString()
             //执行异步网络请求

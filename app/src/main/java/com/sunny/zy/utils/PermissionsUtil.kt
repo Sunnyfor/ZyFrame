@@ -106,7 +106,7 @@ class PermissionsUtil(var requestCode: Int) {
             build.setPositiveButton("设置") { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 val uri = Uri.fromParts("package", activity.packageName, null)
-                intent.data = uri;
+                intent.data = uri
                 activity.startActivity(intent)
             }
         } else {

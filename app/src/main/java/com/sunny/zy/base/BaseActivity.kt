@@ -11,8 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.FitWindowsLinearLayout
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.sunny.zy.R
@@ -28,7 +30,8 @@ import com.sunny.zy.utils.*
  */
 @Suppress("MemberVisibilityCanBePrivate")
 @SuppressLint("SourceLockedOrientationActivity")
-abstract class BaseActivity : AppCompatActivity(), IBaseView,
+abstract class BaseActivity : AppCompatActivity(),
+    ActivityCompat.OnRequestPermissionsResultCallback, IBaseView,
     View.OnClickListener, OnTitleListener {
 
     var taskTag = "DefaultActivity"
@@ -38,6 +41,10 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     private var isDark = false
 
     private var mStatusBarColor: Int = 0
+
+    private val permissionsUtil: PermissionsUtil by lazy {
+        PermissionsUtil(1100)
+    }
 
     private val toolbarUtil: ToolbarUtil by lazy {
         ToolbarUtil(this)
@@ -318,6 +325,39 @@ abstract class BaseActivity : AppCompatActivity(), IBaseView,
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         toolbarUtil.createMenu()
         return super.onCreateOptionsMenu(menu)
+    }
+
+    /**
+     * 请求动态多权限
+     */
+    fun requestPermissions(
+        permission: Array<String>,
+        permissionOkResult: (() -> Unit)? = null
+    ) {
+        permissionsUtil.requestPermissions(this, permission, permissionOkResult)
+    }
+
+    /**
+     * 请求动态权限
+     */
+    fun requestPermissions(
+        permissions: String,
+        permissionOkResult: (() -> Unit)? = null
+    ) {
+        permissionsUtil.requestPermissions(this, permissions, permissionOkResult)
+    }
+
+    /**
+     * 权限回调
+     */
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionsUtil.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
 

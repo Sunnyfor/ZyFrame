@@ -179,6 +179,21 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         getBaseActivity().hideStatusBar(showText)
     }
 
+
+    fun requestPermissions(
+        permission: Array<String>,
+        permissionOkResult: (() -> Unit)? = null
+    ) {
+        getBaseActivity().requestPermissions(permission, permissionOkResult)
+    }
+
+    fun requestPermissions(
+        permissions: String,
+        permissionOkResult: (() -> Unit)? = null
+    ) {
+        getBaseActivity().requestPermissions(permissions, permissionOkResult)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         placeholderViewUtil?.clear()

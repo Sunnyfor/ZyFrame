@@ -14,9 +14,9 @@ import java.util.concurrent.TimeUnit
  */
 class OkHttpClientFactory {
 
-    private val defaultHttpClient: OkHttpClient by lazy {
-        getBuild().build()
-    }
+//    private val defaultHttpClient: OkHttpClient by lazy {
+//        getBuild().build()
+//    }
 
     private fun getBuild(): OkHttpClient.Builder {
         val builder =
@@ -47,7 +47,7 @@ class OkHttpClientFactory {
     /**
      * 非下载请求复用Client对象
      */
-    fun getOkHttpClient() = defaultHttpClient
+    fun getOkHttpClient() = getBuild().build()
 
 
     /**

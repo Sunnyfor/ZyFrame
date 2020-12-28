@@ -4,6 +4,7 @@ import com.sunny.zy.http.bean.BaseHttpResultBean
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import com.sunny.zy.http.request.ZyRequest
+import com.sunny.zy.utils.LogUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -145,7 +146,8 @@ object ZyHttp {
         } catch (e: Exception) {
             //出现异常获取异常信息
             httpResultBean.exception = e
-            httpResultBean.message = e.message ?: ""
+            httpResultBean.message = "Exception"
+            LogUtil.e(httpResultBean.toString())
         }
 
         withContext(Dispatchers.Main) {

@@ -22,7 +22,7 @@ import com.sunny.zy.utils.PlaceholderViewUtil
  * Author Zy
  * Date 2019/11/7 23:24
  */
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
 class PullRefreshLayout : SmartRefreshLayout {
 
     private val rootView: FrameLayout by lazy {
@@ -118,44 +118,64 @@ class PullRefreshLayout : SmartRefreshLayout {
         rootView.addView(this.contentView, layoutParams)
     }
 
-
-    fun <T> addData(adapter: BaseRecycleAdapter<T>, data: ArrayList<T>) {
-        addData(adapter, -1, data)
+    fun <T> addData(data: T) {
+        addData(-1, arrayListOf(data))
     }
 
+    fun <T> addData(data: ArrayList<T>) {
+        addData(-1, data)
+    }
 
-    fun <T> addData(adapter: BaseRecycleAdapter<T>, index: Int = -1, data: ArrayList<T>) {
-        if (page == 1) {
-            adapter.clearData()
-            finishRefresh()
-        } else {
-            if (data.isEmpty()) {
-                page--
-                finishLoadMoreWithNoMoreData()
+    fun <T> addData(index: Int = -1, data: ArrayList<T>) {
+        getRecyclerView()?.adapter?.let {
+            it as BaseRecycleAdapter<T>
+            if (page == 1) {
+                it.getData().clear()
+                finishRefresh()
             } else {
-                finishLoadMore()
+                if (data.isEmpty()) {
+                    page--
+                    finishLoadMoreWithNoMoreData()
+                } else {
+                    finishLoadMore()
+                }
             }
+            if (index < 0) {
+                it.getData().addAll(data)
+            } else {
+                it.getData().addAll(index, data)
+            }
+            updateEmptyView(it.getData())
+            it.notifyDataSetChanged()
         }
-        if (index < 0) {
-            adapter.addData(data)
-        } else {
-            adapter.addData(index, data)
-        }
-        updateEmptyView(adapter.getData())
-        adapter.notifyDataSetChanged()
     }
 
 
-    fun <T> deleteData(adapter: BaseRecycleAdapter<T>, index: Int) {
-        adapter.deleteData(index)
-        adapter.notifyDataSetChanged()
-        updateEmptyView(adapter.getData())
+    fun deleteData(index: Int) {
+        getRecyclerView()?.adapter?.let {
+            it as BaseRecycleAdapter<Any>
+            it.getData().removeAt(index)
+            it.notifyDataSetChanged()
+            updateEmptyView(it.getData())
+        }
     }
 
-    fun <T> deleteData(adapter: BaseRecycleAdapter<T>, data: T) {
-        adapter.deleteData(data)
-        adapter.notifyDataSetChanged()
-        updateEmptyView(adapter.getData())
+    fun <T> deleteData(data: T) {
+        getRecyclerView()?.adapter?.let {
+            it as BaseRecycleAdapter<T>
+            it.getData().remove(data)
+            it.notifyDataSetChanged()
+            updateEmptyView(it.getData())
+        }
+    }
+
+    fun <T> deleteData(data: ArrayList<T>) {
+        getRecyclerView()?.adapter?.let {
+            it as BaseRecycleAdapter<T>
+            it.getData().removeAll(data)
+            it.notifyDataSetChanged()
+            updateEmptyView(it.getData())
+        }
     }
 
 
@@ -170,7 +190,7 @@ class PullRefreshLayout : SmartRefreshLayout {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
+
     fun <T> getContentView(): T? {
         try {
             return contentView as T

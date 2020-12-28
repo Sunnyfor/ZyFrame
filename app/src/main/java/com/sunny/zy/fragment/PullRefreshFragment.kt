@@ -66,20 +66,24 @@ class PullRefreshFragment<T> : BaseFragment() {
         getRecyclerView()?.adapter = null
     }
 
+    open fun addData(data: T) {
+        addData(-1, arrayListOf(data))
+    }
+
     open fun addData(data: ArrayList<T>) {
         addData(-1, data)
     }
 
     open fun addData(index: Int, data: ArrayList<T>) {
-        pullRefreshLayout?.addData(adapter ?: return, index, data)
+        pullRefreshLayout?.addData( index, data)
     }
 
     open fun deleteData(index: Int) {
-        pullRefreshLayout?.deleteData(adapter ?: return, index)
+        pullRefreshLayout?.deleteData(index)
     }
 
     open fun deleteData(data: T) {
-        pullRefreshLayout?.deleteData(adapter ?: return, data)
+        pullRefreshLayout?.deleteData(data)
     }
 
 

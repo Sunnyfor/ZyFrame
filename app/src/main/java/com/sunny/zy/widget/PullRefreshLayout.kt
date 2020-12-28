@@ -118,64 +118,54 @@ class PullRefreshLayout : SmartRefreshLayout {
         rootView.addView(this.contentView, layoutParams)
     }
 
-    fun <T> addData(data: T) {
-        addData(-1, arrayListOf(data))
+    fun <T> addData(adapter: BaseRecycleAdapter<T>, data: T) {
+        addData(adapter, -1, arrayListOf(data))
     }
 
-    fun <T> addData(data: ArrayList<T>) {
-        addData(-1, data)
+    fun <T> addData(adapter: BaseRecycleAdapter<T>, data: ArrayList<T>) {
+        addData(adapter, -1, data)
     }
 
-    fun <T> addData(index: Int = -1, data: ArrayList<T>) {
-        getRecyclerView()?.adapter?.let {
-            it as BaseRecycleAdapter<T>
-            if (page == 1) {
-                it.getData().clear()
-                finishRefresh()
+    fun <T> addData(adapter: BaseRecycleAdapter<T>, index: Int = -1, data: ArrayList<T>) {
+        if (page == 1) {
+            adapter.getData().clear()
+            finishRefresh()
+        } else {
+            if (data.isEmpty()) {
+                page--
+                finishLoadMoreWithNoMoreData()
             } else {
-                if (data.isEmpty()) {
-                    page--
-                    finishLoadMoreWithNoMoreData()
-                } else {
-                    finishLoadMore()
-                }
+                finishLoadMore()
             }
-            if (index < 0) {
-                it.getData().addAll(data)
-            } else {
-                it.getData().addAll(index, data)
-            }
-            updateEmptyView(it.getData())
-            it.notifyDataSetChanged()
         }
+        if (index < 0) {
+            adapter.getData().addAll(data)
+        } else {
+            adapter.getData().addAll(index, data)
+        }
+        updateEmptyView(adapter.getData())
+        adapter.notifyDataSetChanged()
+
     }
 
 
-    fun deleteData(index: Int) {
-        getRecyclerView()?.adapter?.let {
-            it as BaseRecycleAdapter<Any>
-            it.getData().removeAt(index)
-            it.notifyDataSetChanged()
-            updateEmptyView(it.getData())
-        }
+    fun <T> deleteData(adapter: BaseRecycleAdapter<T>,index: Int) {
+            adapter.getData().removeAt(index)
+            adapter.notifyDataSetChanged()
+            updateEmptyView(adapter.getData())
     }
 
-    fun <T> deleteData(data: T) {
-        getRecyclerView()?.adapter?.let {
-            it as BaseRecycleAdapter<T>
-            it.getData().remove(data)
-            it.notifyDataSetChanged()
-            updateEmptyView(it.getData())
-        }
+    fun <T> deleteData(adapter: BaseRecycleAdapter<T>,data: T) {
+            adapter.getData().remove(data)
+            adapter.notifyDataSetChanged()
+            updateEmptyView(adapter.getData())
+
     }
 
-    fun <T> deleteData(data: ArrayList<T>) {
-        getRecyclerView()?.adapter?.let {
-            it as BaseRecycleAdapter<T>
-            it.getData().removeAll(data)
-            it.notifyDataSetChanged()
-            updateEmptyView(it.getData())
-        }
+    fun <T> deleteData(adapter: BaseRecycleAdapter<T>,data: ArrayList<T>) {
+            adapter.getData().removeAll(data)
+            adapter.notifyDataSetChanged()
+            updateEmptyView(adapter.getData())
     }
 
 

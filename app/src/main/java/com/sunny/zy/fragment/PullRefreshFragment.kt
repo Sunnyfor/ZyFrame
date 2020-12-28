@@ -75,15 +75,15 @@ class PullRefreshFragment<T> : BaseFragment() {
     }
 
     open fun addData(index: Int, data: ArrayList<T>) {
-        pullRefreshLayout?.addData( index, data)
+        pullRefreshLayout?.addData(adapter?:return,index, data)
     }
 
     open fun deleteData(index: Int) {
-        pullRefreshLayout?.deleteData(index)
+        pullRefreshLayout?.deleteData(adapter?:return,index)
     }
 
     open fun deleteData(data: T) {
-        pullRefreshLayout?.deleteData(data)
+        pullRefreshLayout?.deleteData(adapter?:return,data)
     }
 
 

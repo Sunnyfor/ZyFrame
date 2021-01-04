@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.sunny.zy.R
 
 /**
  * Desc
@@ -19,7 +20,6 @@ import androidx.core.app.ActivityCompat
 class PermissionsUtil(var requestCode: Int) {
 
     private var permissionOkResult: (() -> Unit)? = null
-
 
     fun requestPermissions(
         activity: AppCompatActivity,
@@ -35,12 +35,22 @@ class PermissionsUtil(var requestCode: Int) {
                 }
             }
             if (grantedList.isEmpty()) {
+                SpUtil.get().remove("isNoHint")
                 permissionOkResult?.invoke()
             } else {
-                ActivityCompat.requestPermissions(
-                    activity, permission,
-                    requestCode
-                )
+                val isNoHint = SpUtil.get().getBoolean("isNoHint")
+                if (isNoHint) {
+                    showSettingPermissionDialog(
+                        activity,
+                        Array(grantedList.size) { grantedList[it] },
+                        isNoHint
+                    )
+                } else {
+                    ActivityCompat.requestPermissions(
+                        activity, permission,
+                        requestCode
+                    )
+                }
             }
         } else {
             permissionOkResult?.invoke()
@@ -64,45 +74,50 @@ class PermissionsUtil(var requestCode: Int) {
         grantResults: IntArray
     ) {
 
-        if (requestCode != requestCode) {
+        if (requestCode != this.requestCode) {
             return
         }
 
-        var permissionsOk = true
-
-        grantResults.forEach {
-            if (it != PackageManager.PERMISSION_GRANTED) {
-                permissionsOk = false
-                return@forEach
+        val permissionsResult = arrayListOf<String>()
+        grantResults.forEachIndexed { index, i ->
+            if (i != PackageManager.PERMISSION_GRANTED) {
+                permissionsResult.add(permissions[index])
             }
         }
-        if (permissionsOk) {
+        if (permissionsResult.isEmpty()) {
             permissionOkResult?.invoke()
         } else {
-            var isNOHint = false
-            permissions.forEach { permission ->
-                if (!activity.shouldShowRequestPermissionRationale(permission)) {
-                    isNOHint = true
-                }
+            val isNOHint = !permissionsResult.all {
+                activity.shouldShowRequestPermissionRationale(it)
             }
-            if (isNOHint) {
-                showSettingPermissionDialog(activity)
-            } else {
-                showSettingPermissionDialog(activity, permissions)
-            }
-
+            SpUtil.get().setBoolean("isNoHint", isNOHint)
+            showSettingPermissionDialog(
+                activity,
+                Array(permissionsResult.size) { permissionsResult[it] }, isNOHint
+            )
         }
     }
 
 
     private fun showSettingPermissionDialog(
         activity: AppCompatActivity,
-        permission: Array<String>? = null
+        permission: Array<String>,
+        isNoHint: Boolean
     ) {
         val build = AlertDialog.Builder(activity)
         build.setTitle("提示")
-        build.setMessage("当前应用缺少必要权限,该功能暂时无法使用！")
-        if (permission == null) {
+        val messageSb = StringBuilder()
+        val pm = activity.packageManager
+        permission.forEach {
+            val permissionInfo = pm.getPermissionInfo(it, 0)
+            val permissionGroup = pm.getPermissionGroupInfo(permissionInfo.group ?: return, 0)
+            val permissionName = permissionGroup.loadLabel(pm)
+            if (!messageSb.contains(permissionName)) {
+                messageSb.append("[").append(permissionName).append("]").append(" ")
+            }
+        }
+        build.setMessage("${activity.getString(R.string.app_name)}未能获取${messageSb}权限,此功能无法正常使用！")
+        if (isNoHint) {
             build.setPositiveButton("设置") { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 val uri = Uri.fromParts("package", activity.packageName, null)

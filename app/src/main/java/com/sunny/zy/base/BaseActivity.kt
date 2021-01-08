@@ -347,6 +347,10 @@ abstract class BaseActivity : AppCompatActivity(),
         permissionsUtil.requestPermissions(this, permissions, permissionOkResult)
     }
 
+    fun permissionsFailedIsFinish(isFinish: Boolean) {
+        permissionsUtil.isFinish = isFinish
+    }
+
     /**
      * 权限回调
      */

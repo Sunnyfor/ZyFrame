@@ -21,6 +21,8 @@ class PermissionsUtil(var requestCode: Int) {
 
     private var permissionOkResult: (() -> Unit)? = null
 
+    var isFinish = false
+
     fun requestPermissions(
         activity: AppCompatActivity,
         permission: Array<String>,
@@ -132,7 +134,11 @@ class PermissionsUtil(var requestCode: Int) {
                 )
             }
         }
-        build.setNegativeButton("取消") { _, _ -> }
+        build.setNegativeButton("取消") { _, _ ->
+            if (isFinish) {
+                activity.finish()
+            }
+        }
         build.show()
     }
 }

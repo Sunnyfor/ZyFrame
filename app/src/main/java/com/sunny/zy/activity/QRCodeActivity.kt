@@ -1,5 +1,6 @@
 package com.sunny.zy.activity
 
+import android.Manifest
 import android.app.Activity
 import android.view.View
 import com.sunny.zy.R
@@ -15,9 +16,13 @@ import kotlinx.android.synthetic.main.zy_frag_qr_code.*
  */
 class QRCodeActivity : BaseActivity() {
 
+    companion object {
+        const val result = "qrCode"
+    }
+
     private val qrCodeUtil: QRCodeUtil by lazy {
         QRCodeUtil {
-            intent.putExtra("qrCode", it)
+            intent.putExtra(result, it)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }.apply {
@@ -34,9 +39,12 @@ class QRCodeActivity : BaseActivity() {
 
     override fun initView() {
         setTitleDefault("扫一扫")
-        showLoading()
-        surfaceView.post {
-            qrCodeUtil.open(surfaceView)
+        permissionsFailedIsFinish(true)
+        requestPermissions(Manifest.permission.CAMERA) {
+            showLoading()
+            surfaceView.post {
+                qrCodeUtil.open(surfaceView)
+            }
         }
     }
 

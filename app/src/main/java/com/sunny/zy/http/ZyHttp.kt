@@ -44,6 +44,18 @@ object ZyHttp {
     }
 
 
+    suspend fun <T : BaseHttpResultBean> head(
+        url: String,
+        params: HashMap<String, String>? = null,
+        httpResultBean: T
+    ) {
+        return withContext(Dispatchers.IO) {
+            //创建okHttp请求
+            val request = zyRequest.headRequest(url, params)
+            execution(request, httpResultBean, this)
+        }
+    }
+
     /**
      * postForm请求
      * @param url URL服务器地址
@@ -63,6 +75,15 @@ object ZyHttp {
     }
 
 
+    suspend fun <T : BaseHttpResultBean> postJson(url: String, json: String, httpResultBean: T) {
+        return withContext(Dispatchers.IO) {
+            //创建okHttp请求
+            val request = zyRequest.postJsonRequest(url, json)
+            execution(request, httpResultBean, this)
+        }
+    }
+
+
     suspend fun <T : BaseHttpResultBean> patch(
         url: String,
         params: HashMap<String, String>?,
@@ -75,21 +96,24 @@ object ZyHttp {
         }
     }
 
-
-    /**
-     * post传递JSON请求
-     * @param url URL服务器地址
-     * @param json 传递的json字符串
-     * @param httpResultBean 包含解析结果的实体bean
-     */
-    suspend fun <T : BaseHttpResultBean> postJson(url: String, json: String, httpResultBean: T) {
+    suspend fun <T : BaseHttpResultBean> patchJson(url: String, json: String, httpResultBean: T) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
-            val request = zyRequest.postJsonRequest(url, json)
+            val request = zyRequest.patchJsonRequest(url, json)
             execution(request, httpResultBean, this)
         }
     }
 
+
+    suspend fun <T : BaseHttpResultBean> put(
+        url: String, params: HashMap<String, String>?, httpResultBean: T
+    ) {
+        return withContext(Dispatchers.IO) {
+            //创建okHttp请求
+            val request = zyRequest.putFormRequest(url, params)
+            execution(request, httpResultBean, this)
+        }
+    }
 
     suspend fun <T : BaseHttpResultBean> putJson(url: String, json: String, httpResultBean: T) {
         return withContext(Dispatchers.IO) {
@@ -99,6 +123,16 @@ object ZyHttp {
         }
     }
 
+
+    suspend fun <T : BaseHttpResultBean> delete(
+        url: String, params: HashMap<String, String>?, httpResultBean: T
+    ) {
+        return withContext(Dispatchers.IO) {
+            //创建okHttp请求
+            val request = zyRequest.deleteFormRequest(url, params)
+            execution(request, httpResultBean, this)
+        }
+    }
 
     suspend fun <T : BaseHttpResultBean> deleteJson(url: String, json: String, httpResultBean: T) {
         return withContext(Dispatchers.IO) {

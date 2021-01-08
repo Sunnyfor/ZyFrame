@@ -44,6 +44,21 @@ class ZyRequest {
         return Request.Builder().url(urlSb.toString()).build()
     }
 
+    fun headRequest(url: String, params: HashMap<String, String>?): Request {
+        val urlSb = getUrlSb(url)
+        if (params?.isNotEmpty() == true) {
+            urlSb.append("?")
+            params.entries.forEach { entry ->
+                urlSb.append(entry.key)
+                    .append("=")
+                    .append(entry.value)
+                    .append("&")
+            }
+            urlSb.deleteCharAt(urlSb.lastIndex)
+        }
+        return Request.Builder().url(urlSb.toString()).head().build()
+    }
+
 
     /**
      * POST-JSON请求生成
@@ -69,7 +84,19 @@ class ZyRequest {
 
 
     /**
-     * POST-JSON请求生成
+     * PUT-FORM请求生成
+     */
+    fun putFormRequest(url: String, params: HashMap<String, String>?): Request {
+        val urlSb = getUrlSb(url)
+        val body = FormBody.Builder()
+        params?.entries?.forEach {
+            body.add(it.key, it.value)
+        }
+        return Request.Builder().url(urlSb.toString()).put(body.build()).build()
+    }
+
+    /**
+     * PUT-JSON请求生成
      */
     fun putJsonRequest(url: String, json: String): Request {
         val urlSb = getUrlSb(url)
@@ -91,7 +118,29 @@ class ZyRequest {
     }
 
     /**
-     *  DELETE请求
+     * PATCH-Jsonm请求生成
+     */
+    fun patchJsonRequest(url: String, json: String): Request {
+        val urlSb = getUrlSb(url)
+        val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+        return Request.Builder().url(urlSb.toString()).patch(body).build()
+    }
+
+
+    /**
+     * DELETE-Form请求生成
+     */
+    fun deleteFormRequest(url: String, params: HashMap<String, String>?): Request {
+        val urlSb = getUrlSb(url)
+        val body = FormBody.Builder()
+        params?.entries?.forEach {
+            body.add(it.key, it.value)
+        }
+        return Request.Builder().url(urlSb.toString()).delete(body.build()).build()
+    }
+
+    /**
+     *  DELETE-Json请求
      */
     fun deleteJsonRequest(url: String, json: String): Request {
         val urlSb = getUrlSb(url)

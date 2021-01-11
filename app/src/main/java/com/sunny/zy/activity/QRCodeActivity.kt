@@ -2,6 +2,7 @@ package com.sunny.zy.activity
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.view.View
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
@@ -18,6 +19,9 @@ class QRCodeActivity : BaseActivity() {
 
     companion object {
         const val result = "qrCode"
+        fun getQrResult(intent: Intent): String {
+            return intent.getStringExtra(result) ?: ""
+        }
     }
 
     private val qrCodeUtil: QRCodeUtil by lazy {

@@ -169,15 +169,10 @@ class ZyToolBar : Toolbar {
     }
 
     override fun getMenu(): Menu? {
-        if (layoutRes == 0) {
-            return super.getMenu()
-        }
-
         if (layoutRes == R.layout.zy_default_title) {
             return getView<ActionMenuView>(R.id.zy_menu_view).menu
         }
-
-        return null
+        return super.getMenu()
     }
 
 

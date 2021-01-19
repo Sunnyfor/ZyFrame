@@ -1,5 +1,6 @@
 package com.sunny.zy.utils
 
+import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
 
@@ -16,28 +17,43 @@ object StringUtil {
      */
 
     fun formatMoney(money: String?, len: Int, pattern: String? = null): String {
-        if (money == null || money.isEmpty() || money == "0.0" || money == "0" || money == "0.00") {
+        if (money == null || money.isEmpty()) {
             return "0.00"
         }
         val num = money.toDouble()
 
         if (pattern != null) {
             val mFormat = DecimalFormat(pattern)
+            mFormat.roundingMode = RoundingMode.DOWN
             return mFormat.format(num)
         }
         val mFormat = if (len == 0) {
             DecimalFormat("#")
         } else {
             val buff = StringBuffer()
-            buff.append("#.")
+            buff.append("0.")
             for (i in 0 until len) {
                 buff.append("0")
             }
             DecimalFormat(buff.toString())
         }
+        mFormat.roundingMode = RoundingMode.DOWN
         return mFormat.format(num)
     }
 
+
+
+    fun insertComma(money: String?,len:Int = 2):String{
+        val buff = StringBuffer()
+        buff.append("###,##0")
+        if (len> 0){
+            buff.append(".")
+            for (i in 0 until len) {
+                buff.append("0")
+            }
+        }
+       return formatMoney(money, buff.toString())
+    }
 
     fun formatMoney(money: String?, pattern: String) = formatMoney(money, 0, pattern)
     fun formatMoney(money: Double): String = formatMoney(money.toString(), 2)

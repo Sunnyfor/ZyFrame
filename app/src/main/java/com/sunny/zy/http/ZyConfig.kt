@@ -44,7 +44,11 @@ object ZyConfig {
      */
     val HOST: String
         get() {
-            return "$HOST_PREFIX://$IP:$PORT"
+            return if(PORT.isEmpty() || PORT == "80"){
+                "$HOST_PREFIX://$IP"
+            }else{
+                "$HOST_PREFIX://$IP:$PORT"
+            }
         }
 
 

@@ -21,9 +21,7 @@ object ZyHttp {
     //请求创建器
     var zyRequest = ZyRequest()
 
-    val clientFactory: OkHttpClientFactory by lazy {
-        OkHttpClientFactory()
-    }
+    var clientFactory = OkHttpClientFactory()
 
     /**
      * get请求

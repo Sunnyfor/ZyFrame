@@ -14,10 +14,6 @@ import java.util.concurrent.TimeUnit
  */
 class OkHttpClientFactory {
 
-//    private val defaultHttpClient: OkHttpClient by lazy {
-//        getBuild().build()
-//    }
-
     private fun getBuild(): OkHttpClient.Builder {
         val builder =
             OkHttpClient.Builder()
@@ -32,7 +28,10 @@ class OkHttpClientFactory {
                     }).apply {
                         level = ZyHttpLoggingInterceptor.Level.BODY
                     })
-
+                .sslSocketFactory(
+                    ZySSLSocketClient.createSSLSocketFactory(),
+                    ZySSLSocketClient.getTrustManager()
+                )
                 .hostnameVerifier(ZyConfig.hostnameVerifier)
                 .connectTimeout(ZyConfig.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS) //连接超时时间
                 .readTimeout(ZyConfig.READ_TIME_OUT, TimeUnit.MILLISECONDS) //读取超时时间

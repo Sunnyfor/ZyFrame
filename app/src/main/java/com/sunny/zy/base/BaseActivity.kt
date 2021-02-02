@@ -105,6 +105,12 @@ abstract class BaseActivity : AppCompatActivity(),
         ZyFrameStore.addActivity(this)
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        if (permissionsUtil.isNoHint) {
+            permissionsUtil.retryRequestPermissions(this)
+        }
+    }
 
     /**
      * 设置布局操作
@@ -347,8 +353,12 @@ abstract class BaseActivity : AppCompatActivity(),
         permissionsUtil.requestPermissions(this, permissions, permissionOkResult)
     }
 
-    fun permissionsFailedIsFinish(isFinish: Boolean) {
-        permissionsUtil.isFinish = isFinish
+    fun setPermissionsCancelFinish(isFinish: Boolean) {
+        permissionsUtil.isCancelFinish = isFinish
+    }
+
+    fun setPermissionsNoHintFinish(isFinish: Boolean) {
+        permissionsUtil.isNoHintFinish = isFinish
     }
 
     /**

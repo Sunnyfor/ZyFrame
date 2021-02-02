@@ -104,7 +104,7 @@ class QRCodeUtil(
 
             val source =
                 PlanarYUVLuminanceSource(
-                    data, image.width, image.height, 0, 0, surface.height, surface.width, false
+                    data, image.width, image.height, 0, 0, image.width, image.height, false
                 )
             val bitmap = BinaryBitmap(HybridBinarizer(source))
 

@@ -189,35 +189,41 @@ object ZyHttp {
 
 
     private fun executeDownload(request: Request, resultBean: DownLoadResultBean) {
-        val response = clientFactory.createDownloadClient(resultBean).newCall(request).execute()
-        //获取HTTP状态码
-        resultBean.httpCode = response.code
-        //获取Response回执信息
-        resultBean.message = response.message
-        //获取请求URL
-        resultBean.url = request.url.toString()
-        if (response.isSuccessful) {
-            response.body?.let {
-                resultBean.file = ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
+        resultBean.call = clientFactory.createDownloadClient(resultBean).newCall(request)
+        resultBean.call?.execute()?.let { response ->
+            //获取HTTP状态码
+            resultBean.httpCode = response.code
+            //获取Response回执信息
+            resultBean.message = response.message
+            //获取请求URL
+            resultBean.url = request.url.toString()
+            if (response.isSuccessful) {
+                response.body?.let {
+                    resultBean.file =
+                        ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
+                }
             }
         }
     }
 
     private fun <T> executeHttp(request: Request, resultBean: HttpResultBean<T>) {
-        val response = clientFactory.getOkHttpClient().newCall(request).execute()
-        //获取HTTP状态码
-        resultBean.httpCode = response.code
-        //获取Response回执信息
-        resultBean.message = response.message
-        //获取响应URL
-        resultBean.resUrl = response.request.url.toString()
+        resultBean.call = clientFactory.getOkHttpClient().newCall(request)
+        resultBean.call?.execute()?.let { response ->
+            //获取HTTP状态码
+            resultBean.httpCode = response.code
+            //获取Response回执信息
+            resultBean.message = response.message
+            //获取响应URL
+            resultBean.resUrl = response.request.url.toString()
 
-        if (response.isSuccessful) {
-            response.body?.let {
-                resultBean.bean = ZyConfig.iResponseParser.parserHttpResponse(
-                    it, resultBean
-                )
+            if (response.isSuccessful) {
+                response.body?.let {
+                    resultBean.bean = ZyConfig.iResponseParser.parserHttpResponse(
+                        it, resultBean
+                    )
+                }
             }
         }
+
     }
 }

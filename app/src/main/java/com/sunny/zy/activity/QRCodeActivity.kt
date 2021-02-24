@@ -57,8 +57,38 @@ class QRCodeActivity : BaseActivity() {
         setTitleDefault("扫一扫")
         setPermissionsCancelFinish(true)
         setPermissionsNoHintFinish(true)
+
+        surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
+            override fun surfaceChanged(
+                holder: SurfaceHolder, format: Int,
+                width: Int, height: Int
+            ) {
+            }
+
+            override fun surfaceDestroyed(holder: SurfaceHolder) {}
+
+            override fun surfaceCreated(holder: SurfaceHolder) {
+                // Selects appropriate preview size and configures view finder
+                qrCodeUtil.queryCameraId()
+                val previewSize = getPreviewOutputSize(
+                    surfaceView.display,
+                    qrCodeUtil.characteristics ?: return,
+                    SurfaceHolder::class.java
+                )
+                LogUtil.i("View finder size: ${surfaceView.width} x ${surfaceView.height}")
+                LogUtil.i("Selected preview size: $previewSize")
+                surfaceView.setAspectRatio(previewSize.width, previewSize.height)
+            }
+        })
+
         requestPermissions(Manifest.permission.CAMERA) {
-            qrCodeUtil.startCamera(surfaceView)
+            showLoading()
+            surfaceView.post {
+                qrCodeUtil.open(surfaceView)
+                hideLoading()
+            }
+
+
         }
     }
 

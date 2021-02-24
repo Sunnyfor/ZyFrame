@@ -8,11 +8,10 @@ import android.media.ImageReader
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.Surface
-import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
-import com.sunny.zy.widget.AutoFitSurfaceView
+import com.sunny.zy.ZyFrameStore
 
 /**
  * Desc
@@ -62,11 +61,17 @@ class QRCodeUtil(
 
     private var cameraId = ""
 
+    var characteristics: CameraCharacteristics? = null
+
     /**
      * 此方法需要获取摄像头权限后再调用
      */
     @SuppressLint("MissingPermission")
-    private fun open(surface: SurfaceView) {
+    fun open(surface: SurfaceView) {
+        if (cameraId.isEmpty()) {
+            queryCameraId()
+        }
+
         imageReader =
             ImageReader.newInstance(surface.height, surface.width, ImageFormat.YUV_420_888, 3)
         imageReader?.setOnImageAvailableListener({
@@ -108,7 +113,7 @@ class QRCodeUtil(
             }
         }, imageReaderHandler)
 
-        getCameraManager(surface.context).openCamera(
+        getCameraManager().openCamera(
             cameraId,
             object : CameraDevice.StateCallback() {
                 override fun onOpened(camera: CameraDevice) {
@@ -131,37 +136,16 @@ class QRCodeUtil(
 
     }
 
-    fun startCamera(surfaceView: AutoFitSurfaceView) {
-        val cameraList = queryCamera(surfaceView.context)
+    fun queryCameraId(): String {
+        val cameraList = queryCamera()
         cameraList.forEach {
-            val characteristics = getCameraManager(surfaceView.context).getCameraCharacteristics(it)
+            val characteristics = getCameraManager().getCameraCharacteristics(it)
             if (cameraFacing == characteristics.get(CameraCharacteristics.LENS_FACING)) {
                 cameraId = it
-                surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-                    override fun surfaceChanged(
-                        holder: SurfaceHolder, format: Int,
-                        width: Int, height: Int
-                    ) {
-                    }
-
-                    override fun surfaceDestroyed(holder: SurfaceHolder) {}
-
-                    override fun surfaceCreated(holder: SurfaceHolder) {
-                        // Selects appropriate preview size and configures view finder
-                        val previewSize = getPreviewOutputSize(
-                            surfaceView.display, characteristics, SurfaceHolder::class.java
-                        )
-                        LogUtil.i("View finder size: ${surfaceView.width} x ${surfaceView.height}")
-                        LogUtil.i("Selected preview size: $previewSize")
-                        surfaceView.setAspectRatio(previewSize.width, previewSize.height)
-                        surfaceView.post {
-                            open(surfaceView)
-                        }
-                    }
-                })
-                return@forEach
+                this.characteristics = characteristics
             }
         }
+        return cameraId
     }
 
     private fun createCaptureSession(surface: SurfaceView) {
@@ -212,13 +196,13 @@ class QRCodeUtil(
 
     }
 
-    fun queryCamera(context: Context): Array<String> {
-        return getCameraManager(context).cameraIdList
+    fun queryCamera(): Array<String> {
+        return getCameraManager().cameraIdList
     }
 
 
-    fun getCameraManager(context: Context): CameraManager {
-        return context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    fun getCameraManager(): CameraManager {
+        return ZyFrameStore.getContext().getSystemService(Context.CAMERA_SERVICE) as CameraManager
     }
 
 

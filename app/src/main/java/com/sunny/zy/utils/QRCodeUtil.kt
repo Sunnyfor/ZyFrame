@@ -12,6 +12,7 @@ import android.view.SurfaceView
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.sunny.zy.ZyFrameStore
+import com.sunny.zy.widget.AutoFitSurfaceView
 
 /**
  * Desc
@@ -67,10 +68,7 @@ class QRCodeUtil(
      * 此方法需要获取摄像头权限后再调用
      */
     @SuppressLint("MissingPermission")
-    fun open(surface: SurfaceView) {
-        if (cameraId.isEmpty()) {
-            queryCameraId()
-        }
+    fun open(surface: AutoFitSurfaceView) {
 
         imageReader =
             ImageReader.newInstance(surface.height, surface.width, ImageFormat.YUV_420_888, 3)
@@ -143,9 +141,10 @@ class QRCodeUtil(
             if (cameraFacing == characteristics.get(CameraCharacteristics.LENS_FACING)) {
                 cameraId = it
                 this.characteristics = characteristics
+                return cameraId
             }
         }
-        return cameraId
+        return ""
     }
 
     private fun createCaptureSession(surface: SurfaceView) {

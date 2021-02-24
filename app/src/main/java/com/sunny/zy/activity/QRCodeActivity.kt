@@ -11,6 +11,7 @@ import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.LogUtil
 import com.sunny.zy.utils.QRCodeUtil
+import com.sunny.zy.utils.ToastUtil
 import com.sunny.zy.utils.getPreviewOutputSize
 import kotlinx.android.synthetic.main.zy_frag_qr_code.*
 
@@ -45,6 +46,7 @@ class QRCodeActivity : BaseActivity() {
             cameraReadyCallBack = {
                 runOnUiThread {
                     hideLoading()
+                    view_placeholder.visibility = View.GONE
                     viewfinderView.visibility = View.VISIBLE
                 }
             }
@@ -57,38 +59,37 @@ class QRCodeActivity : BaseActivity() {
         setTitleDefault("扫一扫")
         setPermissionsCancelFinish(true)
         setPermissionsNoHintFinish(true)
-
-        surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceChanged(
-                holder: SurfaceHolder, format: Int,
-                width: Int, height: Int
-            ) {
-            }
-
-            override fun surfaceDestroyed(holder: SurfaceHolder) {}
-
-            override fun surfaceCreated(holder: SurfaceHolder) {
-                // Selects appropriate preview size and configures view finder
-                qrCodeUtil.queryCameraId()
-                val previewSize = getPreviewOutputSize(
-                    surfaceView.display,
-                    qrCodeUtil.characteristics ?: return,
-                    SurfaceHolder::class.java
-                )
-                LogUtil.i("View finder size: ${surfaceView.width} x ${surfaceView.height}")
-                LogUtil.i("Selected preview size: $previewSize")
-                surfaceView.setAspectRatio(previewSize.width, previewSize.height)
-            }
-        })
-
         requestPermissions(Manifest.permission.CAMERA) {
             showLoading()
-            surfaceView.post {
-                qrCodeUtil.open(surfaceView)
-                hideLoading()
-            }
 
+            surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
+                override fun surfaceChanged(
+                    holder: SurfaceHolder, format: Int,
+                    width: Int, height: Int
+                ) {
+                }
 
+                override fun surfaceDestroyed(holder: SurfaceHolder) {}
+
+                override fun surfaceCreated(holder: SurfaceHolder) {
+                    // Selects appropriate preview size and configures view finder
+                    if (qrCodeUtil.queryCameraId().isEmpty()){
+                        ToastUtil.show("没有匹配到摄像头")
+                        return
+                    }
+                    val previewSize = getPreviewOutputSize(
+                        surfaceView.display,
+                        qrCodeUtil.characteristics ?: return,
+                        SurfaceHolder::class.java
+                    )
+                    LogUtil.i("View finder size: ${surfaceView.width} x ${surfaceView.height}")
+                    LogUtil.i("Selected preview size: $previewSize")
+                    surfaceView.setAspectRatio(previewSize.width, previewSize.height)
+                    surfaceView.post {
+                        qrCodeUtil.open(surfaceView)
+                    }
+                }
+            })
         }
     }
 

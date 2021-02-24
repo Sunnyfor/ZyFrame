@@ -3,12 +3,15 @@ package com.sunny.zy.activity
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.view.SurfaceHolder
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
+import com.sunny.zy.utils.LogUtil
 import com.sunny.zy.utils.QRCodeUtil
+import com.sunny.zy.utils.getPreviewOutputSize
 import kotlinx.android.synthetic.main.zy_frag_qr_code.*
 
 /**
@@ -55,10 +58,7 @@ class QRCodeActivity : BaseActivity() {
         setPermissionsCancelFinish(true)
         setPermissionsNoHintFinish(true)
         requestPermissions(Manifest.permission.CAMERA) {
-            showLoading()
-            surfaceView.post {
-                qrCodeUtil.open(surfaceView)
-            }
+            qrCodeUtil.startCamera(surfaceView)
         }
     }
 

@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.sunny.zy.widget.AutoFitSurfaceView
-        android:id="@+id/surfaceView"
+    <FrameLayout
+        android:id="@+id/fl_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,5 +27,5 @@
         android:id="@+id/view_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_black"/>
+        android:background="@color/color_black" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -69,7 +69,6 @@ class QRCodeUtil(
      */
     @SuppressLint("MissingPermission")
     fun open(surface: AutoFitSurfaceView) {
-
         imageReader =
             ImageReader.newInstance(surface.height, surface.width, ImageFormat.YUV_420_888, 3)
         imageReader?.setOnImageAvailableListener({
@@ -207,10 +206,9 @@ class QRCodeUtil(
 
     fun onClose() {
         camera?.close()
+        camera = null
         mSession?.close()
         imageReader?.close()
         imageReader?.setOnImageAvailableListener(null, null)
-        imageReaderThread.quitSafely()
-        cameraThread.quitSafely()
     }
 }

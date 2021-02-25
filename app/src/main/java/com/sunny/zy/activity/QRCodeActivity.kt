@@ -13,6 +13,7 @@ import com.sunny.zy.utils.LogUtil
 import com.sunny.zy.utils.QRCodeUtil
 import com.sunny.zy.utils.ToastUtil
 import com.sunny.zy.utils.getPreviewOutputSize
+import com.sunny.zy.widget.AutoFitSurfaceView
 import kotlinx.android.synthetic.main.zy_frag_qr_code.*
 
 /**
@@ -53,15 +54,19 @@ class QRCodeActivity : BaseActivity() {
         }
     }
 
+
     override fun initLayout() = R.layout.zy_frag_qr_code
 
     override fun initView() {
         setTitleDefault("扫一扫")
         setPermissionsCancelFinish(true)
         setPermissionsNoHintFinish(true)
-        requestPermissions(Manifest.permission.CAMERA) {
-            showLoading()
 
+        showLoading()
+
+        requestPermissions(Manifest.permission.CAMERA) {
+            fl_content.removeAllViews()
+            val surfaceView = AutoFitSurfaceView(this)
             surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceChanged(
                     holder: SurfaceHolder, format: Int,
@@ -73,7 +78,7 @@ class QRCodeActivity : BaseActivity() {
 
                 override fun surfaceCreated(holder: SurfaceHolder) {
                     // Selects appropriate preview size and configures view finder
-                    if (qrCodeUtil.queryCameraId().isEmpty()){
+                    if (qrCodeUtil.queryCameraId().isEmpty()) {
                         ToastUtil.show("没有匹配到摄像头")
                         return
                     }
@@ -90,6 +95,7 @@ class QRCodeActivity : BaseActivity() {
                     }
                 }
             })
+            fl_content.addView(surfaceView)
         }
     }
 

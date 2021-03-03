@@ -38,12 +38,13 @@ class QRCodeActivity : BaseActivity() {
         }
     }
 
-    private val qrCodeUtil: QRCodeUtil by lazy {
-        QRCodeUtil {
-            intent.putExtra(resultKey, it)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }.apply {
+    val qrCodeUtil: QRCodeUtil by lazy {
+        QRCodeUtil().apply {
+            resultCallback = {
+                intent.putExtra(resultKey, it)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
             cameraReadyCallBack = {
                 runOnUiThread {
                     hideLoading()

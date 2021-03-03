@@ -2,6 +2,8 @@ package com.sunny.zy.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageFormat
 import android.hardware.camera2.*
 import android.media.ImageReader
@@ -10,9 +12,12 @@ import android.os.HandlerThread
 import android.view.Surface
 import android.view.SurfaceView
 import com.google.zxing.*
+import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.widget.AutoFitSurfaceView
+
 
 /**
  * Desc
@@ -20,11 +25,11 @@ import com.sunny.zy.widget.AutoFitSurfaceView
  * Mail yongzuo.chen@foxmail.com
  * Date 2020/10/25 22:51
  */
-class QRCodeUtil(
-    private val resultCallback: (result: String) -> Unit
-) {
+class QRCodeUtil {
 
     var result = ""
+
+    var resultCallback: ((result: String) -> Unit)? = null
 
     var cameraReadyCallBack: (() -> Unit)? = null
 
@@ -104,7 +109,7 @@ class QRCodeUtil(
 
             try {
                 result = reader.decode(bitmap, hintsMap).text
-                resultCallback.invoke(result)
+                resultCallback?.invoke(result)
             } catch (e: NotFoundException) {
                 image.close()
             }
@@ -201,6 +206,46 @@ class QRCodeUtil(
 
     fun getCameraManager(): CameraManager {
         return ZyFrameStore.getContext().getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    }
+
+
+    var qrcode_size = 300
+
+    fun createQRCode(content: String): Bitmap? {
+        val hashMap = HashMap<EncodeHintType, Any>()
+        // 设置二维码字符编码
+        hashMap[EncodeHintType.CHARACTER_SET] = "UTF-8"
+        // 设置二维码纠错等级
+        hashMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.M
+        // 设置二维码边距
+        hashMap[EncodeHintType.MARGIN] = 2
+
+        try {
+            // 开始生成二维码
+            val bitMatrix = MultiFormatWriter().encode(
+                content, BarcodeFormat.QR_CODE,
+                qrcode_size, qrcode_size, hashMap
+            )
+
+            val pixels = IntArray(qrcode_size * qrcode_size)
+            for (y in 0 until qrcode_size) {
+                for (x in 0 until qrcode_size) {
+                    //bitMatrix.get(x,y)方法返回true是黑色色块，false是白色色块
+                    if (bitMatrix[x, y]) {
+                        pixels[y * qrcode_size + x] = Color.BLACK //黑色色块像素设置
+                    } else {
+                        pixels[y * qrcode_size + x] = Color.WHITE // 白色色块像素设置
+                    }
+                }
+            }
+            /** 4.创建Bitmap对象,根据像素数组设置Bitmap每个像素点的颜色值,并返回Bitmap对象  */
+            val bitmap = Bitmap.createBitmap(qrcode_size, qrcode_size, Bitmap.Config.ARGB_8888)
+            bitmap.setPixels(pixels, 0, qrcode_size, 0, 0, qrcode_size, qrcode_size)
+            return bitmap
+        } catch (e: WriterException) {
+            e.printStackTrace()
+        }
+        return null
     }
 
 

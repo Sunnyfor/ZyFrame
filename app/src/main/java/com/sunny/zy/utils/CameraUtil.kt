@@ -55,7 +55,7 @@ class CameraUtil {
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (aspectX != 0 && aspectY != 0) {
-                    startPhotoZoom(activity, uri ?: return@registerForActivityResult)
+                    startPhotoZoom(activity, uri?: return@registerForActivityResult)
                 } else {
                     onResultListener?.onResult(file ?: return@registerForActivityResult)
                 }
@@ -80,15 +80,13 @@ class CameraUtil {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (aspectX != 0 && aspectY != 0) {
-
-                    startPhotoZoom(activity, uri ?: return@registerForActivityResult)
-                } else {
-                    it.data?.data?.let { mUri ->
+                it.data?.data?.let { mUri ->
+                    if (aspectX != 0 && aspectY != 0) {
+                        startPhotoZoom(activity, mUri)
+                    } else {
                         whiteResult(activity, mUri)
                     }
                 }
-
             }.launch(intent)
         }
     }

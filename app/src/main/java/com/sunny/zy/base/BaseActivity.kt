@@ -1,6 +1,5 @@
 package com.sunny.zy.base
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.drawable.BitmapDrawable
@@ -28,8 +27,7 @@ import com.sunny.zy.utils.*
  * Author Zy
  * Date 2018/8/2
  */
-@Suppress("MemberVisibilityCanBePrivate")
-@SuppressLint("SourceLockedOrientationActivity")
+
 abstract class BaseActivity : AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback, IBaseView,
     View.OnClickListener, OnTitleListener {

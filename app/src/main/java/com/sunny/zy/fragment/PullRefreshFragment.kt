@@ -12,7 +12,6 @@ import com.sunny.zy.widget.PullRefreshLayout
  * Author Zy
  * Date 2020/6/4 16:05
  */
-@Deprecated("后续版本删除这个狗篮子")
 open
 class PullRefreshFragment<T> : BaseFragment() {
     open var adapter: BaseRecycleAdapter<T>? = null

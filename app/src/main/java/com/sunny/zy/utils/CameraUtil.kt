@@ -49,7 +49,7 @@ class CameraUtil {
         ) {
             initFile("jpg")
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)// 更改系统默认存储路径
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
@@ -77,8 +77,11 @@ class CameraUtil {
             initFile("jpg")
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (aspectX != 0 && aspectY != 0) {
+
                     startPhotoZoom(activity, uri ?: return@registerForActivityResult)
                 } else {
                     it.data?.data?.let { mUri ->

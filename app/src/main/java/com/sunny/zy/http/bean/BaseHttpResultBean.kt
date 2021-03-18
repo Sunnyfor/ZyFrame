@@ -8,7 +8,7 @@ abstract class BaseHttpResultBean {
     var url = ""        //请求URL
     var resUrl = ""      //响应URL
     var httpCode = 0    //请求code
-    var message = "OK"
+    var message = ""
     var call: Call? = null
     var scope: CoroutineScope? = null
     var exception: Exception? = null //网络请求异常信息

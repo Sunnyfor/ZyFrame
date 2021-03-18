@@ -42,26 +42,30 @@ class ZHResponseParser : IResponseParser {
         }
         //解析泛型类
         if (type is ParameterizedType) {
+            val jsonObj = JSONObject(body)
+            var data = "data"
             when (type.rawType) {
                 BaseModel::class.java -> {
-                    val jsonObj = JSONObject(body)
-                    val childType = type.actualTypeArguments[0]
-                    val baseModel = BaseModel<Any>()
-                    baseModel.msg = jsonObj.optString("msg")
-                    baseModel.code = jsonObj.optString("code")
-                    val mData =
-                        mGSon.fromJson<Any>(
-                            jsonObj.optString(httpResultBean.serializedName),
-                            childType
-                        )
-                    baseModel.data = mData
+                    val serializableName = httpResultBean.serializedName
+                    if (serializableName != data) {
+                        jsonObj.put(data, jsonObj.opt(serializableName))
+                        jsonObj.remove(serializableName)
+                    }
+                    val baseModel = mGSon.fromJson<BaseModel<Any>>(jsonObj.toString(), type)
+                    if (!baseModel.isSuccess()) {
+                        httpResultBean.message = baseModel.msg
+                    }
                     return baseModel as T
                 }
                 PageModel::class.java -> {
-                    val jsonObj = JSONObject(body)
-                    jsonObj.put("data", jsonObj.optJSONObject("page"))
-                    jsonObj.remove("page")
-                    return mGSon.fromJson(jsonObj.toString(), type)
+                    data = "page"
+                    jsonObj.put("data", jsonObj.opt(data))
+                    jsonObj.remove(data)
+                    val pageModel = mGSon.fromJson<PageModel<Any>>(jsonObj.toString(), type)
+                    if (!pageModel.isSuccess()) {
+                        httpResultBean.message = pageModel.msg
+                    }
+                    return pageModel as T
                 }
             }
         }

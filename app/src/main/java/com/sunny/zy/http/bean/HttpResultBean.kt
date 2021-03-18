@@ -1,5 +1,6 @@
 package com.sunny.zy.http.bean
 
+import com.sunny.zy.utils.ToastUtil
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -26,14 +27,11 @@ abstract class HttpResultBean<T>(
 
 
     fun isSuccess(): Boolean {
-        var isSuccess = false
-        if (httpIsSuccess()) {
-            //执行未出现异常
-            if (exception == null) {
-                isSuccess = true
-            }
+        if (httpIsSuccess() && message.isEmpty()) {
+            return true
         }
-        return isSuccess
+        ToastUtil.show(message)
+        return false
     }
 
     override fun toString(): String {

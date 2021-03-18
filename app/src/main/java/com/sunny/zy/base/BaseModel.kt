@@ -1,7 +1,5 @@
 package com.sunny.zy.base
 
-import com.sunny.zy.utils.ToastUtil
-
 /**
  * Desc 公共实体类
  * Author Zy
@@ -14,10 +12,9 @@ open class BaseModel<T> {
 
 
     fun isSuccess(): Boolean {
-        if (msg == "success") {
+        if (code == "0" && msg == "success") {
             return true
         }
-        ToastUtil.show(msg)
         return false
     }
 

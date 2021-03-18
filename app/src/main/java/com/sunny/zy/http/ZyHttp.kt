@@ -178,8 +178,8 @@ object ZyHttp {
         } catch (e: Exception) {
             //出现异常获取异常信息
             httpResultBean.exception = e
-            httpResultBean.message = "Exception"
-            LogUtil.e("异常信息：$httpResultBean")
+            httpResultBean.message = e.message ?: ""
+            LogUtil.e("发生异常->:$httpResultBean")
         }
 
         withContext(Dispatchers.Main) {

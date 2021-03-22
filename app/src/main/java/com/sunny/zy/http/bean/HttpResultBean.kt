@@ -1,7 +1,7 @@
 package com.sunny.zy.http.bean
 
+import com.google.gson.reflect.TypeToken
 import com.sunny.zy.utils.ToastUtil
-import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
 /**
@@ -14,17 +14,9 @@ abstract class HttpResultBean<T>(
 ) :
     BaseHttpResultBean() {
 
-    var typeToken: Type
-
-    init {
-        val type = javaClass.genericSuperclass
-        val args = (type as ParameterizedType).actualTypeArguments
-        typeToken = args[0]
-    }
-
+    var typeToken: Type = object : TypeToken<T>() {}.type
 
     var bean: T? = null
-
 
     fun isSuccess(): Boolean {
         if (httpIsSuccess() && message.isEmpty()) {
@@ -39,4 +31,8 @@ abstract class HttpResultBean<T>(
     }
 
 
+}
+
+fun <T> getHttpResultBean(serializedName: String = "data"): HttpResultBean<T> {
+    return object : HttpResultBean<T>(serializedName) {}
 }

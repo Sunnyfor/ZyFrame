@@ -24,3 +24,15 @@ abstract class DownLoadResultBean(var fileName: String? = null, var filePath: St
     }
 
 }
+
+fun getDownLoadResultBean(
+    fileName: String? = null,
+    filePath: String? = null,
+    notifyData: ((bean: DownLoadResultBean) -> Unit)? = null
+): DownLoadResultBean {
+    return object : DownLoadResultBean(fileName, filePath) {
+        override fun notifyData(downLoadResultBean: DownLoadResultBean) {
+            notifyData?.invoke(downLoadResultBean)
+        }
+    }
+}

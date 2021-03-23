@@ -11,8 +11,7 @@ import java.lang.reflect.Type
  */
 abstract class HttpResultBean<T>(
     var serializedName: String = "data"
-) :
-    BaseHttpResultBean() {
+) : BaseHttpResultBean() {
 
     var typeToken: Type = object : TypeToken<T>() {}.type
 

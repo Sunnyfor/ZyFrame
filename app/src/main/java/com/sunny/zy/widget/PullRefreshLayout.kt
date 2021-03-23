@@ -79,7 +79,6 @@ class PullRefreshLayout : SmartRefreshLayout {
                 } else {
                     page++
                 }
-
                 loadData?.invoke()
             }
 
@@ -89,7 +88,6 @@ class PullRefreshLayout : SmartRefreshLayout {
                 } else {
                     page = 1
                 }
-                page = 1
                 loadData?.invoke()
             }
         })
@@ -149,23 +147,23 @@ class PullRefreshLayout : SmartRefreshLayout {
     }
 
 
-    fun <T> deleteData(adapter: BaseRecycleAdapter<T>,index: Int) {
-            adapter.getData().removeAt(index)
-            adapter.notifyDataSetChanged()
-            updateEmptyView(adapter.getData())
+    fun <T> deleteData(adapter: BaseRecycleAdapter<T>, index: Int) {
+        adapter.getData().removeAt(index)
+        adapter.notifyDataSetChanged()
+        updateEmptyView(adapter.getData())
     }
 
-    fun <T> deleteData(adapter: BaseRecycleAdapter<T>,data: T) {
-            adapter.getData().remove(data)
-            adapter.notifyDataSetChanged()
-            updateEmptyView(adapter.getData())
+    fun <T> deleteData(adapter: BaseRecycleAdapter<T>, data: T) {
+        adapter.getData().remove(data)
+        adapter.notifyDataSetChanged()
+        updateEmptyView(adapter.getData())
 
     }
 
-    fun <T> deleteData(adapter: BaseRecycleAdapter<T>,data: ArrayList<T>) {
-            adapter.getData().removeAll(data)
-            adapter.notifyDataSetChanged()
-            updateEmptyView(adapter.getData())
+    fun <T> deleteData(adapter: BaseRecycleAdapter<T>, data: ArrayList<T>) {
+        adapter.getData().removeAll(data)
+        adapter.notifyDataSetChanged()
+        updateEmptyView(adapter.getData())
     }
 
 

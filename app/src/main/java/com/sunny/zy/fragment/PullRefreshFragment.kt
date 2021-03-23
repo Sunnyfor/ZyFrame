@@ -22,6 +22,9 @@ class PullRefreshFragment<T> : BaseFragment() {
             field = value
             pullRefreshLayout?.page = value
         }
+        get() {
+            return pullRefreshLayout?.page ?: 1
+        }
 
     open var loadData: (() -> Unit)? = null
     open var enableRefresh: Boolean = true
@@ -33,7 +36,7 @@ class PullRefreshFragment<T> : BaseFragment() {
 
 
     override fun initLayout(): Any? {
-        if(pullRefreshLayout == null){
+        if (pullRefreshLayout == null) {
             pullRefreshLayout = PullRefreshLayout(requireContext())
         }
         return pullRefreshLayout
@@ -74,15 +77,15 @@ class PullRefreshFragment<T> : BaseFragment() {
     }
 
     open fun addData(index: Int, data: ArrayList<T>) {
-        pullRefreshLayout?.addData(adapter?:return,index, data)
+        pullRefreshLayout?.addData(adapter ?: return, index, data)
     }
 
     open fun deleteData(index: Int) {
-        pullRefreshLayout?.deleteData(adapter?:return,index)
+        pullRefreshLayout?.deleteData(adapter ?: return, index)
     }
 
     open fun deleteData(data: T) {
-        pullRefreshLayout?.deleteData(adapter?:return,data)
+        pullRefreshLayout?.deleteData(adapter ?: return, data)
     }
 
 

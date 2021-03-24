@@ -149,9 +149,18 @@ class PullRefreshLayout : SmartRefreshLayout {
             }
         }
         if (index < 0) {
-            adapter.getData().addAll(data)
+            if (isReverse) {
+                adapter.getData().addAll(0, data)
+            } else {
+                adapter.getData().addAll(data)
+            }
         } else {
-            adapter.getData().addAll(index, data)
+            if (isReverse) {
+                adapter.getData().addAll(data)
+            } else {
+                adapter.getData().addAll(index, data)
+            }
+
         }
         updateEmptyView(adapter.getData())
         adapter.notifyDataSetChanged()

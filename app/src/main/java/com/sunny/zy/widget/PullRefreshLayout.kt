@@ -127,13 +127,25 @@ class PullRefreshLayout : SmartRefreshLayout {
     fun <T> addData(adapter: BaseRecycleAdapter<T>, index: Int = -1, data: ArrayList<T>) {
         if (page == 1) {
             adapter.getData().clear()
-            finishRefresh()
+            if (isReverse) {
+                finishLoadMore()
+            } else {
+                finishRefresh()
+            }
         } else {
             if (data.isEmpty()) {
                 page--
-                finishLoadMoreWithNoMoreData()
+                if (isReverse) {
+                    finishRefreshWithNoMoreData()
+                } else {
+                    finishLoadMoreWithNoMoreData()
+                }
             } else {
-                finishLoadMore()
+                if (isReverse) {
+                    finishRefresh()
+                } else {
+                    finishLoadMore()
+                }
             }
         }
         if (index < 0) {

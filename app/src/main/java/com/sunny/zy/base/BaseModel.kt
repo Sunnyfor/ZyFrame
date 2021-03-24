@@ -8,6 +8,7 @@ package com.sunny.zy.base
 open class BaseModel<T> {
     var msg: String = "success"
     var code: String = "0"
+
     var data: T? = null
 
 

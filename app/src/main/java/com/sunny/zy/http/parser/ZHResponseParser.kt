@@ -23,23 +23,22 @@ import java.lang.reflect.ParameterizedType
  * Date 2020/4/29 14:51
  */
 @Suppress("UNCHECKED_CAST")
-class ZHResponseParser : IResponseParser {
+open class ZHResponseParser : IResponseParser {
 
-    val mGSon = Gson()
+    open val mGSon = Gson()
 
     override fun <T> parserHttpResponse(
         responseBody: ResponseBody,
         httpResultBean: HttpResultBean<T>
     ): T {
 
-        val type = httpResultBean.typeToken
-
+        val type = httpResultBean.type
         val body = responseBody.string()
-        //解析非泛型类
-        if (type is Class<*>) {
-            if (type.name == String::class.java.name)
-                return body as T
+
+        if (type.toString() == String::class.java.toString()) {
+            return body as T
         }
+
         //解析泛型类
         if (type is ParameterizedType) {
             val jsonObj = JSONObject(body)
@@ -69,8 +68,7 @@ class ZHResponseParser : IResponseParser {
                 }
             }
         }
-
-        return mGSon.fromJson(body, type)
+        return mGSon.fromJson<T>(body, type)
     }
 
     override fun parserDownloadResponse(

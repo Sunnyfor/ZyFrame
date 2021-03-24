@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sunny.zy.base.BaseFragment
 import com.sunny.zy.base.BaseRecycleAdapter
+import com.sunny.zy.utils.PlaceholderViewUtil
 import com.sunny.zy.widget.PullRefreshLayout
 
 /**
@@ -12,25 +13,29 @@ import com.sunny.zy.widget.PullRefreshLayout
  * Author Zy
  * Date 2020/6/4 16:05
  */
-open
-class PullRefreshFragment<T> : BaseFragment() {
+open class PullRefreshFragment<T> : BaseFragment() {
     open var adapter: BaseRecycleAdapter<T>? = null
     open var layoutManager: RecyclerView.LayoutManager? = null
 
-    open var page = 1
+    var defaultPage = 1
+
+    var page: Int = defaultPage
         set(value) {
             field = value
             pullRefreshLayout?.page = value
         }
         get() {
-            return pullRefreshLayout?.page ?: 1
+            return pullRefreshLayout?.page ?: defaultPage
         }
+
+    //如果为true 就标识下拉加载  上拉刷新
+
+    var isReverse: Boolean = false
 
     open var loadData: (() -> Unit)? = null
     open var enableRefresh: Boolean = true
     open var enableLoadMore: Boolean = true
     open var isShowEmptyView = true //是否显示占位图
-    open var isReverse = false //如果为true 就标识下拉加载  上拉刷新
 
     private var pullRefreshLayout: PullRefreshLayout? = null
 
@@ -46,7 +51,11 @@ class PullRefreshFragment<T> : BaseFragment() {
 
         pullRefreshLayout?.enableRefresh = enableRefresh
         pullRefreshLayout?.enableLoadMore = enableLoadMore
+        pullRefreshLayout?.isReverse = isReverse
 
+        if (isShowEmptyView) {
+            pullRefreshLayout?.placeholderViewUtil = PlaceholderViewUtil()
+        }
         getRecyclerView()?.adapter = adapter
         layoutManager = layoutManager ?: LinearLayoutManager(context)
         getRecyclerView()?.layoutManager = layoutManager
@@ -92,5 +101,5 @@ class PullRefreshFragment<T> : BaseFragment() {
     open fun getAllData() = adapter?.getData()
 
 
-    fun getRecyclerView() = pullRefreshLayout?.getContentView<RecyclerView>()
+    open fun getRecyclerView() = pullRefreshLayout?.getContentView<RecyclerView>()
 }

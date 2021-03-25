@@ -54,7 +54,9 @@ class PullRefreshLayout : SmartRefreshLayout {
 
     var isReverse = false //如果为true 就标识下拉加载  上拉刷新
 
-    var page = 1
+    var default = 1 //默认首页
+
+    var page = default
 
     var loadData: (() -> Unit)? = null
 
@@ -75,7 +77,7 @@ class PullRefreshLayout : SmartRefreshLayout {
         setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onLoadMore(refreshLayout: RefreshLayout) {
                 if (isReverse) {
-                    page = 1
+                    page = default
                 } else {
                     page++
                 }
@@ -86,7 +88,7 @@ class PullRefreshLayout : SmartRefreshLayout {
                 if (isReverse) {
                     page++
                 } else {
-                    page = 1
+                    page = default
                 }
                 loadData?.invoke()
             }
@@ -127,32 +129,27 @@ class PullRefreshLayout : SmartRefreshLayout {
     fun <T> addData(adapter: BaseRecycleAdapter<T>, index: Int = -1, data: ArrayList<T>) {
         if (page == 1) {
             adapter.getData().clear()
-            if (isReverse) {
-                finishLoadMore()
-            } else {
-                finishRefresh()
-            }
+            finishRefresh()
         } else {
             if (data.isEmpty()) {
                 page--
-                if (isReverse) {
-                    finishRefreshWithNoMoreData()
-                } else {
-                    finishLoadMoreWithNoMoreData()
-                }
+                finishRefreshWithNoMoreData()
             } else {
-                if (isReverse) {
-                    finishRefresh()
-                } else {
-                    finishLoadMore()
-                }
+                finishLoadMore()
             }
         }
+
         if (index < 0) {
             if (isReverse) {
                 adapter.getData().addAll(0, data)
+                if (data.size == adapter.getData().size) {
+                    adapter.notifyDataSetChanged()
+                } else {
+                    adapter.notifyItemRangeInserted(0, data.size)
+                }
             } else {
                 adapter.getData().addAll(data)
+                adapter.notifyDataSetChanged()
             }
         } else {
             if (isReverse) {
@@ -160,13 +157,42 @@ class PullRefreshLayout : SmartRefreshLayout {
             } else {
                 adapter.getData().addAll(index, data)
             }
-
+            adapter.notifyDataSetChanged()
         }
+
         updateEmptyView(adapter.getData())
-        adapter.notifyDataSetChanged()
+    }
+
+
+    override fun finishRefresh(): RefreshLayout {
+        if (isReverse) {
+            return super.finishLoadMore()
+        }
+        return super.finishRefresh()
 
     }
 
+    override fun finishLoadMore(): RefreshLayout {
+        if (isReverse) {
+            return super.finishRefresh()
+        }
+        return super.finishLoadMore()
+    }
+
+
+    override fun finishRefreshWithNoMoreData(): RefreshLayout {
+        if (isReverse) {
+            return super.finishLoadMoreWithNoMoreData()
+        }
+        return super.finishRefreshWithNoMoreData()
+    }
+
+    override fun finishLoadMoreWithNoMoreData(): RefreshLayout {
+        if (isReverse) {
+            return super.finishRefreshWithNoMoreData()
+        }
+        return super.finishLoadMoreWithNoMoreData()
+    }
 
     fun <T> deleteData(adapter: BaseRecycleAdapter<T>, index: Int) {
         adapter.getData().removeAt(index)
@@ -212,4 +238,5 @@ class PullRefreshLayout : SmartRefreshLayout {
     fun getRecyclerView(): RecyclerView? {
         return getContentView()
     }
+
 }

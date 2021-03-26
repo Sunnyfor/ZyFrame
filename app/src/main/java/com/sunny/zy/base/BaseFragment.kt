@@ -195,10 +195,11 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        (view as ViewGroup).removeAllViews()
         placeholderViewUtil?.clear()
         placeholderViewUtil = null
         onClose()
+        super.onDestroyView()
     }
 
 

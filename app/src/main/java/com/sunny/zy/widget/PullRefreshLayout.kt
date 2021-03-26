@@ -70,6 +70,9 @@ class PullRefreshLayout : SmartRefreshLayout {
         setRefreshHeader(ClassicsHeader(context))
         setRefreshFooter(ClassicsFooter(context))
         setEnableAutoLoadMore(true)//开启自动加载功能
+//        if (isReverse){
+//            setEnableScrollContentWhenRefreshed(true)
+//        }
         addView(rootView, layoutParams)
         setContentView(RecyclerView(context).apply {
             layoutManager = LinearLayoutManager(context)
@@ -144,6 +147,7 @@ class PullRefreshLayout : SmartRefreshLayout {
                 adapter.getData().addAll(0, data)
                 if (data.size == adapter.getData().size) {
                     adapter.notifyDataSetChanged()
+                    getRecyclerView()?.scrollToPosition(adapter.getData().size-1)
                 } else {
                     adapter.notifyItemRangeInserted(0, data.size)
                 }

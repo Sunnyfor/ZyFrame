@@ -13,7 +13,7 @@ open class BaseModel<T> {
 
 
     fun isSuccess(): Boolean {
-        if (code == "0" && msg == "success") {
+        if (code == "0" || msg == "success") {
             return true
         }
         return false

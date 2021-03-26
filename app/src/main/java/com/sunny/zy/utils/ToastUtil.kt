@@ -14,10 +14,10 @@ object ToastUtil {
 
     private var toast: Toast? = null
 
-    private var LONG_DELAY = 3500
-    private var SHORT_DELAY = 2000
+    private var LENGTH_LONG = 3500
+    private var LENGTH_SHORT = 2000
 
-    private val delay = SHORT_DELAY
+    private val delay = LENGTH_SHORT
 
     private val handler = Handler(Looper.getMainLooper()) {
         toast?.cancel()
@@ -35,7 +35,7 @@ object ToastUtil {
         toast = Toast.makeText(ZyFrameStore.getContext(), content ?: "", type).apply {
             show()
         }
-        val delay = if (type == Toast.LENGTH_SHORT) SHORT_DELAY else LONG_DELAY
+        val delay = if (type == Toast.LENGTH_SHORT) LENGTH_SHORT else LENGTH_LONG
         handler.sendEmptyMessageDelayed(delay, delay.toLong())
     }
 

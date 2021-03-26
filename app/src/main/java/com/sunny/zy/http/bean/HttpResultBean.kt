@@ -26,8 +26,9 @@ abstract class HttpResultBean<T>(
     var bean: T? = null
 
     fun isSuccess(): Boolean {
-        if (httpIsSuccess() && message.isEmpty()) {
-            return true
+        if (httpIsSuccess()) {
+            if (message.isEmpty() || message == "OK")
+                return true
         }
         ToastUtil.show(message)
         return false

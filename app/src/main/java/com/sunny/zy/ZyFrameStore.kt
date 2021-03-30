@@ -4,6 +4,7 @@ import android.content.Context
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.LogUtil
 import java.util.*
+import kotlin.system.exitProcess
 
 /**
  * 应用类
@@ -75,14 +76,13 @@ object ZyFrameStore {
     }
 
 
-
     /**
      * 关闭指定TaskTag的Activity
      */
-    fun finishActivity(activity: BaseActivity) {
+    fun finishTagActivity(tagActivity: BaseActivity) {
         val list = arrayListOf<BaseActivity>()
         activityStack.forEach {
-            if (it.taskTag == activity.taskTag) {
+            if (it.taskTag == tagActivity.taskTag) {
                 it.finish()
                 list.add(it)
             }
@@ -93,10 +93,10 @@ object ZyFrameStore {
     /**
      * 保留指定TaskTag的Activity
      */
-    fun keepActivity(activity: BaseActivity) {
+    fun keepTagActivity(tagActivity: BaseActivity) {
         val list = arrayListOf<BaseActivity>()
         activityStack.forEach {
-            if (it.taskTag != activity.taskTag) {
+            if (it.taskTag != tagActivity.taskTag) {
                 list.add(it)
                 it.finish()
             }
@@ -104,65 +104,17 @@ object ZyFrameStore {
         activityStack.removeAll(list)
     }
 
-    /**
-     * 关闭指定页面
-     */
-    fun finishActivity(activityName: String) {
-        activityStack.find { it.javaClass.simpleName == activityName }?.let {
-            it.finish()
-            activityStack.remove(it)
-
-        }
-    }
 
     /**
      * 关闭所有的Activity
      */
-    fun finishAllActivity(activity: BaseActivity? = null) {
+    fun finishAllActivity() {
         activityStack.forEach {
-            if (activity != it) {
-                LogUtil.i("关闭:${activity?.packageName}")
-                it.finish()
-            }
+            LogUtil.i("关闭:${it?.javaClass?.name}")
+            it.finish()
         }
         activityStack.clear()
-        activity?.let {
-            activityStack.add(activity)
-        }
-    }
-
-    /**
-     * 保留指定Activity的类
-     */
-    fun keepSomeActivity(activityName: String) {
-        var keepActivity: BaseActivity? = null
-        activityStack.forEach {
-            if (activityName == it.javaClass.simpleName) {
-                LogUtil.i("保留:${it?.packageName}")
-                keepActivity = it
-            } else {
-                it.finish()
-            }
-        }
-        activityStack.clear()
-        activityStack.add(keepActivity)
-    }
-
-    /**
-     * 保留指定Activity的类
-     */
-    fun keepSomeActivity(list: List<String>) {
-        val keepActivity = ArrayList<BaseActivity>()
-        activityStack.forEach {
-            if (list.contains(it.javaClass.simpleName)) {
-                LogUtil.i("保留:${it?.packageName}")
-                keepActivity.add(it)
-            } else {
-                it.finish()
-            }
-        }
-        activityStack.clear()
-        activityStack.addAll(keepActivity)
+        exitProcess(0)
     }
 
 }

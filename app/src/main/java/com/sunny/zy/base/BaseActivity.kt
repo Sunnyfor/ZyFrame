@@ -70,6 +70,7 @@ abstract class BaseActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ZyFrameStore.addActivity(this)
         this.savedInstanceState = savedInstanceState
         requestedOrientation = screenOrientation //强制屏幕
 
@@ -100,7 +101,6 @@ abstract class BaseActivity : AppCompatActivity(),
         }
         initView()
         loadData()
-        ZyFrameStore.addActivity(this)
     }
 
     override fun onRestart() {
@@ -375,10 +375,10 @@ abstract class BaseActivity : AppCompatActivity(),
 
 
     override fun onDestroy() {
-        super.onDestroy()
+        ZyFrameStore.removeActivity(this)
         BitmapUtil().destroy()
         placeholderViewUtil.clear()
-        ZyFrameStore.removeActivity(this)
         onClose()
+        super.onDestroy()
     }
 }

@@ -22,7 +22,7 @@ interface OnTitleListener {
 
     fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean)
 
-    fun setTitleCustom(layoutRes: Int)
+    fun setTitleCustom(layoutRes: Int,vararg menuItem: BaseMenuBean)
 
     fun setTitleBackground(textColor: Int, backgroundColor: Int)
 

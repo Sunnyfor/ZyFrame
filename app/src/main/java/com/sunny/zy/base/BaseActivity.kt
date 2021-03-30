@@ -228,8 +228,9 @@ abstract class BaseActivity : AppCompatActivity(),
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
-    override fun setTitleCustom(layoutRes: Int) {
+    override fun setTitleCustom(layoutRes: Int, vararg menuItem: BaseMenuBean) {
         toolbarUtil.initToolbar(getRootView(), layoutRes)
+        toolbarUtil.setTitleCustom(layoutRes, *menuItem)
     }
 
     override fun setTitleBackground(textColor: Int, backgroundColor: Int) {

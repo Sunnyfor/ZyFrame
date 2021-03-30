@@ -151,8 +151,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         getBaseActivity().setTitleCenterDefault(title, *menuItem)
     }
 
-    override fun setTitleCustom(layoutRes: Int) {
-        getBaseActivity().setTitleCustom(layoutRes)
+    override fun setTitleCustom(layoutRes: Int,vararg menuItem: BaseMenuBean) {
+        getBaseActivity().setTitleCustom(layoutRes,*menuItem)
     }
 
     override fun setTitleBackground(textColor: Int, backgroundColor: Int) {

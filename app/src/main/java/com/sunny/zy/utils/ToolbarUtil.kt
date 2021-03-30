@@ -37,6 +37,7 @@ class ToolbarUtil(var activity: BaseActivity) {
         activity.setSupportActionBar(toolbar)
     }
 
+
     fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
         show()
         menuList.clear()
@@ -57,6 +58,12 @@ class ToolbarUtil(var activity: BaseActivity) {
         toolbar?.setNavigationOnClickListener {
             activity.finish()
         }
+    }
+
+    fun setTitleCustom(layoutRes: Int, vararg menuItem: BaseMenuBean) {
+        show()
+        menuList.clear()
+        menuList.addAll(menuItem)
     }
 
 

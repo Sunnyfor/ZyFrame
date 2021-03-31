@@ -9,15 +9,16 @@ import android.bluetooth.BluetoothGatt
  * Mail zhangye98@foxmail.com
  * Date 2021/3/23 14:14
  */
-data class BluetoothBean(
-    var device: BluetoothDevice
+abstract class BluetoothBean(
+    var device: BluetoothDevice,
+    var serviceId: String,
+    var notifyId: String,
+    var writeId: String
 ) {
     var gatt: BluetoothGatt? = null
     var isConnect = false
-    var serviceId = ""
-    var writeId = ""
 
-    fun receive(state: Int, message: String) {}
+    abstract fun receive(state: Int, message: String)
 
     fun close() {
         gatt?.close()

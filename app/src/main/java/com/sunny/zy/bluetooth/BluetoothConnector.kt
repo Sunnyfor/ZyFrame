@@ -4,6 +4,7 @@ import android.bluetooth.*
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.bluetooth.bean.BluetoothBean
 import com.sunny.zy.utils.LogUtil
+import com.sunny.zy.utils.StringUtil
 import com.sunny.zy.utils.ToastUtil
 import java.util.*
 
@@ -20,29 +21,26 @@ object BluetoothConnector {
     const val STATE_GATT_WRITE = 2 //可写入
     const val STATE_MESSAGE = 3 //可写入
 
-    fun connect(device: BluetoothDevice, serviceId: String, notifyId: String): BluetoothBean? {
-
-        val bluetoothBean = BluetoothBean(device)
-
-        device.connectGatt(ZyFrameStore.getContext(), false, object : BluetoothGattCallback() {
+    fun connect(bean: BluetoothBean) {
+        bean.device.connectGatt(ZyFrameStore.getContext(), false, object : BluetoothGattCallback() {
             override fun onConnectionStateChange(
                 gatt: BluetoothGatt?, status: Int, newState: Int
             ) {
                 super.onConnectionStateChange(gatt, status, newState)
                 when (newState) {
                     BluetoothProfile.STATE_CONNECTED -> {
-                        LogUtil.i("连接蓝牙成功:${device.address}  $status  $newState")
-                        bluetoothBean.isConnect = true
-                        bluetoothBean.gatt = gatt
+                        LogUtil.i("连接蓝牙成功:${bean.device.address}  $status  $newState")
+                        bean.isConnect = true
+                        bean.gatt = gatt
                         gatt?.discoverServices()
-                        bluetoothBean.receive(STATE_CONNECTED,"连接蓝牙成功")
+                        bean.receive(STATE_CONNECTED, "连接蓝牙成功")
                     }
 
                     BluetoothProfile.STATE_DISCONNECTED -> {
-                        bluetoothBean.isConnect = false
-                        bluetoothBean.gatt = null
-                        LogUtil.i("蓝牙设备断开:${device.address}  $status")
-                        bluetoothBean.receive(STATE_DIS_CONNECT,"蓝牙设备断开")
+                        bean.isConnect = false
+                        bean.gatt = null
+                        LogUtil.i("蓝牙设备断开:${bean.device.address}  $status")
+                        bean.receive(STATE_DIS_CONNECT, "蓝牙设备断开")
                     }
                 }
             }
@@ -51,8 +49,9 @@ object BluetoothConnector {
                 super.onServicesDiscovered(gatt, status)
                 LogUtil.i("发现服务:${status}")
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    val gattService = gatt?.getService(UUID.fromString(serviceId))
-                    val characteristic = gattService?.getCharacteristic(UUID.fromString(notifyId))
+                    val gattService = gatt?.getService(UUID.fromString(bean.serviceId))
+                    val characteristic =
+                        gattService?.getCharacteristic(UUID.fromString(bean.notifyId))
                     val isOk = gatt?.setCharacteristicNotification(characteristic, true)
                     if (isOk == true) {
                         LogUtil.i("打开蓝牙通知!")
@@ -62,7 +61,7 @@ object BluetoothConnector {
                             if (result) {
                                 LogUtil.i("设置蓝牙写入!")
                                 gatt.writeDescriptor(it)
-                                bluetoothBean.receive(STATE_GATT_WRITE,"蓝牙设备蓝牙写入")
+                                bean.receive(STATE_GATT_WRITE, "蓝牙设备蓝牙写入")
                             }
                         }
                     }
@@ -93,15 +92,11 @@ object BluetoothConnector {
                 characteristic: BluetoothGattCharacteristic?
             ) {
                 super.onCharacteristicChanged(gatt, characteristic)
-                characteristic?.value?.let {
-                    val result = String(it)
-                    LogUtil.i("蓝牙数据：${result}")
-                    bluetoothBean.receive(STATE_MESSAGE,result)
-                }
+                val result = StringUtil.bytesToHexString(characteristic?.value ?: byteArrayOf())
+                bean.receive(STATE_MESSAGE, result)
+                LogUtil.i("蓝牙数据：${result}")
             }
         })
-
-        return bluetoothBean
     }
 
     /**
@@ -118,9 +113,11 @@ object BluetoothConnector {
         characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
         characteristic?.value = byteArray
         LogUtil.i(
-            "发送数据！${String(byteArray)}"
+            "${bluetoothBean.device.name}-发送数据:${StringUtil.bytesToHexString(byteArray)}"
         )
         return bluetoothBean.gatt?.writeCharacteristic(characteristic) ?: false
 
     }
+
+
 }

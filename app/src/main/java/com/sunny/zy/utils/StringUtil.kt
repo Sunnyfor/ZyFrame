@@ -1,5 +1,7 @@
 package com.sunny.zy.utils
 
+import okhttp3.internal.and
+import okhttp3.internal.toHexString
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
@@ -115,4 +117,25 @@ object StringUtil {
     }
 
     fun getTimeStamp(): String = (System.currentTimeMillis() / 1000).toString()
+
+
+    /**
+     * 数组转成字符串
+     */
+    fun bytesToHexString(byteArray: ByteArray): String {
+        if (byteArray.isEmpty()) {
+            return ""
+        }
+        val stringBuilder = StringBuilder()
+
+        byteArray.forEach {
+            val str = (it and 0XFF).toHexString()
+            if (str.length < 2) {
+                stringBuilder.append(0)
+            }
+            stringBuilder.append(str)
+        }
+
+        return stringBuilder.toString()
+    }
 }

@@ -23,4 +23,23 @@ abstract class BluetoothBean(
     fun close() {
         gatt?.close()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is BluetoothBean) {
+            if (other.device.name == device.name && other.device.address == device.address) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        var result = device.name.hashCode() + device.address.hashCode()
+        result = 31 * result + serviceId.hashCode()
+        result = 31 * result + notifyId.hashCode()
+        result = 31 * result + writeId.hashCode()
+        result = 31 * result + (gatt?.hashCode() ?: 0)
+        result = 31 * result + isConnect.hashCode()
+        return result
+    }
 }

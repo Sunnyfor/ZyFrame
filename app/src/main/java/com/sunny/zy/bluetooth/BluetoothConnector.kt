@@ -38,6 +38,7 @@ object BluetoothConnector {
 
                     BluetoothProfile.STATE_DISCONNECTED -> {
                         bean.isConnect = false
+                        bean.gatt?.close()
                         bean.gatt = null
                         LogUtil.i("蓝牙设备断开:${bean.device.address}  $status")
                         bean.receive(STATE_DIS_CONNECT, "蓝牙设备断开")

@@ -40,7 +40,7 @@ class CameraUtil {
     /**
      * 跳转相机
      */
-    fun startCamera(activity: BaseActivity) {
+    fun startCamera(activity: BaseActivity, fileName: String = "") {
         activity.requestPermissions(
             arrayOf(
                 Manifest.permission.CAMERA,
@@ -48,7 +48,7 @@ class CameraUtil {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         ) {
-            initFile("jpg")
+            initFile(fileName)
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
@@ -56,6 +56,7 @@ class CameraUtil {
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode != Activity.RESULT_OK) {
+                    file?.delete()
                     return@registerForActivityResult
                 }
                 if (aspectX != 0 && aspectY != 0) {
@@ -71,20 +72,21 @@ class CameraUtil {
     /**
      * 跳转相册
      */
-    fun startAlbum(activity: BaseActivity) {
+    fun startAlbum(activity: BaseActivity, fileName: String = "") {
         activity.requestPermissions(
             arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         ) {
-            initFile("jpg")
+            initFile(fileName)
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode != Activity.RESULT_OK) {
+                    file?.delete()
                     return@registerForActivityResult
                 }
                 it.data?.data?.let { mUri ->
@@ -125,6 +127,7 @@ class CameraUtil {
         intent.putExtra("noFaceDetection", true) // no face detection
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode != Activity.RESULT_OK) {
+                file?.delete()
                 return@registerForActivityResult
             }
             onResultListener?.onResult(file ?: return@registerForActivityResult)
@@ -136,14 +139,13 @@ class CameraUtil {
     private fun whiteResult(activity: BaseActivity, uri: Uri) {
         val inputStream = activity.contentResolver.openInputStream(uri)
         scope.launch {
+            activity.showLoading()
             withContext(IO) {
                 file?.writeBytes(inputStream?.readBytes() ?: return@withContext)
             }
-            if (file?.length() == 0L) {
-                file?.delete()
-            } else {
-                onResultListener?.onResult(file ?: return@launch)
-            }
+            activity.hideLoading()
+            onResultListener?.onResult(file ?: return@launch)
+
         }
     }
 
@@ -161,9 +163,14 @@ class CameraUtil {
 
 
     //初始化图片文件及URI
-    private fun initFile(type: String) {
+    private fun initFile(fileName: String) {
         //有权限
-        file = FileUtil.getFile("IMG_${System.currentTimeMillis()}.$type")
+        file = if (fileName.isEmpty()) {
+            FileUtil.getFile("IMG_${System.currentTimeMillis()}.jpg")
+        } else {
+            FileUtil.getFile(fileName)
+        }
+
         file?.let {
             if (it.parentFile?.exists() == false) {
                 it.parentFile?.mkdirs()

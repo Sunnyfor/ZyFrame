@@ -1,6 +1,7 @@
 package com.sunny.zy.utils
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -54,8 +55,11 @@ class CameraUtil {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)// 更改系统默认存储路径
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode != Activity.RESULT_OK) {
+                    return@registerForActivityResult
+                }
                 if (aspectX != 0 && aspectY != 0) {
-                    startPhotoZoom(activity, uri?: return@registerForActivityResult)
+                    startPhotoZoom(activity, uri ?: return@registerForActivityResult)
                 } else {
                     onResultListener?.onResult(file ?: return@registerForActivityResult)
                 }
@@ -80,6 +84,9 @@ class CameraUtil {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode != Activity.RESULT_OK) {
+                    return@registerForActivityResult
+                }
                 it.data?.data?.let { mUri ->
                     if (aspectX != 0 && aspectY != 0) {
                         startPhotoZoom(activity, mUri)
@@ -117,6 +124,9 @@ class CameraUtil {
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
         intent.putExtra("noFaceDetection", true) // no face detection
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode != Activity.RESULT_OK) {
+                return@registerForActivityResult
+            }
             onResultListener?.onResult(file ?: return@registerForActivityResult)
         }.launch(intent)
 

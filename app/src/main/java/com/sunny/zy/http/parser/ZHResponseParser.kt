@@ -41,10 +41,10 @@ open class ZHResponseParser : IResponseParser {
 
         //解析泛型类
         if (type is ParameterizedType) {
-            val jsonObj = JSONObject(body)
             var data = "data"
             when (type.rawType) {
                 BaseModel::class.java -> {
+                    val jsonObj = JSONObject(body)
                     val serializableName = httpResultBean.serializedName
                     if (serializableName != data) {
                         jsonObj.put(data, jsonObj.opt(serializableName))
@@ -57,6 +57,7 @@ open class ZHResponseParser : IResponseParser {
                     return baseModel as T
                 }
                 PageModel::class.java -> {
+                    val jsonObj = JSONObject(body)
                     data = "page"
                     jsonObj.put("data", jsonObj.opt(data))
                     jsonObj.remove(data)

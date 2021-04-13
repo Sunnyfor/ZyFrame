@@ -9,6 +9,6 @@ import okhttp3.WebSocketListener
  * Mail zhangye98@foxmail.com
  * Date 2021/4/13 11:28
  */
-class WebSocketResultBean : WebSocketListener() {
+abstract class WebSocketResultBean : WebSocketListener() {
     var webSocket: WebSocket? = null
 }

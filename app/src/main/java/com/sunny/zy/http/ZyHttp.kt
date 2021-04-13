@@ -3,6 +3,7 @@ package com.sunny.zy.http
 import com.sunny.zy.http.bean.BaseHttpResultBean
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
+import com.sunny.zy.http.bean.WebSocketResultBean
 import com.sunny.zy.http.request.ZyRequest
 import com.sunny.zy.utils.LogUtil
 import kotlinx.coroutines.CoroutineScope
@@ -151,6 +152,17 @@ object ZyHttp {
             //创建okHttp请求
             val request = zyRequest.formUploadRequest(url, filePath)
             execution(request, httpResultBean, this)
+        }
+    }
+
+
+    fun webSocket(url: String, params: HashMap<String, String>?, webSocketResultBean: WebSocketResultBean) {
+        val request = zyRequest.getRequest(url, params)
+        try {
+            webSocketResultBean.webSocket =
+                clientFactory.getOkHttpClient().newWebSocket(request, webSocketResultBean)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

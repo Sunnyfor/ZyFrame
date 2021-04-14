@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sunny.zy.base.BaseFragment
 import com.sunny.zy.base.BaseRecycleAdapter
+import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.utils.PlaceholderViewUtil
 import com.sunny.zy.widget.PullRefreshLayout
 
@@ -102,4 +103,11 @@ open class PullRefreshFragment<T> : BaseFragment() {
 
 
     open fun getRecyclerView() = pullRefreshLayout?.getContentView<RecyclerView>()
+
+
+    override fun showLoading() {
+        pullRefreshLayout?.rootView?.let {
+            showPlaceholder(it, ZyConfig.loadingPlaceholderBean)
+        }
+    }
 }

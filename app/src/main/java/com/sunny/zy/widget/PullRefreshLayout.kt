@@ -25,7 +25,7 @@ import com.sunny.zy.utils.PlaceholderViewUtil
 @Suppress("MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
 class PullRefreshLayout : SmartRefreshLayout {
 
-    private val rootView: FrameLayout by lazy {
+    val rootView: FrameLayout by lazy {
         FrameLayout(context)
     }
 
@@ -147,7 +147,7 @@ class PullRefreshLayout : SmartRefreshLayout {
                 adapter.getData().addAll(0, data)
                 if (data.size == adapter.getData().size) {
                     adapter.notifyDataSetChanged()
-                    getRecyclerView()?.scrollToPosition(adapter.getData().size-1)
+                    getRecyclerView()?.scrollToPosition(adapter.getData().size - 1)
                 } else {
                     adapter.notifyItemRangeInserted(0, data.size)
                 }

@@ -24,6 +24,8 @@ object ZyHttp {
 
     var clientFactory = OkHttpClientFactory()
 
+    var FilePath = "path"
+
     /**
      * get请求
      * @param url URL服务器地址
@@ -32,7 +34,7 @@ object ZyHttp {
      */
     suspend fun <T : BaseHttpResultBean> get(
         url: String,
-        params: HashMap<String, String>? = null,
+        params: Map<String, String>? = null,
         httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
@@ -45,7 +47,7 @@ object ZyHttp {
 
     suspend fun <T : BaseHttpResultBean> head(
         url: String,
-        params: HashMap<String, String>? = null,
+        params: Map<String, String>? = null,
         httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
@@ -63,7 +65,7 @@ object ZyHttp {
      */
     suspend fun <T : BaseHttpResultBean> post(
         url: String,
-        params: HashMap<String, String>?,
+        params: Map<String, String>?,
         httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
@@ -85,7 +87,7 @@ object ZyHttp {
 
     suspend fun <T : BaseHttpResultBean> patch(
         url: String,
-        params: HashMap<String, String>?,
+        params: Map<String, String>?,
         httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
@@ -105,7 +107,7 @@ object ZyHttp {
 
 
     suspend fun <T : BaseHttpResultBean> put(
-        url: String, params: HashMap<String, String>?, httpResultBean: T
+        url: String, params: Map<String, String>?, httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
@@ -124,7 +126,7 @@ object ZyHttp {
 
 
     suspend fun <T : BaseHttpResultBean> delete(
-        url: String, params: HashMap<String, String>?, httpResultBean: T
+        url: String, params: Map<String, String>?, httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
@@ -145,18 +147,22 @@ object ZyHttp {
 
     suspend fun <T : BaseHttpResultBean> formUpload(
         url: String,
-        filePath: String,
+        params: Map<String, String>,
         httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {
             //创建okHttp请求
-            val request = zyRequest.formUploadRequest(url, filePath)
+            val request = zyRequest.formUploadRequest(url, params)
             execution(request, httpResultBean, this)
         }
     }
 
 
-    fun webSocket(url: String, params: HashMap<String, String>?, webSocketResultBean: WebSocketResultBean) {
+    fun webSocket(
+        url: String,
+        params: Map<String, String>?,
+        webSocketResultBean: WebSocketResultBean
+    ) {
         val request = zyRequest.getRequest(url, params)
         try {
             webSocketResultBean.webSocket =

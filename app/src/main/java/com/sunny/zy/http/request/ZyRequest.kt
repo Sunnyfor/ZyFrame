@@ -1,6 +1,7 @@
 package com.sunny.zy.http.request
 
 import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.http.ZyHttp
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -28,7 +29,7 @@ class ZyRequest {
     /**
      * GET请求生成
      */
-    fun getRequest(url: String, params: HashMap<String, String>?): Request {
+    fun getRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         if (params?.isNotEmpty() == true) {
             urlSb.append("?")
@@ -44,7 +45,7 @@ class ZyRequest {
         return Request.Builder().url(urlSb.toString()).build()
     }
 
-    fun headRequest(url: String, params: HashMap<String, String>?): Request {
+    fun headRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         if (params?.isNotEmpty() == true) {
             urlSb.append("?")
@@ -73,7 +74,7 @@ class ZyRequest {
     /**
      * POST-FORM请求生成
      */
-    fun postFormRequest(url: String, params: HashMap<String, String>?): Request {
+    fun postFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
         params?.entries?.forEach {
@@ -86,7 +87,7 @@ class ZyRequest {
     /**
      * PUT-FORM请求生成
      */
-    fun putFormRequest(url: String, params: HashMap<String, String>?): Request {
+    fun putFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
         params?.entries?.forEach {
@@ -108,7 +109,7 @@ class ZyRequest {
     /**
      * PATCH-Form请求生成
      */
-    fun patchFormRequest(url: String, params: HashMap<String, String>?): Request {
+    fun patchFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
         params?.entries?.forEach {
@@ -130,7 +131,7 @@ class ZyRequest {
     /**
      * DELETE-Form请求生成
      */
-    fun deleteFormRequest(url: String, params: HashMap<String, String>?): Request {
+    fun deleteFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
         params?.entries?.forEach {
@@ -151,16 +152,21 @@ class ZyRequest {
     /**
      * FORM形式上传文件
      */
-    fun formUploadRequest(url: String, filePath: String): Request {
+    fun formUploadRequest(url: String, params: Map<String, String>): Request {
         val urlSb = getUrlSb(url)
+        val path = params[ZyHttp.FilePath] ?: ""
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
                 "file",
-                filePath.split("/").last(),
-                File(filePath).asRequestBody("multipart/form-data".toMediaType())
+                path.split("/").last(),
+                File(path).asRequestBody("multipart/form-data".toMediaType())
             )
-
+        params.entries.forEach {
+            if (it.key != ZyHttp.FilePath) {
+                body.addFormDataPart(it.key, it.value)
+            }
+        }
         return Request.Builder().url(urlSb.toString()).post(body.build()).build()
     }
 }

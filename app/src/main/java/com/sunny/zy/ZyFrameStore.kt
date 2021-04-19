@@ -117,4 +117,11 @@ object ZyFrameStore {
         exitProcess(0)
     }
 
+    /**
+     * 获取指定类型的Activity实例
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T : BaseActivity> getActivity(clazz: Class<T>): T {
+        return activityStack.find { it.javaClass == clazz } as T
+    }
 }

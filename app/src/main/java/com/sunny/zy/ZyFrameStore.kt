@@ -118,10 +118,12 @@ object ZyFrameStore {
     }
 
     /**
-     * 获取指定类型的Activity实例
+     * 获取指定Class的Activity实例
+     * @return 如果存在的话返回具体实例用于调用内部方法
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : BaseActivity> getActivity(clazz: Class<T>): T {
-        return activityStack.find { it.javaClass == clazz } as T
+    fun <T : BaseActivity> getActivity(clazz: Class<T>): T? {
+        val result = activityStack.find { it.javaClass == clazz } ?: return null
+        return result as T
     }
 }

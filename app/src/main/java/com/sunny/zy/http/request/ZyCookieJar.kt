@@ -5,6 +5,7 @@ import com.sunny.zy.utils.SpUtil
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 /**
  * Desc Cookie持久化存储
@@ -29,10 +30,19 @@ abstract class ZyCookieJar : CookieJar {
         var list = cookieStore[url.host]
 
         if (list == null) {
-            list = SpUtil.get().getObject(url.host, object : TypeToken<List<Cookie>>() {}.type) ?: arrayListOf()
+            list = SpUtil.get().getObject(url.host, object : TypeToken<List<Cookie>>() {}.type)
+                ?: arrayListOf()
         }
         cookieStore[url.host] = list
         return list
     }
 
+    /**
+     * 清理内存和
+     */
+    fun clearCookie(url: String) {
+        val host = url.toHttpUrl().host
+        cookieStore.remove(host)
+        SpUtil.get().remove(host)
+    }
 }

@@ -70,9 +70,6 @@ class PullRefreshLayout : SmartRefreshLayout {
         setRefreshHeader(ClassicsHeader(context))
         setRefreshFooter(ClassicsFooter(context))
         setEnableAutoLoadMore(true)//开启自动加载功能
-//        if (isReverse){
-//            setEnableScrollContentWhenRefreshed(true)
-//        }
         addView(rootView, layoutParams)
         setContentView(RecyclerView(context).apply {
             layoutManager = LinearLayoutManager(context)
@@ -132,13 +129,13 @@ class PullRefreshLayout : SmartRefreshLayout {
     fun <T> addData(adapter: BaseRecycleAdapter<T>, index: Int = -1, data: ArrayList<T>) {
         if (page == 1) {
             adapter.getData().clear()
-            finishRefresh()
+            finishRefreshData()
         } else {
             if (data.isEmpty()) {
                 page--
-                finishRefreshWithNoMoreData()
+                finishLoadMoreNoMoreData()
             } else {
-                finishLoadMore()
+                finishLoadMoreData()
             }
         }
 
@@ -168,7 +165,7 @@ class PullRefreshLayout : SmartRefreshLayout {
     }
 
 
-    override fun finishRefresh(): RefreshLayout {
+    fun finishRefreshData(): RefreshLayout {
         if (isReverse) {
             return super.finishLoadMore()
         }
@@ -176,7 +173,7 @@ class PullRefreshLayout : SmartRefreshLayout {
 
     }
 
-    override fun finishLoadMore(): RefreshLayout {
+    fun finishLoadMoreData(): RefreshLayout {
         if (isReverse) {
             return super.finishRefresh()
         }
@@ -184,18 +181,11 @@ class PullRefreshLayout : SmartRefreshLayout {
     }
 
 
-    override fun finishRefreshWithNoMoreData(): RefreshLayout {
+    fun finishLoadMoreNoMoreData(): RefreshLayout {
         if (isReverse) {
-            return super.finishLoadMoreWithNoMoreData()
+            return finishRefreshWithNoMoreData()
         }
-        return super.finishRefreshWithNoMoreData()
-    }
-
-    override fun finishLoadMoreWithNoMoreData(): RefreshLayout {
-        if (isReverse) {
-            return super.finishRefreshWithNoMoreData()
-        }
-        return super.finishLoadMoreWithNoMoreData()
+        return finishLoadMoreWithNoMoreData()
     }
 
     fun <T> deleteData(adapter: BaseRecycleAdapter<T>, index: Int) {

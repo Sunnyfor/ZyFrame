@@ -179,16 +179,45 @@ abstract class BaseActivity : AppCompatActivity(),
      * @param views 注册事件的View
      */
     fun setOnClickListener(vararg views: View) {
+        setOnClickListener(this, *views)
+    }
+
+    fun setOnClickListener(onClick: View.OnClickListener, vararg views: View) {
         views.forEach {
-            it.setOnClickListener(this)
+            if (it.getTag(R.id.zy_click_interval) == null) {
+                it.setTag(R.id.zy_click_interval, 500L)
+            }
+            it.setOnClickListener(onClick)
         }
     }
 
     /**
      * 点击事件处理
      */
+    private var lastClickId = 0
+    private var lastClickTime = 0L
+
+    fun clickProcess(view: View, onClick: () -> Unit) {
+        val tag = view.getTag(R.id.zy_click_interval)
+        if (tag == 0) {
+            onClick.invoke()
+        } else {
+            if (view.id == lastClickId && System.currentTimeMillis() - lastClickTime < ZyConfig.click_interval) {
+                lastClickId = 0
+                lastClickTime = 0
+                return
+            }
+            lastClickId = view.id
+            lastClickTime = System.currentTimeMillis()
+            onClick.invoke()
+        }
+    }
+
+
     override fun onClick(view: View) {
-        onClickEvent(view)
+        clickProcess(view) {
+            onClickEvent(view)
+        }
     }
 
     override fun hideTitle() {

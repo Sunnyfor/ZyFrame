@@ -61,6 +61,7 @@ object ZyConfig {
      */
     var authorities = "com.sunny.zy.provider"
 
+    var click_interval = 500L
 
     var TEMP = ZyFrameStore.getContext().getExternalFilesDir("temp")?.path ?: "" //内存卡缓存路径
 

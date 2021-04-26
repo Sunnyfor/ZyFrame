@@ -5,4 +5,5 @@
     <item name="zy_ib_back" type="id" />
     <item name="zy_tv_title" type="id" />
     <item name="zy_menu_view" type="id" />
+    <item name="zy_click_interval" type="id" />
 </resources>

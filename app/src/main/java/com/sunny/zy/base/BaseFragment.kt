@@ -65,10 +65,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
      * 批量注册点击事件
      * @param views 注册事件的View
      */
-    open fun setOnClickListener(vararg views: View, onClickListener: View.OnClickListener? = this) {
-        views.forEach {
-            it.setOnClickListener(onClickListener)
-        }
+    open fun setOnClickListener(vararg views: View) {
+        getBaseActivity().setOnClickListener(this, *views)
     }
 
 
@@ -117,7 +115,9 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun onClick(v: View) {
-        onClickEvent(v)
+        getBaseActivity().clickProcess(v) {
+            onClickEvent(v)
+        }
     }
 
 
@@ -151,8 +151,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         getBaseActivity().setTitleCenterDefault(title, *menuItem)
     }
 
-    override fun setTitleCustom(layoutRes: Int,vararg menuItem: BaseMenuBean) {
-        getBaseActivity().setTitleCustom(layoutRes,*menuItem)
+    override fun setTitleCustom(layoutRes: Int, vararg menuItem: BaseMenuBean) {
+        getBaseActivity().setTitleCustom(layoutRes, *menuItem)
     }
 
     override fun setTitleBackground(textColor: Int, backgroundColor: Int) {

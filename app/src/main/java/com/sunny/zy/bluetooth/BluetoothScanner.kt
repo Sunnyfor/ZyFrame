@@ -29,10 +29,10 @@ import kotlin.collections.ArrayList
  */
 
 
-object BluetoothScanner : ScanCallback() {
+object BluetoothScanner{
     private var isScan = false
 
-    lateinit var onResult: ((result: ScanResult) -> Unit)
+    var onResult: ScanCallback? = null
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
         (ZyFrameStore.getContext()
@@ -46,7 +46,7 @@ object BluetoothScanner : ScanCallback() {
     fun startScan(
         baseActivity: BaseActivity,
         serviceId: String? = null,
-        onResult: ((result: ScanResult) -> Unit)
+        onResult:ScanCallback
     ) {
         this.onResult = onResult
         if (bluetoothAdapter == null) {
@@ -78,7 +78,7 @@ object BluetoothScanner : ScanCallback() {
     fun stopScan() {
         LogUtil.i("停止蓝牙扫描！")
         isScan = false
-        bluetoothAdapter?.bluetoothLeScanner?.stopScan(this)
+        bluetoothAdapter?.bluetoothLeScanner?.stopScan(onResult)
     }
 
 
@@ -97,21 +97,8 @@ object BluetoothScanner : ScanCallback() {
             )
         }
         bluetoothAdapter?.bluetoothLeScanner?.startScan(
-            bleScanFilters, ScanSettings.Builder().build(), this
+            bleScanFilters, ScanSettings.Builder().build(), onResult
         )
         LogUtil.i("开始蓝牙扫描！")
-    }
-
-
-    override fun onScanFailed(errorCode: Int) {
-        super.onScanFailed(errorCode)
-        LogUtil.i("蓝牙扫描失败:$errorCode")
-    }
-
-    override fun onScanResult(callbackType: Int, result: ScanResult) {
-        super.onScanResult(callbackType, result)
-        if (::onResult.isInitialized) {
-            onResult.invoke(result)
-        }
     }
 }

@@ -198,11 +198,20 @@ abstract class BaseActivity : AppCompatActivity(),
     private var lastClickTime = 0L
 
     fun clickProcess(view: View, onClick: () -> Unit) {
-        val tag = view.getTag(R.id.zy_click_interval).toString().toLong()
-        if (tag == 0L) {
+        val tag = view.getTag(R.id.zy_click_interval)
+        if (tag == null) {
             onClick.invoke()
         } else {
-            if (view.id == lastClickId && System.currentTimeMillis() - lastClickTime < tag) {
+            var interval = 0L
+            if (tag is Int) {
+                interval = tag.toLong()
+            }
+
+            if (tag is Long) {
+                interval = tag
+            }
+
+            if (view.id == lastClickId && System.currentTimeMillis() - lastClickTime < interval) {
                 return
             }
             lastClickId = view.id

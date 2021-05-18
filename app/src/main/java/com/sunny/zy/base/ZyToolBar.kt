@@ -190,7 +190,10 @@ class ZyToolBar : Toolbar {
     }
 
 
-    private fun <T : View> getView(id: Int): T {
+    /***
+     * 仅自定义布局可用
+     */
+    fun <T : View> getView(id: Int): T {
         return titleView.findViewById(id)
     }
 }

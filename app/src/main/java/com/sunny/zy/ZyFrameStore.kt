@@ -16,12 +16,14 @@ object ZyFrameStore {
 
     private val activityStack = Stack<BaseActivity>()
 
+    var activityCycle: IActivityCycle? = null
 
     fun init(context: Context) {
         instance = context.applicationContext
     }
 
     fun getContext() = instance
+
 
     private val storeMap = HashMap<String, Any>() //内存数据存储
 
@@ -66,6 +68,7 @@ object ZyFrameStore {
      */
     fun addActivity(baseActivity: BaseActivity) {
         activityStack.add(baseActivity)
+        activityCycle?.onAdd(baseActivity)
     }
 
     /**
@@ -73,8 +76,18 @@ object ZyFrameStore {
      */
     fun removeActivity(baseActivity: BaseActivity) {
         activityStack.remove(baseActivity)
+        activityCycle?.onRemove(baseActivity)
     }
 
+    /**
+     * 获取最后的Activity
+     */
+    fun getActivity(index: Int): BaseActivity {
+        return activityStack[index]
+    }
+
+
+    fun getActivitySize() = activityStack.size
 
     /**
      * 关闭指定TaskTag的Activity
@@ -125,5 +138,10 @@ object ZyFrameStore {
     fun <T : BaseActivity> getActivity(clazz: Class<T>): T? {
         val result = activityStack.find { it.javaClass == clazz } ?: return null
         return result as T
+    }
+
+    interface IActivityCycle {
+        fun onAdd(activity: BaseActivity)
+        fun onRemove(activity: BaseActivity)
     }
 }

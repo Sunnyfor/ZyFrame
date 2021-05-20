@@ -70,7 +70,6 @@ abstract class BaseActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ZyFrameStore.addActivity(this)
         this.savedInstanceState = savedInstanceState
         requestedOrientation = screenOrientation //强制屏幕
 
@@ -99,6 +98,7 @@ abstract class BaseActivity : AppCompatActivity(),
                     .add(android.R.id.content, layoutView).commit()
             }
         }
+        ZyFrameStore.addActivity(this)
         initView()
         loadData()
     }

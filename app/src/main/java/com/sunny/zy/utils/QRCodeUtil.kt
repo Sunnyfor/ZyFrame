@@ -12,7 +12,6 @@ import android.os.HandlerThread
 import android.view.Surface
 import android.view.SurfaceView
 import com.google.zxing.*
-import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.sunny.zy.ZyFrameStore
@@ -111,6 +110,8 @@ class QRCodeUtil {
                 result = reader.decode(bitmap, hintsMap).text
                 resultCallback?.invoke(result)
             } catch (e: NotFoundException) {
+                image.close()
+            } finally {
                 image.close()
             }
         }, imageReaderHandler)
@@ -254,6 +255,5 @@ class QRCodeUtil {
         camera = null
         mSession?.close()
         imageReader?.close()
-        imageReader?.setOnImageAvailableListener(null, null)
     }
 }

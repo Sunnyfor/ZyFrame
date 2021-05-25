@@ -12,6 +12,7 @@ import com.sunny.zy.http.request.ZyCookieJar
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
+import java.util.regex.Pattern
 import javax.net.ssl.HostnameVerifier
 
 /**
@@ -37,18 +38,32 @@ object ZyConfig {
     /**
      * 域名前缀：http? https
      */
-    var HOST_PREFIX = "https"
+    var HOST_PREFIX = "http"
 
     /**
      * 域名变量
      */
-    val HOST: String
-        get() {
-            return if(PORT.isEmpty() || PORT == "80"){
-                "$HOST_PREFIX://$IP"
-            }else{
-                "$HOST_PREFIX://$IP:$PORT"
+    var HOST: String = "$HOST_PREFIX://$IP:$PORT"
+        set(value) {
+            field = value
+            val mValueSb = StringBuilder(value)
+            val prefixPattern = "^(http|https|ftp)://"
+            val prefix = Pattern.compile(prefixPattern).matcher(mValueSb)
+
+            if (prefix.find()) {
+                val group = prefix.group()
+                HOST_PREFIX = group.replace("://", "")
+                mValueSb.delete(mValueSb.indexOf(group), group.length)
             }
+
+            val portPattern = ":\\d*"
+            val port = Pattern.compile(portPattern).matcher(mValueSb)
+            if (port.find()) {
+                val group = port.group()
+                PORT = group.replace(":", "")
+                mValueSb.delete(mValueSb.indexOf(group), mValueSb.length)
+            }
+            IP = mValueSb.toString()
         }
 
 

@@ -27,13 +27,11 @@ class QRCodeActivity : BaseActivity() {
     companion object {
         const val resultKey = "qrCode"
 
-        fun getQrResult(intent: Intent): String {
-            return intent.getStringExtra(resultKey) ?: ""
-        }
-
         fun intent(activity: AppCompatActivity, resultCallBack: (result: String) -> Unit) {
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                resultCallBack.invoke(getQrResult(it.data ?: return@registerForActivityResult))
+                if (it.resultCode == Activity.RESULT_OK){
+                    resultCallBack.invoke(it.data?.getStringExtra(resultKey) ?: "")
+                }
             }.launch(Intent(activity, QRCodeActivity::class.java))
         }
     }

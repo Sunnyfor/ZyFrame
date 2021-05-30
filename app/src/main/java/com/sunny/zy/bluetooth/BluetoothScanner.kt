@@ -76,19 +76,19 @@ object BluetoothScanner {
         filters: ArrayList<ScanFilter>? = null,
         onResult: ScanCallback? = null
     ) {
-        startScan(activity, filters,null, onResult)
+        startScan(activity, filters, null, onResult)
     }
 
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADMIN)
     fun startScan(
         activity: AppCompatActivity,
-        serviceId: String? = null,
+        serviceId: String,
         onResult: ScanCallback? = null
     ) {
         val bleScanFilters: ArrayList<ScanFilter> = ArrayList()
         //添加过滤服务ID
-        serviceId?.let {
+        if (serviceId.isNotEmpty()) {
             bleScanFilters.add(
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(UUID.fromString(serviceId))).build()
             )

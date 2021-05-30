@@ -77,12 +77,6 @@ object TimerPackUtil {
         })
     }
 
-    fun showCurrentTime(): String {
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val currentTime = simpleDateFormat.format(Date())
-        LogUtil.i("JoannChen -- 当前时间：$currentTime")
-        return currentTime
-    }
 
     interface OnTimePackResult {
         fun onSelect(timeStr: String)

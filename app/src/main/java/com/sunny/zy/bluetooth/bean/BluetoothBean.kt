@@ -18,7 +18,9 @@ abstract class BluetoothBean(
     var gatt: BluetoothGatt? = null
     var isConnect = false
 
-    abstract fun receive(state: Int, message: String)
+    abstract fun receiveState(state: Int, message: String)
+
+    abstract fun receiveMessage(byteArray: ByteArray)
 
     fun close() {
         gatt?.close()

@@ -4,6 +4,7 @@ import okhttp3.internal.and
 import okhttp3.internal.toHexString
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -44,17 +45,16 @@ object StringUtil {
     }
 
 
-
-    fun insertComma(money: String?,len:Int = 2):String{
+    fun insertComma(money: String?, len: Int = 2): String {
         val buff = StringBuffer()
         buff.append("###,##0")
-        if (len> 0){
+        if (len > 0) {
             buff.append(".")
             for (i in 0 until len) {
                 buff.append("0")
             }
         }
-       return formatMoney(money, buff.toString())
+        return formatMoney(money, buff.toString())
     }
 
     fun formatMoney(money: String?, pattern: String) = formatMoney(money, 0, pattern)
@@ -111,13 +111,12 @@ object StringUtil {
     }
 
 
-    //生成指定范围的随机数
+    /**
+     *  生成指定范围的随机数
+     */
     fun getRandomChar(min: Int, max: Int): String {
         return getRandomChar(Random().nextInt(max - min) + min)
     }
-
-    fun getTimeStamp(): String = (System.currentTimeMillis() / 1000).toString()
-
 
     /**
      * 数组转成字符串
@@ -137,5 +136,19 @@ object StringUtil {
         }
 
         return stringBuilder.toString()
+    }
+
+
+    /**
+     * 获取当前时间戳
+     */
+    fun getTimeStamp(): String = (System.currentTimeMillis() / 1000).toString()
+
+    /**
+     * 根据格式获取当前时间
+     */
+    fun getCurrentTime(pattern: String? = "yyyy-MM-dd HH:mm:ss"): String {
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+        return simpleDateFormat.format(Date())
     }
 }

@@ -33,7 +33,7 @@ object BluetoothConnector {
                         bean.isConnect = true
                         bean.gatt = gatt
                         gatt?.discoverServices()
-                        bean.receive(STATE_CONNECTED, "连接蓝牙成功")
+                        bean.receiveState(STATE_CONNECTED, "连接蓝牙成功")
                     }
 
                     BluetoothProfile.STATE_DISCONNECTED -> {
@@ -41,7 +41,7 @@ object BluetoothConnector {
                         bean.gatt?.close()
                         bean.gatt = null
                         LogUtil.i("蓝牙设备断开:${bean.device.address}  $status")
-                        bean.receive(STATE_DIS_CONNECT, "蓝牙设备断开")
+                        bean.receiveState(STATE_DIS_CONNECT, "蓝牙设备断开")
                     }
                 }
             }
@@ -62,7 +62,7 @@ object BluetoothConnector {
                             if (result) {
                                 LogUtil.i("设置蓝牙写入!")
                                 gatt.writeDescriptor(it)
-                                bean.receive(STATE_GATT_WRITE, "蓝牙设备蓝牙写入")
+                                bean.receiveState(STATE_GATT_WRITE, "蓝牙设备蓝牙写入")
                             }
                         }
                     }
@@ -93,9 +93,14 @@ object BluetoothConnector {
                 characteristic: BluetoothGattCharacteristic?
             ) {
                 super.onCharacteristicChanged(gatt, characteristic)
-                val result = StringUtil.bytesToHexString(characteristic?.value ?: byteArrayOf())
-                bean.receive(STATE_MESSAGE, result)
-                LogUtil.i("蓝牙数据：${result}")
+                val resultByte = characteristic?.value ?: byteArrayOf()
+
+                val resultSb = StringBuilder()
+                resultByte.forEach {
+                    resultSb.append(it)
+                }
+                bean.receiveMessage(resultByte)
+                LogUtil.i("蓝牙数据：${resultSb}")
             }
         })
     }

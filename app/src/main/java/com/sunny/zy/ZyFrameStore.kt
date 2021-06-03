@@ -1,6 +1,6 @@
 package com.sunny.zy
 
-import android.content.Context
+import android.app.Application
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.LogUtil
 import java.util.*
@@ -12,14 +12,14 @@ import kotlin.system.exitProcess
  */
 object ZyFrameStore {
 
-    private lateinit var instance: Context
+    private lateinit var instance: Application
 
     private val activityStack = Stack<BaseActivity>()
 
     var activityCycle: IActivityCycle? = null
 
-    fun init(context: Context) {
-        instance = context.applicationContext
+    fun init(application: Application) {
+        instance = application
     }
 
     fun getContext() = instance
@@ -59,6 +59,9 @@ object ZyFrameStore {
         storeMap.remove(key)
     }
 
+    /**
+     * 清空所有内存数据
+     */
     fun removeAllData() {
         storeMap.clear()
     }
@@ -80,14 +83,21 @@ object ZyFrameStore {
     }
 
     /**
-     * 获取最后的Activity
+     * 根据下标获取Activity
      */
     fun getActivity(index: Int): BaseActivity {
         return activityStack[index]
     }
 
-
-    fun getActivitySize() = activityStack.size
+    /**
+     * 获取Activity的实例数量
+     */
+    fun <T : BaseActivity> getActivitySize(clazz: Class<T>? = null): Int {
+        if (clazz != null) {
+            activityStack.filter { it.javaClass == clazz }.size
+        }
+        return activityStack.size
+    }
 
     /**
      * 关闭指定TaskTag的Activity
@@ -135,9 +145,15 @@ object ZyFrameStore {
      * @return 如果存在的话返回具体实例用于调用内部方法
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : BaseActivity> getActivity(clazz: Class<T>): T? {
-        val result = activityStack.find { it.javaClass == clazz } ?: return null
-        return result as T
+    fun <T : BaseActivity> getActivity(clazz: Class<T>, position: Int? = null): T? {
+        val result = activityStack.filter { it.javaClass == clazz }
+        if (result.isNotEmpty()) {
+            val index = position ?: result.size - 1
+            if (index < result.size) {
+                return result[index] as T
+            }
+        }
+        return null
     }
 
     interface IActivityCycle {

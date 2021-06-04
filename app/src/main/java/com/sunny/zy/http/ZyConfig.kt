@@ -43,7 +43,7 @@ object ZyConfig {
     /**
      * 域名变量
      */
-    var HOST: String = "$HOST_PREFIX://$IP:$PORT"
+    var HOST: String = ""
         set(value) {
             field = value
             val mValueSb = StringBuilder(value)
@@ -64,6 +64,9 @@ object ZyConfig {
                 mValueSb.delete(mValueSb.indexOf(group), mValueSb.length)
             }
             IP = mValueSb.toString()
+        }
+        get() {
+            return "$HOST_PREFIX://$IP:$PORT"
         }
 
 

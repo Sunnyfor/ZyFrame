@@ -19,7 +19,6 @@ object BluetoothConnector {
     const val STATE_CONNECTED = 0 //连接
     const val STATE_DIS_CONNECT = 1 //断开连接
     const val STATE_GATT_WRITE = 2 //可写入
-    const val STATE_MESSAGE = 3 //可写入
 
     fun connect(bean: BluetoothBean) {
         bean.device.connectGatt(ZyFrameStore.getContext(), false, object : BluetoothGattCallback() {

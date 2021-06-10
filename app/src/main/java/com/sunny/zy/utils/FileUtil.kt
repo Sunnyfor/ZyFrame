@@ -1,7 +1,9 @@
 package com.sunny.zy.utils
 
+import android.content.ContentValues
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.http.ZyConfig
@@ -33,6 +35,17 @@ object FileUtil {
     }
 
 
+    fun getPicturesUri(name: String): Uri? {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        }
+        return ZyFrameStore.getContext().contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+    }
+
     /**
      * 获取目录缓存大小
      */
@@ -51,18 +64,16 @@ object FileUtil {
      */
     fun formatFileSize(fileS: Long): String {
         val df = DecimalFormat("#.00")
-        val fileSizeString: String
         val wrongSize = "0B"
         if (fileS == 0L) {
             return wrongSize
         }
-        fileSizeString = when {
+        return when {
             fileS < 1024 -> df.format(fileS.toDouble()) + "B"
             fileS < 1048576 -> df.format(fileS.toDouble() / 1024) + "KB"
             fileS < 1073741824 -> df.format(fileS.toDouble() / 1048576) + "MB"
             else -> df.format(fileS.toDouble() / 1073741824) + "GB"
         }
-        return fileSizeString
     }
 
 

@@ -30,8 +30,12 @@ class CameraUtil {
 
     private var file: File? = null
     private var uri: Uri? = null
-    private var aspectX = 500
-    private var aspectY = 500
+    private var aspectX = 1
+    private var aspectY = 1
+    private var outputX = 500
+    private var outputY = 500
+    private var isCrop = true
+
 
     private val scope: CoroutineScope by lazy {
         MainScope()
@@ -59,8 +63,8 @@ class CameraUtil {
                     file?.delete()
                     return@registerForActivityResult
                 }
-                if (aspectX != 0 && aspectY != 0) {
-                    startPhotoZoom(activity, uri ?: return@registerForActivityResult)
+                if (isCrop) {
+                    startPhotoZoom(activity, null)
                 } else {
                     onResultListener?.onResult(file ?: return@registerForActivityResult)
                 }
@@ -82,15 +86,13 @@ class CameraUtil {
             initFile(fileName)
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode != Activity.RESULT_OK) {
                     file?.delete()
                     return@registerForActivityResult
                 }
                 it.data?.data?.let { mUri ->
-                    if (aspectX != 0 && aspectY != 0) {
+                    if (isCrop) {
                         startPhotoZoom(activity, mUri)
                     } else {
                         whiteResult(activity, mUri)
@@ -104,37 +106,65 @@ class CameraUtil {
     /**
      * 裁剪图片
      */
-    private fun startPhotoZoom(activity: BaseActivity, mUri: Uri) {
+    private fun startPhotoZoom(activity: BaseActivity, mUri: Uri?) {
+
         val intent = Intent("com.android.camera.action.CROP")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            //添加这一句表示对目标应用临时授权该Uri所代表的文件
-            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        }
-        intent.setDataAndType(mUri, "image/*")
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
         intent.putExtra("crop", "true")
         intent.putExtra("scale", true)
-
+        intent.setDataAndType(mUri ?: uri, "image/*")
         intent.putExtra("aspectX", aspectX)
         intent.putExtra("aspectY", aspectY)
-        if (aspectX != 0 && aspectY != 0) {
-            intent.putExtra("outputX", aspectX)
-            intent.putExtra("outputY", aspectY)
-        }
-        intent.putExtra("return-data", false)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file))
+        intent.putExtra("outputX", outputX)
+        intent.putExtra("outputY", outputY)
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
-        intent.putExtra("noFaceDetection", true) // no face detection
+        intent.putExtra("return-data", false)
+        intent.putExtra("noFaceDetection", true) //
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            FileUtil.getPicturesUri(file?.name ?: "")?.let {
+                uri = it
+                if (mUri == null) {
+                    intent.setDataAndType(it, "image/*")
+                }
+                activity.contentResolver.openOutputStream(it)?.use { os ->
+                    os.write(file?.readBytes())
+                }
+                file?.delete()
+                file?.createNewFile()
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+            }
+        } else {
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file))
+        }
+
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode != Activity.RESULT_OK) {
                 file?.delete()
-                return@registerForActivityResult
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    uri?.let { uri ->
+                        activity.contentResolver.delete(uri, null)
+                    }
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    uri?.let { uri ->
+                        activity.contentResolver.openInputStream(uri)
+                            ?.use { inputSteam ->
+                                file?.delete()
+                                file?.createNewFile()
+                                file?.writeBytes(inputSteam.readBytes())
+                                activity.contentResolver.delete(uri, null)
+                            }
+                    }
+                }
+                onResultListener?.onResult(file ?: return@registerForActivityResult)
             }
-            onResultListener?.onResult(file ?: return@registerForActivityResult)
         }.launch(intent)
 
     }
-
 
     private fun whiteResult(activity: BaseActivity, uri: Uri) {
         val inputStream = activity.contentResolver.openInputStream(uri)
@@ -156,6 +186,17 @@ class CameraUtil {
     }
 
 
+    fun setOutputXY(outputX: Int, outputY: Int) {
+        this.outputX = outputX
+        this.outputY = outputY
+    }
+
+
+    fun isCrop(isCrop: Boolean) {
+        this.isCrop = isCrop
+    }
+
+
     //裁剪结果回调
     interface OnResultListener {
         fun onResult(file: File)
@@ -168,7 +209,13 @@ class CameraUtil {
         file = if (fileName.isEmpty()) {
             FileUtil.getFile("IMG_${System.currentTimeMillis()}.jpg")
         } else {
-            FileUtil.getFile(fileName)
+            val fileNameSb = StringBuilder()
+            if (fileName.contains(".")) {
+                val result = fileName.split(".")
+                fileNameSb.append(result[0])
+            }
+            fileNameSb.append(".jpg")
+            FileUtil.getFile(fileNameSb.toString())
         }
 
         file?.let {
@@ -185,6 +232,5 @@ class CameraUtil {
                 Uri.fromFile(file)
             }
         }
-
     }
 }

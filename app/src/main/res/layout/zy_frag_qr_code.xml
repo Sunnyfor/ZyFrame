@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/fl_content"
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,15 +17,9 @@
         android:id="@+id/viewfinderView"
         android:layout_width="@dimen/dp_260"
         android:layout_height="@dimen/dp_260"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/view_placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_black" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -36,9 +36,15 @@ object ZyConfig {
     var PORT = "80"
 
     /**
-     * 域名前缀：http? https
+     * 前缀：http? https
      */
     var HOST_PREFIX = "http"
+
+
+    /**
+     * 后缀
+     */
+    var HOST_SPACE = ""
 
     /**
      * 域名变量
@@ -56,17 +62,24 @@ object ZyConfig {
                 mValueSb.delete(mValueSb.indexOf(group), group.length)
             }
 
-            val portPattern = ":\\d*"
+            val portPattern = ":\\d+"
             val port = Pattern.compile(portPattern).matcher(mValueSb)
             if (port.find()) {
                 val group = port.group()
+                val startIndex = mValueSb.indexOf(group) + group.length
+                val endIndex = mValueSb.length
+                HOST_SPACE = if (startIndex < endIndex) {
+                    mValueSb.substring(startIndex, endIndex)
+                } else {
+                    ""
+                }
                 PORT = group.replace(":", "")
                 mValueSb.delete(mValueSb.indexOf(group), mValueSb.length)
             }
             IP = mValueSb.toString()
         }
         get() {
-            return "$HOST_PREFIX://$IP:$PORT"
+            return "$HOST_PREFIX://$IP:$PORT$HOST_SPACE"
         }
 
 

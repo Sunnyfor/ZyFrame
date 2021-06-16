@@ -121,20 +121,21 @@ object StringUtil {
     /**
      * 数组转成字符串
      */
-    fun bytesToHexString(byteArray: ByteArray): String {
+    fun bytesToHexString(byteArray: ByteArray, delimiter: String? = null): String {
         if (byteArray.isEmpty()) {
             return ""
         }
         val stringBuilder = StringBuilder()
-
-        byteArray.forEach {
-            val str = (it and 0XFF).toHexString()
+        byteArray.forEachIndexed { index, byte ->
+            val str = (byte and 0XFF).toHexString()
             if (str.length < 2) {
                 stringBuilder.append(0)
             }
             stringBuilder.append(str)
+            if (delimiter != null && index < byteArray.size - 1) {
+                stringBuilder.append(delimiter)
+            }
         }
-
         return stringBuilder.toString()
     }
 

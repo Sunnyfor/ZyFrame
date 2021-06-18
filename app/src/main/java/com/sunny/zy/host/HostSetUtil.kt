@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import com.sunny.zy.R
+import com.sunny.zy.utils.StringUtil
 import com.sunny.zy.utils.ToastUtil
 
 /**
@@ -58,7 +59,7 @@ object HostSetUtil {
 
         val view = View.inflate(context, R.layout.dialog_host_pwd, null)
         val dialog = AlertDialog.Builder(context)
-            .setTitle("温馨提示")
+            .setTitle("身份验证")
             .setView(view)
             .create()
 
@@ -69,12 +70,12 @@ object HostSetUtil {
         val cancelBtn = view.findViewById<Button>(R.id.btn_cancel)
         val confirmBtn = view.findViewById<Button>(R.id.btn_confirm)
         val inputEditText = view.findViewById<EditText>(R.id.et_input)
-        inputEditText.hint = "请输入暗号"
         cancelBtn.setOnClickListener {
             dialog.dismiss()
         }
         confirmBtn.setOnClickListener {
-            if ("贞和科技" == inputEditText.text.toString()) {
+            val password = StringUtil.getCurrentTime("yyyyMMdd")
+            if (password == inputEditText.text.toString()) {
                 HostSetDialog(context).show()
             } else {
                 ToastUtil.show("身份验证失败")

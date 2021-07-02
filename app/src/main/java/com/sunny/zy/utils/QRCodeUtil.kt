@@ -1,5 +1,7 @@
 package com.sunny.zy.utils
 
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import androidx.camera.core.CameraSelector
@@ -10,11 +12,9 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.google.common.util.concurrent.ListenableFuture
-import com.google.zxing.BinaryBitmap
-import com.google.zxing.MultiFormatReader
-import com.google.zxing.NotFoundException
-import com.google.zxing.PlanarYUVLuminanceSource
+import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.sunny.zy.ZyFrameStore
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -116,6 +116,45 @@ class QRCodeUtil(private var resultCallback: (text: String) -> Unit) {
             } finally {
                 image.close()
             }
+        }
+    }
+
+    companion object{
+        fun createQRCode(content: String,qrcode_size:Int = 300): Bitmap? {
+            val hashMap = HashMap<EncodeHintType, Any>()
+            // 设置二维码字符编码
+            hashMap[EncodeHintType.CHARACTER_SET] = "UTF-8"
+            // 设置二维码纠错等级
+            hashMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.M
+            // 设置二维码边距
+            hashMap[EncodeHintType.MARGIN] = 2
+
+            try {
+                // 开始生成二维码
+                val bitMatrix = MultiFormatWriter().encode(
+                    content, BarcodeFormat.QR_CODE,
+                    qrcode_size, qrcode_size, hashMap
+                )
+
+                val pixels = IntArray(qrcode_size * qrcode_size)
+                for (y in 0 until qrcode_size) {
+                    for (x in 0 until qrcode_size) {
+                        //bitMatrix.get(x,y)方法返回true是黑色色块，false是白色色块
+                        if (bitMatrix[x, y]) {
+                            pixels[y * qrcode_size + x] = Color.BLACK //黑色色块像素设置
+                        } else {
+                            pixels[y * qrcode_size + x] = Color.WHITE // 白色色块像素设置
+                        }
+                    }
+                }
+                /** 4.创建Bitmap对象,根据像素数组设置Bitmap每个像素点的颜色值,并返回Bitmap对象  */
+                val bitmap = Bitmap.createBitmap(qrcode_size, qrcode_size, Bitmap.Config.ARGB_8888)
+                bitmap.setPixels(pixels, 0, qrcode_size, 0, 0, qrcode_size, qrcode_size)
+                return bitmap
+            } catch (e: WriterException) {
+                e.printStackTrace()
+            }
+            return null
         }
     }
 }

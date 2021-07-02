@@ -3,6 +3,7 @@ package com.sunny.zy.http
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.interceptor.ZyHttpLoggingInterceptor
 import com.sunny.zy.http.interceptor.ZyNetworkInterceptor
+import com.sunny.zy.utils.LogUtil
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
 import java.util.concurrent.TimeUnit
@@ -18,16 +19,7 @@ class OkHttpClientFactory {
         val builder =
             OkHttpClient.Builder()
                 .addInterceptor(ZyConfig.headerInterceptor)
-                .addNetworkInterceptor(
-                    ZyHttpLoggingInterceptor(object : ZyHttpLoggingInterceptor.Logger {
-                        override fun log(message: String) {
-                            if (ZyConfig.isLog) {
-                                Platform.get().log(message, Platform.WARN, null)
-                            }
-                        }
-                    }).apply {
-                        level = ZyHttpLoggingInterceptor.Level.BODY
-                    })
+                .addNetworkInterceptor(ZyHttpLoggingInterceptor())
                 .sslSocketFactory(
                     ZySSLSocketClient.createSSLSocketFactory(),
                     ZySSLSocketClient.getTrustManager()

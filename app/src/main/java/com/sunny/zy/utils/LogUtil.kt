@@ -1,248 +1,107 @@
 package com.sunny.zy.utils
 
-import android.text.TextUtils
-import android.util.Log
-import com.sunny.zy.http.ZyConfig
+import com.orhanobut.logger.AndroidLogAdapter
+import com.orhanobut.logger.Logger
+import com.orhanobut.logger.PrettyFormatStrategy
+import com.sunny.zy.BuildConfig
 
 /**
- * 移植xUtils日志代码
- * Created by Zy on 2017/10/12.
+ * 封装使用Logger日志代码
+ * Created by Zy on 2021年6月30日
  */
 
 object LogUtil {
 
-    private var customTagPrefix = ""
-    private var allowD = ZyConfig.isLog
-    private var allowE = ZyConfig.isLog
-    private var allowI = ZyConfig.isLog
-    private var allowV = ZyConfig.isLog
-    private var allowW = ZyConfig.isLog
-    private var allowWtf = ZyConfig.isLog
-    private var customLogger: CustomLogger? = null
+    private const val divider = "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"
 
+    init {
+        val formatStrategy = PrettyFormatStrategy.newBuilder()
+            .showThreadInfo(false)
+            .methodCount(0)
+            .tag("ZyFrame")
+            .build()
 
-    fun d(content: String) {
-        if (allowD) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.d(tag, content)
-            } else {
-                Log.d(tag, content)
+        Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
+            override fun isLoggable(priority: Int, tag: String?): Boolean {
+                return BuildConfig.DEBUG
             }
-
-        }
-    }
-
-    fun d(content: String, tr: Throwable) {
-        if (allowD) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.d(tag, content, tr)
-            } else {
-                Log.d(tag, content, tr)
-            }
-
-        }
-    }
-
-    fun e(content: String) {
-        if (allowE) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.e(tag, content)
-            } else {
-                Log.e(tag, content)
-            }
-
-        }
-    }
-
-    fun e(content: String, tr: Throwable) {
-        if (allowE) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.e(tag, content, tr)
-            } else {
-                Log.e(tag, content, tr)
-            }
-
-        }
-    }
-
-    fun i(content: String) {
-        if (allowI) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.i(tag, content)
-            } else {
-                Log.i(tag, content)
-            }
-
-        }
-    }
-
-    fun i(content: String, tr: Throwable) {
-        if (allowI) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.i(tag, content, tr)
-            } else {
-                Log.i(tag, content, tr)
-            }
-
-        }
-    }
-
-    fun v(content: String) {
-        if (allowV) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.v(tag, content)
-            } else {
-                Log.v(tag, content)
-            }
-
-        }
-    }
-
-    fun v(content: String, tr: Throwable) {
-        if (allowV) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.v(tag, content, tr)
-            } else {
-                Log.v(tag, content, tr)
-            }
-
-        }
-    }
-
-    fun w(content: String) {
-        if (allowW) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.w(tag, content)
-            } else {
-                Log.w(tag, content)
-            }
-
-        }
-    }
-
-    fun w(content: String, tr: Throwable) {
-        if (allowW) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.w(tag, content, tr)
-            } else {
-                Log.w(tag, content, tr)
-            }
-
-        }
-    }
-
-    fun w(tr: Throwable) {
-        if (allowW) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.w(tag, tr)
-            } else {
-                Log.w(tag, tr)
-            }
-
-        }
-    }
-
-    fun wtf(content: String) {
-        if (allowWtf) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.wtf(tag, content)
-            } else {
-                Log.wtf(tag, content)
-            }
-
-        }
-    }
-
-    fun wtf(content: String, tr: Throwable) {
-        if (allowWtf) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.wtf(tag, content, tr)
-            } else {
-                Log.wtf(tag, content, tr)
-            }
-
-        }
-    }
-
-    fun wtf(tr: Throwable) {
-        if (allowWtf) {
-            val caller = getCallerStackTraceElement()
-            val tag = generateTag(caller)
-            if (customLogger != null) {
-                customLogger?.wtf(tag, tr)
-            } else {
-                Log.wtf(tag, tr)
-            }
-
-        }
+        })
     }
 
 
-    private fun generateTag(caller: StackTraceElement): String {
-        var tag = "%s.%s(L:%d)"
-        var callerClazzName = caller.className
-        callerClazzName = callerClazzName.substring(callerClazzName.lastIndexOf(".") + 1)
-        tag = String.format(tag, callerClazzName, caller.methodName, Integer.valueOf(caller.lineNumber))
-        tag = if (TextUtils.isEmpty(customTagPrefix)) tag else customTagPrefix + ":" + tag
-        return tag
+    fun log(priority: Int, tag: String, message: String?, throwable: Throwable?) {
+        Logger.log(priority, tag, message, throwable)
     }
 
-    private fun getCallerStackTraceElement(): StackTraceElement =
-            Thread.currentThread().stackTrace[4]
-
-    interface CustomLogger {
-        fun d(var1: String, var2: String)
-
-        fun d(var1: String, var2: String, var3: Throwable)
-
-        fun e(var1: String, var2: String)
-
-        fun e(var1: String, var2: String, var3: Throwable)
-
-        fun i(var1: String, var2: String)
-
-        fun i(var1: String, var2: String, var3: Throwable)
-
-        fun v(var1: String, var2: String)
-
-        fun v(var1: String, var2: String, var3: Throwable)
-
-        fun w(var1: String, var2: String)
-
-        fun w(var1: String, var2: String, var3: Throwable)
-
-        fun w(var1: String, var2: Throwable)
-
-        fun wtf(var1: String, var2: String)
-
-        fun wtf(var1: String, var2: String, var3: Throwable)
-
-        fun wtf(var1: String, var2: Throwable)
+    fun d(message: String, vararg args: Any?) {
+        Logger.d(message, *args)
     }
+
+    fun d(title: String, message: String, vararg args: Any?) {
+        d(generateTitle(title).append(message).toString(), *args)
+    }
+
+    fun e(message: String, vararg args: Any?) {
+        Logger.e(null, message, *args)
+    }
+
+    fun e(title: String,message: String, vararg args: Any?) {
+        e(generateTitle(title).append(message).toString(), *args)
+    }
+
+
+    fun i(message: String, vararg args: Any?) {
+        Logger.i(message, *args)
+    }
+
+    fun i(title: String,message: String, vararg args: Any?) {
+        i(generateTitle(title).append(message).toString(), *args)
+    }
+
+    fun v(message: String, vararg args: Any?) {
+        Logger.v(message, *args)
+    }
+
+    fun v(title: String,message: String, vararg args: Any?) {
+        v(generateTitle(title).append(message).toString(), *args)
+    }
+
+    fun w(message: String, vararg args: Any?) {
+        Logger.w(message, *args)
+    }
+
+    fun w(title: String,message: String, vararg args: Any?) {
+        w(generateTitle(title).append(message).toString(), *args)
+    }
+
+    /**
+     * Tip: Use this for exceptional situations to log
+     * ie: Unexpected errors etc
+     */
+    fun wtf(message: String, vararg args: Any?) {
+        Logger.wtf(message, *args)
+    }
+
+    fun wtf(title: String,message: String, vararg args: Any?) {
+        wtf(generateTitle(title).append(message).toString(), *args)
+    }
+
+    /**
+     * Formats the given json content and print it
+     */
+    fun json(json: String) {
+        Logger.json(json)
+    }
+
+    /**
+     * Formats the given xml content and print it
+     */
+    fun xml(xml: String) {
+        Logger.xml(xml)
+    }
+
+    private fun generateTitle(title: String): StringBuilder {
+        return StringBuilder(title).append("\n").append(divider).append("\n")
+    }
+
 }

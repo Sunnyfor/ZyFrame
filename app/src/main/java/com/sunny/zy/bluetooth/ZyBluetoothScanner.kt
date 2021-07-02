@@ -141,6 +141,7 @@ object ZyBluetoothScanner {
                 }
             }
             val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
             activity.registerReceiver(receiver, filter)
             bluetoothAdapter?.startDiscovery()
         }

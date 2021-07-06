@@ -3,7 +3,6 @@ package com.sunny.zy.utils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-import com.sunny.zy.BuildConfig
 
 /**
  * 封装使用Logger日志代码
@@ -14,16 +13,19 @@ object LogUtil {
 
     private const val divider = "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"
 
+    var isLoggable = true
+    var tag = "ZyFrame"
+
     init {
         val formatStrategy = PrettyFormatStrategy.newBuilder()
             .showThreadInfo(false)
             .methodCount(0)
-            .tag("ZyFrame")
+            .tag(tag)
             .build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
             override fun isLoggable(priority: Int, tag: String?): Boolean {
-                return BuildConfig.DEBUG
+                return isLoggable
             }
         })
     }
@@ -45,7 +47,7 @@ object LogUtil {
         Logger.e(null, message, *args)
     }
 
-    fun e(title: String,message: String, vararg args: Any?) {
+    fun e(title: String, message: String, vararg args: Any?) {
         e(generateTitle(title).append(message).toString(), *args)
     }
 
@@ -54,7 +56,7 @@ object LogUtil {
         Logger.i(message, *args)
     }
 
-    fun i(title: String,message: String, vararg args: Any?) {
+    fun i(title: String, message: String, vararg args: Any?) {
         i(generateTitle(title).append(message).toString(), *args)
     }
 
@@ -62,7 +64,7 @@ object LogUtil {
         Logger.v(message, *args)
     }
 
-    fun v(title: String,message: String, vararg args: Any?) {
+    fun v(title: String, message: String, vararg args: Any?) {
         v(generateTitle(title).append(message).toString(), *args)
     }
 
@@ -70,7 +72,7 @@ object LogUtil {
         Logger.w(message, *args)
     }
 
-    fun w(title: String,message: String, vararg args: Any?) {
+    fun w(title: String, message: String, vararg args: Any?) {
         w(generateTitle(title).append(message).toString(), *args)
     }
 
@@ -82,7 +84,7 @@ object LogUtil {
         Logger.wtf(message, *args)
     }
 
-    fun wtf(title: String,message: String, vararg args: Any?) {
+    fun wtf(title: String, message: String, vararg args: Any?) {
         wtf(generateTitle(title).append(message).toString(), *args)
     }
 

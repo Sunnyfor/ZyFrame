@@ -70,7 +70,7 @@ dependencies {
     api 'com.makeramen:roundedimageview:2.3.0'
 
     //logger类
-    api 'com.orhanobut:logger:2.2.0'
+    implementation 'com.orhanobut:logger:2.2.0'
 
     def camerax_version = "1.1.0-alpha04"
 // CameraX core library using camera2 implementation

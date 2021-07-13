@@ -81,12 +81,13 @@ open class ZHResponseParser : IResponseParser {
 
 
     /**
-     * 写入SDK
+     * 文件写入SD卡
      */
     private fun writeResponseBodyToDisk(
         data: InputStream,
         downLoadResultBean: DownLoadResultBean
     ): File {
+
         if (downLoadResultBean.filePath == null) {
             downLoadResultBean.filePath = ZyConfig.TEMP
         }
@@ -120,13 +121,15 @@ open class ZHResponseParser : IResponseParser {
                 totalRead += read
                 outputStream.write(byte, 0, read)
 
-                val progress =
-                    50 + (totalRead * 100 / downLoadResultBean.contentLength).toInt() / 2
-                if (progress != downLoadResultBean.progress) {
-                    withContext(Main) {
-                        downLoadResultBean.progress = progress
-                        downLoadResultBean.done = totalRead == downLoadResultBean.contentLength
-                        downLoadResultBean.notifyData(downLoadResultBean)
+                if (downLoadResultBean.contentLength != 0L) {
+                    val progress =
+                        50 + (totalRead * 100 / downLoadResultBean.contentLength).toInt() / 2
+                    if (progress != downLoadResultBean.progress) {
+                        withContext(Main) {
+                            downLoadResultBean.progress = progress
+                            downLoadResultBean.done = totalRead == downLoadResultBean.contentLength
+                            downLoadResultBean.notifyData(downLoadResultBean)
+                        }
                     }
                 }
             }

@@ -3,9 +3,7 @@ package com.sunny.zy.http
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.interceptor.ZyHttpLoggingInterceptor
 import com.sunny.zy.http.interceptor.ZyNetworkInterceptor
-import com.sunny.zy.utils.LogUtil
 import okhttp3.OkHttpClient
-import okhttp3.internal.platform.Platform
 import java.util.concurrent.TimeUnit
 
 /**

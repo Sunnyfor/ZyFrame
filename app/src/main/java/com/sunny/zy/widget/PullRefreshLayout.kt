@@ -118,10 +118,6 @@ class PullRefreshLayout : SmartRefreshLayout {
         rootView.addView(this.contentView, layoutParams)
     }
 
-    fun <T> addData(adapter: BaseRecycleAdapter<T>, data: T) {
-        addData(adapter, -1, arrayListOf(data))
-    }
-
     fun <T> addData(adapter: BaseRecycleAdapter<T>, data: ArrayList<T>) {
         addData(adapter, -1, data)
     }
@@ -208,7 +204,7 @@ class PullRefreshLayout : SmartRefreshLayout {
     }
 
 
-    private fun <T> updateEmptyView(data: ArrayList<T>) {
+    fun <T> updateEmptyView(data: ArrayList<T>) {
         if (data.isEmpty()) {
             placeholderViewUtil?.showView(
                 rootView,

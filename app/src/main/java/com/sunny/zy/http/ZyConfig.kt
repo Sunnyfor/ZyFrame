@@ -75,11 +75,28 @@ object ZyConfig {
                 }
                 PORT = group.replace(":", "")
                 mValueSb.delete(mValueSb.indexOf(group), mValueSb.length)
+            } else {
+                PORT = "80"
             }
-            IP = mValueSb.toString()
+            if (mValueSb.contains("/")) {
+                val spaceSb = StringBuilder()
+                val values = mValueSb.split("/")
+                values.forEachIndexed { index, s ->
+                    if (index == 0) {
+                        IP = s
+                    } else {
+                        spaceSb.append("/")
+                        spaceSb.append(s)
+                    }
+                }
+                HOST_SPACE = spaceSb.toString()
+            } else {
+                IP = mValueSb.toString()
+            }
+
         }
         get() {
-            return "$HOST_PREFIX://$IP:$PORT$HOST_SPACE"
+            return "$HOST_PREFIX://$IP${if (PORT == "80") "" else ":$PORT"}$HOST_SPACE"
         }
 
 

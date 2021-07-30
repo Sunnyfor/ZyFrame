@@ -27,7 +27,7 @@ object HostSetUtil {
     /**
      * 测试彩蛋
      */
-    fun displayEggs(context: Context) {
+    fun displayEggs(context: Context, defaultHostList: ArrayList<String> = arrayListOf()) {
         if (mHits == null) {
             mHits = LongArray(3) // 需要点击几次 就设置几
         }
@@ -44,9 +44,9 @@ object HostSetUtil {
                 val isApkInDebug =
                     context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
                 if (isApkInDebug) {
-                    HostSetDialog(context).show()
+                    HostSetDialog(context,defaultHostList).show()
                 } else {
-                    showAdminDialog(context)
+                    showAdminDialog(context,defaultHostList)
                 }
             }
         }
@@ -55,7 +55,7 @@ object HostSetUtil {
     /**
      * 展示管理员权限对话框
      */
-    private fun showAdminDialog(context: Context) {
+    private fun showAdminDialog(context: Context,defaultHostList: ArrayList<String>) {
 
         val view = View.inflate(context, R.layout.dialog_host_pwd, null)
         val dialog = AlertDialog.Builder(context)
@@ -76,7 +76,7 @@ object HostSetUtil {
         confirmBtn.setOnClickListener {
             val password = StringUtil.getCurrentTime("yyyyMMdd")
             if (password == inputEditText.text.toString()) {
-                HostSetDialog(context).show()
+                HostSetDialog(context,defaultHostList).show()
             } else {
                 ToastUtil.show("身份验证失败")
             }

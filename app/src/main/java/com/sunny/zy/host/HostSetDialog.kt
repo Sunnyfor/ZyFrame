@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.dialog_host_set.view.*
  * Mail yongzuo.chen@foxmail.com
  * Date 2020年3月7日 21:32:59
  */
-class HostSetDialog(context: Context) : AlertDialog(context) {
+class HostSetDialog(context: Context, var defaultHostList: ArrayList<String>) : AlertDialog(context) {
 
     private val mView: View by lazy {
         LayoutInflater.from(context).inflate(R.layout.dialog_host_set, null, false)
@@ -92,7 +92,7 @@ class HostSetDialog(context: Context) : AlertDialog(context) {
         if (json != "") {
             hostList.addAll(Gson().fromJson(json, object : TypeToken<List<String>>() {}.type))
         } else {
-            hostList.add("http://10.0.0.130:8088")
+            hostList.addAll(defaultHostList)
             SpUtil.get(HostKey.host_fileName).setString(HostKey.host_list, Gson().toJson(hostList))
         }
         hostAdapter.notifyDataSetChanged()

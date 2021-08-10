@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.sunny.zy.http
 
 import com.sunny.zy.http.bean.BaseHttpResultBean
@@ -5,6 +7,8 @@ import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import com.sunny.zy.http.bean.WebSocketResultBean
 import com.sunny.zy.http.request.ZyRequest
+import com.sunny.zy.http.response.DefaultHttpExecute
+import com.sunny.zy.http.response.IHttpExecute
 import com.sunny.zy.utils.LogUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +27,8 @@ object ZyHttp {
     var zyRequest = ZyRequest()
 
     var clientFactory = OkHttpClientFactory()
+
+    var httpExecute: IHttpExecute = DefaultHttpExecute()
 
     var FilePath = "path"
 
@@ -189,9 +195,9 @@ object ZyHttp {
             httpResultBean.url = request.url.toString()
             //执行异步网络请求
             if (httpResultBean is DownLoadResultBean) {
-                executeDownload(request, httpResultBean)
+                httpExecute.executeDownload(request, httpResultBean)
             } else if (httpResultBean is HttpResultBean<*>) {
-                executeHttp(request, httpResultBean)
+                httpExecute.executeHttp(request, httpResultBean)
             }
         } catch (e: Exception) {
             //出现异常获取异常信息
@@ -203,45 +209,5 @@ object ZyHttp {
         withContext(Dispatchers.Main) {
             ZyConfig.httpResultCallback?.invoke(httpResultBean)
         }
-    }
-
-
-    private fun executeDownload(request: Request, resultBean: DownLoadResultBean) {
-        resultBean.call = clientFactory.createDownloadClient(resultBean).newCall(request)
-        resultBean.call?.execute()?.let { response ->
-            //获取HTTP状态码
-            resultBean.httpCode = response.code
-            //获取Response回执信息
-            resultBean.message = response.message
-            //获取请求URL
-            resultBean.url = request.url.toString()
-            if (response.isSuccessful) {
-                response.body?.let {
-                    resultBean.file =
-                        ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
-                }
-            }
-        }
-    }
-
-    private fun <T> executeHttp(request: Request, resultBean: HttpResultBean<T>) {
-        resultBean.call = clientFactory.getOkHttpClient().newCall(request)
-        resultBean.call?.execute()?.let { response ->
-            //获取HTTP状态码
-            resultBean.httpCode = response.code
-            //获取Response回执信息
-            resultBean.message = response.message
-            //获取响应URL
-            resultBean.resUrl = response.request.url.toString()
-
-            if (response.isSuccessful) {
-                response.body?.let {
-                    resultBean.bean = ZyConfig.iResponseParser.parserHttpResponse(
-                        it, resultBean
-                    )
-                }
-            }
-        }
-
     }
 }

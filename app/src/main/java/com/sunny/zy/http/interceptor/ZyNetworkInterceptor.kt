@@ -16,30 +16,27 @@ class ZyNetworkInterceptor(var downLoadResultBean: DownLoadResultBean) : Interce
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
-        return originalResponse.newBuilder().body(
-            ProgressResponseBody(
-                originalResponse.body,
-                object : ProgressResponseBody.ProgressResponseListener {
-                    override fun onResponseProgress(
-                        bytesRead: Long,
-                        contentLength: Long,
-                        done: Boolean
-                    ) {
-                        if (contentLength == 0L) {
-                            return
-                        }
+
+        val body = ProgressResponseBody(
+            originalResponse.body,
+            object : ProgressResponseBody.ProgressResponseListener {
+                override fun onResponseProgress(
+                    bytesRead: Long,
+                    contentLength: Long,
+                    done: Boolean
+                ) {
+                    if (contentLength > 0L) {
+                        downLoadResultBean.contentLength = contentLength
+                        downLoadResultBean.readLength = bytesRead
+                        val progress = (bytesRead * 100L / contentLength).toInt() / 2
+                        downLoadResultBean.progress = progress
                         downLoadResultBean.scope?.launch(Main) {
-                            downLoadResultBean.contentLength = contentLength
-                            downLoadResultBean.readLength = bytesRead
-                            val progress = (bytesRead * 100L / contentLength).toInt() / 2
-                            if (progress != downLoadResultBean.progress) {
-                                downLoadResultBean.progress = progress
-                                downLoadResultBean.notifyData(downLoadResultBean)
-                            }
+                            downLoadResultBean.notifyData(downLoadResultBean)
                         }
                     }
                 }
-            )
-        ).build()
+            }
+        )
+        return originalResponse.newBuilder().body(body).build()
     }
 }

@@ -66,9 +66,19 @@ class PullRefreshLayout : SmartRefreshLayout {
     }
 
 
+    val headerView by lazy {
+        ClassicsHeader(context)
+    }
+
+    val footerView by lazy {
+        ClassicsFooter(context)
+    }
+
+
     private fun init() {
-        setRefreshHeader(ClassicsHeader(context))
-        setRefreshFooter(ClassicsFooter(context))
+        setRefreshHeader(headerView)
+        setRefreshFooter(footerView)
+
         setEnableAutoLoadMore(true)//开启自动加载功能
         addView(rootView, layoutParams)
         setContentView(RecyclerView(context).apply {

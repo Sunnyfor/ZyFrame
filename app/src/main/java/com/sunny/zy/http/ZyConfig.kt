@@ -42,6 +42,11 @@ object ZyConfig {
 
 
     /**
+     * 数据bean成功的code值
+     */
+    val baseModelSuccessCodes = arrayListOf("0","200")
+
+    /**
      * 后缀
      */
     var HOST_SPACE = ""

@@ -1,5 +1,7 @@
 package com.sunny.zy.base
 
+import com.sunny.zy.http.ZyConfig
+
 /**
  * Desc 公共实体类
  * Author Zy
@@ -13,7 +15,7 @@ open class BaseModel<T> {
 
 
     fun isSuccess(): Boolean {
-        if (code == "0" || msg == "success") {
+        if (ZyConfig.baseModelSuccessCodes.contains(code)) {
             return true
         }
         return false

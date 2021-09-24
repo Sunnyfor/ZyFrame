@@ -11,7 +11,13 @@
     <string name="retry">重试</string>
 
     <!--设置-->
+    <string name="complete">完成</string>
     <string name="clearComplete">清理完成!</string>
 
     <string name="dialogDownload">正在下载… </string>
+
+    <!--gallery-->
+    <string name="all_image">全部图片</string>
+    <string name="all_video">全部视频</string>
+    <string name="default_duration">00:00</string>
 </resources>

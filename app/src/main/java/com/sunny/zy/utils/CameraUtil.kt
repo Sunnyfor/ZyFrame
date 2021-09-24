@@ -124,7 +124,7 @@ class CameraUtil {
         intent.putExtra("noFaceDetection", true) //
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            FileUtil.getPicturesUri(file?.name ?: "")?.let {
+            FileUtil.insertImage(file?.name ?: "")?.let {
                 uri = it
                 if (mUri == null) {
                     intent.setDataAndType(it, "image/*")

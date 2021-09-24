@@ -35,7 +35,7 @@ object FileUtil {
     }
 
 
-    fun getPicturesUri(name: String): Uri? {
+    fun insertImage(name: String): Uri? {
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
@@ -45,6 +45,27 @@ object FileUtil {
             contentValues
         )
     }
+
+
+    fun cropResultGetUri(uri: Uri?, file: File): Uri? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && uri != null) {
+            ZyFrameStore.getContext().contentResolver.openInputStream(uri)?.use {
+                if (file.exists()) {
+                    file.delete()
+                }
+                file.createNewFile()
+                file.writeBytes(it.readBytes())
+                ZyFrameStore.getContext().contentResolver.delete(uri, null)
+                return FileProvider.getUriForFile(
+                    ZyFrameStore.getContext(),
+                    ZyConfig.authorities,
+                    file
+                )
+            }
+        }
+        return null
+    }
+
 
     /**
      * 获取目录缓存大小

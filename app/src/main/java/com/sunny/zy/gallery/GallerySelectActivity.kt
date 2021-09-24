@@ -65,6 +65,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         const val SELECT_TYPE_MULTIPLE = 0  //多选
         const val SELECT_TYPE_SINGLE = 1  //单选
 
+        const val MAX_SIZE = "maxSize"
         const val IS_CROP = "isCrop"
 
 
@@ -97,6 +98,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         intent.getBundleExtra("flags")?.let {
             selectType = it.getInt(SELECT_TYPE, SELECT_TYPE_MULTIPLE)
             isCrop = it.getBoolean(IS_CROP, false)
+            maxSize = it.getInt(MAX_SIZE, 8)
         }
 
         contentAdapter.selectType = selectType

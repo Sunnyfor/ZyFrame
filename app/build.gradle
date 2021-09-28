@@ -80,4 +80,5 @@ dependencies {
 // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha24"
 
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 }

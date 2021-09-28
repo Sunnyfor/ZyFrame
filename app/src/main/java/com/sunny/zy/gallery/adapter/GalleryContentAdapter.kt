@@ -25,7 +25,7 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryContentBean
 
     var selectType = GallerySelectActivity.SELECT_TYPE_MULTIPLE
 
-    val selectIndex = arrayListOf<Int>()
+    var selectCallback: ((position: Int) -> Unit)? = null
 
     override fun onBindViewHolder(holder: BaseRecycleViewHolder, position: Int) {
         val data = getData(position)
@@ -41,7 +41,7 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryContentBean
                 holder.itemView.tv_select.visibility = View.VISIBLE
                 if (selectList.contains(data)) {
                     holder.itemView.v_mask.setBackgroundColor(Color.parseColor("#3f000000"))
-                    holder.itemView.tv_select.setBackgroundResource(R.drawable.svg_gallery_content_select)
+                    holder.itemView.tv_select.setBackgroundResource(R.drawable.svg_gallery_content_select_number)
                     holder.itemView.tv_select.text = (selectList.indexOf(data) + 1).toString()
                 } else {
                     holder.itemView.v_mask.setBackgroundColor(Color.parseColor("#15000000"))
@@ -59,6 +59,10 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryContentBean
             LogUtil.i(data.duration.toString())
         } else {
             holder.itemView.v_play.visibility = View.GONE
+        }
+
+        holder.itemView.fl_select.setOnClickListener {
+            selectCallback?.invoke(position)
         }
 
         holder.itemView.tv_duration.visibility = holder.itemView.v_play.visibility

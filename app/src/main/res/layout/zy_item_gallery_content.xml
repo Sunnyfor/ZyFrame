@@ -47,16 +47,20 @@
         app:layout_constraintStart_toEndOf="@id/v_play"
         app:layout_constraintTop_toTopOf="@id/v_play" />
 
-    <TextView
-        android:id="@+id/tv_select"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_5"
-        android:textColor="@color/color_white"
-        android:background="@drawable/svg_gallery_content_unselect"
+    <FrameLayout
+        android:id="@+id/fl_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"/>
+        android:padding="@dimen/dp_5">
 
+        <TextView
+            android:id="@+id/tv_select"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:background="@drawable/svg_gallery_content_unselect"
+            android:gravity="center"
+            android:textColor="@color/color_white" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

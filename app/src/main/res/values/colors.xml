@@ -19,4 +19,6 @@
     <color name="color_black">#000000</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_transparent">#00000000</color>
+
+    <color name="preview_bg">#343434</color>
 </resources>

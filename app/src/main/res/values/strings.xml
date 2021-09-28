@@ -20,4 +20,6 @@
     <string name="all_image">全部图片</string>
     <string name="all_video">全部视频</string>
     <string name="default_duration">00:00</string>
+    <string name="select">选择</string>
+    <string name="maxSizeHint">你最多只能选择%s个图片或者视频</string>
 </resources>

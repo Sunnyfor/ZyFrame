@@ -13,5 +13,6 @@
         tools:targetApi="n">
         <activity android:name=".activity.QRCodeActivity" />
         <activity android:name=".gallery.GallerySelectActivity" />
+        <activity android:name=".preview.PhotoPreviewActivity" />
     </application>
 </manifest>

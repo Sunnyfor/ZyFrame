@@ -4,7 +4,9 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.documentfile.provider.DocumentFile
 import com.sunny.zy.R
+import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.utils.GlideApp
@@ -30,9 +32,20 @@ class PreviewPhotoAdapter(data: ArrayList<Uri>) : BaseRecycleAdapter<Uri>(data) 
         } else {
             holder.itemView.v_border.visibility = View.GONE
         }
+        playViewVisibility(holder.itemView.v_play, getData(position))
     }
 
     override fun setLayout(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(R.layout.zy_item_gallery_preview, parent, false)
+    }
+
+    fun playViewVisibility(view: View, uri: Uri) {
+        val type =
+            DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
+        if (type.contains("video")) {
+            view.visibility = View.VISIBLE
+        } else {
+            view.visibility = View.GONE
+        }
     }
 }

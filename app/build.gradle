@@ -81,4 +81,6 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha24"
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    implementation 'androidx.documentfile:documentfile:1.0.1'
 }

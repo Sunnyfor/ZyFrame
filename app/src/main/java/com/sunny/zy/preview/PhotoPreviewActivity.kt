@@ -146,6 +146,7 @@ class PhotoPreviewActivity : BaseActivity() {
             }
         }
 
+
         viewPager.adapter = PhotoPreviewPageAdapter(dataList).apply {
             onPhotoCallback = {
                 if (cl_title.visibility == View.VISIBLE) {
@@ -169,8 +170,6 @@ class PhotoPreviewActivity : BaseActivity() {
                 }
             }
         }
-        viewPager.setCurrentItem(index, false)
-
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             @SuppressLint("NotifyDataSetChanged")
@@ -184,6 +183,8 @@ class PhotoPreviewActivity : BaseActivity() {
                 updateChecked()
             }
         })
+
+        viewPager.setCurrentItem(index, false)
 
         setOnClickListener(cl_title, iv_back, tv_complete, iv_delete, iv_select, tv_select)
 

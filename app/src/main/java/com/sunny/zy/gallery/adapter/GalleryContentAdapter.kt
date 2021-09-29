@@ -56,7 +56,6 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryContentBean
             val mm: String = DecimalFormat("00").format(data.duration / 1000 % 3600 / 60)
             val ss: String = DecimalFormat("00").format(data.duration / 1000 % 60)
             holder.itemView.tv_duration.text = ("$mm:$ss")
-            LogUtil.i(data.duration.toString())
         } else {
             holder.itemView.v_play.visibility = View.GONE
         }

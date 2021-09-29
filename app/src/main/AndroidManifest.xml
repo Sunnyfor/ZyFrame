@@ -14,5 +14,6 @@
         <activity android:name=".activity.QRCodeActivity" />
         <activity android:name=".gallery.GallerySelectActivity" />
         <activity android:name=".preview.PhotoPreviewActivity" />
+        <activity android:name=".preview.VideoPreViewActivity" />
     </application>
 </manifest>

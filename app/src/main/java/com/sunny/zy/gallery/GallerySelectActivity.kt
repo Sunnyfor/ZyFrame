@@ -36,6 +36,7 @@ import com.sunny.zy.preview.PhotoPreviewActivity
 import com.sunny.zy.utils.FileUtil
 import com.sunny.zy.utils.LogUtil
 import com.sunny.zy.utils.StringUtil
+import com.sunny.zy.utils.ToastUtil
 import kotlinx.android.synthetic.main.zy_act_photo_select.*
 import java.io.File
 
@@ -174,6 +175,15 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
                             galleryResultList.add(data)
                             updateCount()
                             contentAdapter.notifyItemChanged(position)
+                        } else {
+                            ToastUtil.show(
+                                String.format(
+                                    getString(
+                                        R.string.maxSizeHint,
+                                        maxSize.toString()
+                                    )
+                                )
+                            )
                         }
                     }
                 }
@@ -181,11 +191,23 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         }
 
         contentAdapter.setOnItemClickListener { _, position ->
+            val selectList = galleryResultList.map { it.uri } as ArrayList<Uri?>
+            val dataList = arrayListOf<Uri?>()
+            if (selectList.isEmpty()) {
+                dataList.addAll(contentAdapter.getData().map { it.uri })
+            } else {
+                dataList.addAll(selectList)
+            }
+
+            if (!dataList.contains(contentAdapter.getData(position).uri)){
+                dataList.add(contentAdapter.getData(position).uri)
+            }
+
             PhotoPreviewActivity.intentPreview(
                 this,
-                contentAdapter.getData().map { it.uri } as ArrayList<Uri?>,
-                galleryResultList.map { it.uri } as ArrayList<Uri?>,
-                position,
+                dataList,
+                selectList,
+                dataList.indexOf(contentAdapter.getData(position).uri),
                 maxSize
             ) { resultList, isFinish ->
                 val filterList = arrayListOf<GalleryContentBean>()

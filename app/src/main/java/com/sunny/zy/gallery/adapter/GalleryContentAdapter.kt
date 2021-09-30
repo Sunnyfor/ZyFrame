@@ -10,7 +10,6 @@ import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.GallerySelectActivity
 import com.sunny.zy.gallery.bean.GalleryContentBean
 import com.sunny.zy.utils.GlideApp
-import com.sunny.zy.utils.LogUtil
 import kotlinx.android.synthetic.main.zy_item_gallery_content.view.*
 import java.text.DecimalFormat
 
@@ -51,7 +50,7 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryContentBean
             }
         }
 
-        if (data.type == 1) {
+        if (data.type.contains("video")) {
             holder.itemView.v_play.visibility = View.VISIBLE
             val mm: String = DecimalFormat("00").format(data.duration / 1000 % 3600 / 60)
             val ss: String = DecimalFormat("00").format(data.duration / 1000 % 60)

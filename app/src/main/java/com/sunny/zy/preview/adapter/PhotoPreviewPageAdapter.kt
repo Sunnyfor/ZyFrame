@@ -1,16 +1,14 @@
 package com.sunny.zy.preview.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.documentfile.provider.DocumentFile
 import com.github.chrisbanes.photoview.PhotoView
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
+import com.sunny.zy.gallery.bean.GalleryContentBean
 import com.sunny.zy.preview.VideoPreViewActivity
 import com.sunny.zy.utils.GlideApp
 import kotlinx.android.synthetic.main.zy_layout_videoview.view.*
@@ -22,7 +20,8 @@ import kotlinx.android.synthetic.main.zy_layout_videoview.view.*
  * Mail zhangye98@foxmail.com
  * Date 2021/9/27 15:43
  */
-class PhotoPreviewPageAdapter(data: ArrayList<Uri>) : BaseRecycleAdapter<Uri>(data) {
+class PhotoPreviewPageAdapter(data: ArrayList<GalleryContentBean>) :
+    BaseRecycleAdapter<GalleryContentBean>(data) {
 
     var onPhotoCallback: (() -> Unit)? = null
 
@@ -31,15 +30,18 @@ class PhotoPreviewPageAdapter(data: ArrayList<Uri>) : BaseRecycleAdapter<Uri>(da
         when (holder.itemView) {
             is PhotoView -> {
                 GlideApp.with(context)
-                    .load(getData(position))
+                    .load(getData(position).uri)
                     .into(holder.itemView)
             }
             is ConstraintLayout -> {
                 GlideApp.with(context)
-                    .load(getData(position))
+                    .load(getData(position).uri)
                     .into(holder.itemView.iv_photo)
                 holder.itemView.v_play.setOnClickListener {
-                    VideoPreViewActivity.intent(context, getData(position))
+                    VideoPreViewActivity.intent(
+                        context,
+                        getData(position).uri ?: return@setOnClickListener
+                    )
                 }
             }
         }
@@ -53,12 +55,9 @@ class PhotoPreviewPageAdapter(data: ArrayList<Uri>) : BaseRecycleAdapter<Uri>(da
     }
 
     override fun getItemViewType(position: Int): Int {
-        val type =
-            DocumentFile.fromSingleUri(ZyFrameStore.getContext(), getData(position))?.type ?: ""
-        if (type.contains("video")) {
+        if (getData(position).type.contains("video")) {
             return R.layout.zy_layout_videoview
         }
         return R.layout.zy_layout_photoview
     }
-
 }

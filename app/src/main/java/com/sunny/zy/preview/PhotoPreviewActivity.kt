@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
+import com.sunny.zy.gallery.bean.GalleryContentBean
 import com.sunny.zy.preview.adapter.PhotoPreviewPageAdapter
 import com.sunny.zy.preview.adapter.PreviewPhotoAdapter
 import com.sunny.zy.utils.ToastUtil
@@ -33,16 +33,18 @@ class PhotoPreviewActivity : BaseActivity() {
         const val TYPE_PREVIEW = 0
         const val TYPE_DELETE = 1
 
-        fun intentDelete(
+        fun intent(
             activity: AppCompatActivity,
-            dataList: ArrayList<Uri?>,
+            dataList: ArrayList<GalleryContentBean>,
             index: Int = 0,
-            onResultCallback: (deleteList: ArrayList<Uri>) -> Unit
+            isPreview: Boolean,
+            onResultCallback: (deleteList: ArrayList<GalleryContentBean>) -> Unit
         ) {
             val intent = Intent(activity, PhotoPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
             intent.putExtra("index", index)
             intent.putExtra("type", TYPE_DELETE)
+            intent.putExtra("isPreview", isPreview)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 onResultCallback.invoke(
                     it.data?.getParcelableArrayListExtra("deleteList") ?: arrayListOf()
@@ -50,13 +52,13 @@ class PhotoPreviewActivity : BaseActivity() {
             }.launch(intent)
         }
 
-        fun intentPreview(
+        fun intent(
             activity: AppCompatActivity,
-            dataList: ArrayList<Uri?>,
-            selectList: ArrayList<Uri?>,
+            dataList: ArrayList<GalleryContentBean>,
+            selectList: ArrayList<GalleryContentBean>,
             index: Int = 0,
             maxSize: Int = 0,
-            onResultCallback: (resultList: ArrayList<Uri>, isFinish: Boolean) -> Unit
+            onResultCallback: (resultList: ArrayList<GalleryContentBean>, isFinish: Boolean) -> Unit
         ) {
             val intent = Intent(activity, PhotoPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
@@ -66,7 +68,8 @@ class PhotoPreviewActivity : BaseActivity() {
             intent.putExtra("selectList", selectList)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 onResultCallback.invoke(
-                    it.data?.getParcelableArrayListExtra("resultList") ?: arrayListOf(),
+                    it.data?.getParcelableArrayListExtra<GalleryContentBean>("resultList")
+                        ?: arrayListOf(),
                     it.data?.getBooleanExtra("isFinish", false) ?: false
                 )
             }.launch(intent)
@@ -74,14 +77,18 @@ class PhotoPreviewActivity : BaseActivity() {
     }
 
 
-    private val deleteList = arrayListOf<Uri>()
+    private val deleteList = arrayListOf<GalleryContentBean>()
 
-    private val dataList = arrayListOf<Uri>()
+    private val dataList = arrayListOf<GalleryContentBean>()
 
-    private val selectList = arrayListOf<Uri>()
+    private val selectList = arrayListOf<GalleryContentBean>()
 
-    private val type: Int by lazy {
+    private val type by lazy {
         intent.getIntExtra("type", TYPE_PREVIEW)
+    }
+
+    private val isPreview by lazy {
+        intent.getBooleanExtra("isPreview", false)
     }
 
     private val previewAdapter: PreviewPhotoAdapter by lazy {
@@ -112,7 +119,9 @@ class PhotoPreviewActivity : BaseActivity() {
 
         when (type) {
             TYPE_DELETE -> {
-                iv_delete.visibility = View.VISIBLE
+                if (!isPreview){
+                    iv_delete.visibility = View.VISIBLE
+                }
             }
             TYPE_PREVIEW -> {
                 tv_complete.visibility = View.VISIBLE
@@ -140,7 +149,7 @@ class PhotoPreviewActivity : BaseActivity() {
                     }
                 })
 
-                previewAdapter.selectUri = dataList[index]
+                previewAdapter.selectContentBean = dataList[index]
                 rv_preview.adapter = previewAdapter
                 updateChecked()
             }
@@ -176,7 +185,7 @@ class PhotoPreviewActivity : BaseActivity() {
             override fun onPageSelected(position: Int) {
                 index = position
                 if (type == TYPE_PREVIEW) {
-                    previewAdapter.selectUri = dataList[index]
+                    previewAdapter.selectContentBean = dataList[index]
                     previewAdapter.notifyDataSetChanged()
                 }
                 updateTitle()

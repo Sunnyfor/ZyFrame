@@ -2,6 +2,7 @@ package com.sunny.zy.gallery.model
 
 import android.content.ContentUris
 import android.provider.MediaStore
+import androidx.documentfile.provider.DocumentFile
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.gallery.bean.GalleryContentBean
@@ -110,6 +111,8 @@ class GalleryModel {
                 )
                 if (size > 0) {
                     val photoInfo = GalleryContentBean(imageId, uri)
+                    photoInfo.type =
+                        DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
                     photoInfo.size = size
                     if (allPhotoFolderInfo.cover == null) {
                         allPhotoFolderInfo.cover = photoInfo
@@ -186,7 +189,8 @@ class GalleryModel {
                 if (size > 0) {
                     val videoInfo = GalleryContentBean(videoId, uri)
                     videoInfo.duration = duration
-                    videoInfo.type = 1
+                    videoInfo.type =
+                        DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
                     videoInfo.size = size
                     if (allVideoFolderInfo.cover == null) {
                         allVideoFolderInfo.cover = videoInfo

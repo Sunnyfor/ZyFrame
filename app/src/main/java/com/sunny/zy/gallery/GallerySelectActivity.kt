@@ -147,7 +147,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
                 //单选
                 SELECT_TYPE_SINGLE -> {
                     setResult(Activity.RESULT_OK)
-                    if (data.type == 0 && isCrop) {
+                    if (data.type.contains("image") && isCrop) {
                         intentCrop(data)
                     } else {
                         galleryResultList.add(data)
@@ -191,33 +191,29 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         }
 
         contentAdapter.setOnItemClickListener { _, position ->
-            val selectList = galleryResultList.map { it.uri } as ArrayList<Uri?>
-            val dataList = arrayListOf<Uri?>()
-            if (selectList.isEmpty()) {
-                dataList.addAll(contentAdapter.getData().map { it.uri })
+
+            val data = contentAdapter.getData(position)
+
+            val dataList = arrayListOf<GalleryContentBean>()
+            if (galleryResultList.isEmpty()) {
+                dataList.addAll(contentAdapter.getData())
             } else {
-                dataList.addAll(selectList)
+                dataList.addAll(galleryResultList)
             }
 
-            if (!dataList.contains(contentAdapter.getData(position).uri)){
-                dataList.add(contentAdapter.getData(position).uri)
+            if (!dataList.contains(data)) {
+                dataList.add(data)
             }
 
-            PhotoPreviewActivity.intentPreview(
+            PhotoPreviewActivity.intent(
                 this,
                 dataList,
-                selectList,
-                dataList.indexOf(contentAdapter.getData(position).uri),
+                galleryResultList,
+                dataList.indexOf(dataList.find { it.uri == data.uri }),
                 maxSize
             ) { resultList, isFinish ->
-                val filterList = arrayListOf<GalleryContentBean>()
-                contentAdapter.getData().forEach { bean ->
-                    if (resultList.contains(bean.uri)) {
-                        filterList.add(bean)
-                    }
-                }
                 galleryResultList.clear()
-                galleryResultList.addAll(filterList)
+                galleryResultList.addAll(resultList)
 
                 if (isFinish) {
                     ZyFrameStore.setData("gallery_select_list", galleryResultList)

@@ -28,7 +28,7 @@
             android:layout_height="@dimen/dp_40"
             android:contentDescription="@string/placeholder"
             android:padding="@dimen/dp_10"
-            android:src="@drawable/svg_title_back"
+            android:src="@drawable/svg_title_back_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="@color/color_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -143,7 +143,7 @@
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_12"
             android:text="@string/select"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="@color/color_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

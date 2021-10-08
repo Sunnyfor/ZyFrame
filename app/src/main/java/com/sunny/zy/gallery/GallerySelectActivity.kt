@@ -257,7 +257,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
 
         if (galleryResultList.isNotEmpty()) {
             completeText?.setBackgroundResource(R.drawable.sel_title_btn_bg)
-            completeText?.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary))
+            completeText?.setTextColor(ContextCompat.getColor(this, R.color.color_white))
             textSb.append("(").append(galleryResultList.size).append("/").append(maxSize)
                 .append(")")
         } else {

@@ -56,26 +56,31 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
 
     private var selectType = SELECT_TYPE_MULTIPLE
 
-    private var isCrop = false
-
     private var maxSize = 8
 
-    private var aspectX = 1
-    private var aspectY = 1
-    private var outputX = 500
-    private var outputY = 500
+    private var aspectX = 0
+    private var aspectY = 0
 
+    private var fileType = FILE_TYPE_ALL
+
+    private var isCrop = false
 
     private val presenter: GalleryContract.Presenter by lazy {
         GalleryContract.Presenter(this)
     }
 
     companion object {
-        const val SELECT_TYPE = "selectType"
+        const val SELECT_TYPE_INT = "selectType"
         const val SELECT_TYPE_MULTIPLE = 0  //多选
         const val SELECT_TYPE_SINGLE = 1  //单选
-        const val MAX_SIZE = "maxSize"
-        const val IS_CROP = "isCrop"
+        const val MAX_SIZE_INT = "maxSize"
+        const val IS_CROP_BOOLEAN = "isCrop"
+        const val ASPECT_X_INT = "aspectX"
+        const val ASPECT_Y_INT = "aspectY"
+        const val FILE_TYPE_INT = "fileType"
+        const val FILE_TYPE_ALL = 0
+        const val File_TYPE_IMAGE = 1
+        const val File_TYPE_VIDEO = 2
 
         fun intent(
             activity: AppCompatActivity,
@@ -109,9 +114,12 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         toolbar?.findViewById<TextView>(R.id.tv_complete)?.setOnClickListener(this)
 
         intent.getBundleExtra("flags")?.let {
-            selectType = it.getInt(SELECT_TYPE, SELECT_TYPE_MULTIPLE)
-            isCrop = it.getBoolean(IS_CROP, false)
-            maxSize = it.getInt(MAX_SIZE, 8)
+            selectType = it.getInt(SELECT_TYPE_INT, SELECT_TYPE_MULTIPLE)
+            fileType = it.getInt(FILE_TYPE_INT, FILE_TYPE_ALL)
+            isCrop = it.getBoolean(IS_CROP_BOOLEAN, false)
+            aspectX = it.getInt(ASPECT_X_INT, 0)
+            aspectY = it.getInt(ASPECT_Y_INT, 0)
+            maxSize = it.getInt(MAX_SIZE_INT, 8)
         }
 
         contentAdapter.selectType = selectType
@@ -143,49 +151,31 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
 
         contentAdapter.selectCallback = { position ->
             val data = contentAdapter.getData(position)
-            when (selectType) {
-                //单选
-                SELECT_TYPE_SINGLE -> {
-                    setResult(Activity.RESULT_OK)
-                    if (data.type.contains("image") && isCrop) {
-                        intentCrop(data)
-                    } else {
-                        galleryResultList.add(data)
-                        ZyFrameStore.setData("gallery_select_list", galleryResultList)
-                        finish()
+            if (galleryResultList.contains(data)) {
+                galleryResultList.remove(data)
+                contentAdapter.notifyItemChanged(position)
+                contentAdapter.getData().forEachIndexed { index, galleryContentBean ->
+                    galleryResultList.forEach {
+                        if (it == galleryContentBean) {
+                            contentAdapter.notifyItemChanged(index)
+                        }
                     }
                 }
-
-                //多选
-                SELECT_TYPE_MULTIPLE -> {
-                    if (galleryResultList.contains(data)) {
-                        galleryResultList.remove(data)
-                        contentAdapter.notifyItemChanged(position)
-                        contentAdapter.getData().forEachIndexed { index, galleryContentBean ->
-                            galleryResultList.forEach {
-                                if (it == galleryContentBean) {
-                                    contentAdapter.notifyItemChanged(index)
-                                }
-                            }
-                        }
-                        updateCount()
-
-                    } else {
-                        if (galleryResultList.size < maxSize) {
-                            galleryResultList.add(data)
-                            updateCount()
-                            contentAdapter.notifyItemChanged(position)
-                        } else {
-                            ToastUtil.show(
-                                String.format(
-                                    getString(
-                                        R.string.maxSizeHint,
-                                        maxSize.toString()
-                                    )
-                                )
+                updateCount()
+            } else {
+                if (galleryResultList.size < maxSize) {
+                    galleryResultList.add(data)
+                    updateCount()
+                    contentAdapter.notifyItemChanged(position)
+                } else {
+                    ToastUtil.show(
+                        String.format(
+                            getString(
+                                R.string.maxSizeHint,
+                                maxSize.toString()
                             )
-                        }
-                    }
+                        )
+                    )
                 }
             }
         }
@@ -194,7 +184,20 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
 
             val data = contentAdapter.getData(position)
 
+            if (selectType == SELECT_TYPE_SINGLE) {
+                setResult(Activity.RESULT_OK)
+                if (data.type.contains("image") && isCrop) {
+                    intentCrop(data)
+                } else {
+                    galleryResultList.add(data)
+                    ZyFrameStore.setData("gallery_select_list", galleryResultList)
+                    finish()
+                }
+                return@setOnItemClickListener
+            }
+
             val dataList = arrayListOf<GalleryContentBean>()
+
             if (galleryResultList.isEmpty()) {
                 dataList.addAll(contentAdapter.getData())
             } else {
@@ -237,7 +240,11 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         ) {
-            presenter.loadGalleryData()
+            when (fileType) {
+                FILE_TYPE_ALL -> presenter.loadImageAndVideData()
+                File_TYPE_IMAGE -> presenter.loadImageData()
+                File_TYPE_VIDEO -> presenter.loadVideoData()
+            }
         }
     }
 
@@ -351,12 +358,17 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
         intent.putExtra("crop", "true")
+        intent.putExtra("scaleUpIfNeeded", true)
         intent.putExtra("scale", true)
         intent.setDataAndType(data.uri, "image/*")
-        intent.putExtra("aspectX", aspectX)
-        intent.putExtra("aspectY", aspectY)
-        intent.putExtra("outputX", outputX)
-        intent.putExtra("outputY", outputY)
+        if (aspectX != 0) {
+            intent.putExtra("aspectX", aspectX)
+        }
+
+        if (aspectY != 0) {
+            intent.putExtra("aspectY", aspectY)
+        }
+
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
         intent.putExtra("return-data", false)
         intent.putExtra("noFaceDetection", true) //

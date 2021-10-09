@@ -63,7 +63,7 @@ class GalleryModel {
     }
 
 
-    private fun getImageFolder(): ArrayList<GalleryFolderBean> {
+    fun getImageFolder(): ArrayList<GalleryFolderBean> {
         val projectionPhotos = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.BUCKET_ID,
@@ -136,7 +136,7 @@ class GalleryModel {
     }
 
 
-    private fun getVideoFolder(): ArrayList<GalleryFolderBean> {
+    fun getVideoFolder(): ArrayList<GalleryFolderBean> {
         MediaStore.MediaColumns.DATA
         val projectionPhotos = arrayOf(
             MediaStore.Video.Media._ID,

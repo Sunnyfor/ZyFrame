@@ -25,7 +25,7 @@ class GalleryContract {
         }
 
         //加载图片和视频
-        fun loadGalleryData() {
+        fun loadImageAndVideData() {
             view?.showLoading()
             val result = arrayListOf<GalleryFolderBean>()
             launch {
@@ -36,6 +36,29 @@ class GalleryContract {
                 view?.showGalleryData(result)
             }
 
+        }
+
+        fun loadImageData() {
+            val result = arrayListOf<GalleryFolderBean>()
+            launch {
+                withContext(IO) {
+                    result.addAll(model.getImageFolder())
+                }
+                view?.hideLoading()
+                view?.showGalleryData(result)
+            }
+        }
+
+
+        fun loadVideoData() {
+            val result = arrayListOf<GalleryFolderBean>()
+            launch {
+                withContext(IO) {
+                    result.addAll(model.getVideoFolder())
+                }
+                view?.hideLoading()
+                view?.showGalleryData(result)
+            }
         }
     }
 }

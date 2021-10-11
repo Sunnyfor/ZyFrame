@@ -1,5 +1,7 @@
 package com.sunny.zy.http.request
 
+import android.net.Uri
+import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.http.ZyHttp
 import okhttp3.FormBody
@@ -152,19 +154,44 @@ class ZyRequest {
     /**
      * FORM形式上传文件
      */
-    fun formUploadRequest(url: String, params: Map<String, String>): Request {
+    fun formUploadRequest(url: String, params: Map<String, Any>): Request {
         val urlSb = getUrlSb(url)
-        val path = params[ZyHttp.FilePath] ?: ""
+        val path = params[ZyHttp.FilePath]
+
         val body = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart(
-                "file",
-                path.split("/").last(),
-                File(path).asRequestBody("multipart/form-data".toMediaType())
-            )
+        body.setType(MultipartBody.FORM)
+
+        when (path) {
+            is String -> {
+                body.addFormDataPart(
+                    "file",
+                    path.split("/").last(),
+                    File(path).asRequestBody("multipart/form-data".toMediaType())
+                )
+            }
+
+            is File -> {
+                body.addFormDataPart(
+                    "file",
+                    path.name.split("/").last(),
+                    path.asRequestBody("multipart/form-data".toMediaType())
+                )
+            }
+
+            is Uri -> {
+                ZyFrameStore.getContext().contentResolver.openInputStream(path)?.use { stream ->
+                    body.addFormDataPart(
+                        "file",
+                        path.toString().split("/").last(),
+                        stream.readBytes().toRequestBody("multipart/form-data".toMediaType())
+                    )
+                }
+            }
+        }
+
         params.entries.forEach {
             if (it.key != ZyHttp.FilePath) {
-                body.addFormDataPart(it.key, it.value)
+                body.addFormDataPart(it.key, it.value.toString())
             }
         }
         return Request.Builder().url(urlSb.toString()).post(body.build()).build()

@@ -153,7 +153,7 @@ object ZyHttp {
 
     suspend fun <T : BaseHttpResultBean> formUpload(
         url: String,
-        params: Map<String, String>,
+        params: Map<String, Any>,
         httpResultBean: T
     ) {
         return withContext(Dispatchers.IO) {

@@ -26,12 +26,13 @@ import kotlinx.android.synthetic.main.zy_act_preview_photo.*
  * Mail zhangye98@foxmail.com
  * Date 2021/9/26 19:11
  */
-class PhotoPreviewActivity : BaseActivity() {
+class GalleryPreviewActivity : BaseActivity() {
 
     companion object {
 
         const val TYPE_PREVIEW = 0
         const val TYPE_DELETE = 1
+        const val TYPE_CAMERA = 2
 
         fun intent(
             activity: AppCompatActivity,
@@ -40,7 +41,7 @@ class PhotoPreviewActivity : BaseActivity() {
             isPreview: Boolean,
             onResultCallback: (deleteList: ArrayList<GalleryContentBean>) -> Unit
         ) {
-            val intent = Intent(activity, PhotoPreviewActivity::class.java)
+            val intent = Intent(activity, GalleryPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
             intent.putExtra("index", index)
             intent.putExtra("type", TYPE_DELETE)
@@ -60,7 +61,7 @@ class PhotoPreviewActivity : BaseActivity() {
             maxSize: Int = 0,
             onResultCallback: (resultList: ArrayList<GalleryContentBean>, isFinish: Boolean) -> Unit
         ) {
-            val intent = Intent(activity, PhotoPreviewActivity::class.java)
+            val intent = Intent(activity, GalleryPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
             intent.putExtra("index", index)
             intent.putExtra("maxSize", maxSize)
@@ -72,6 +73,21 @@ class PhotoPreviewActivity : BaseActivity() {
                         ?: arrayListOf(),
                     it.data?.getBooleanExtra("isFinish", false) ?: false
                 )
+            }.launch(intent)
+        }
+
+
+        fun intent(
+            activity: AppCompatActivity,
+            contentBean: GalleryContentBean,
+            onResultCallback: (isComplete: Boolean) -> Unit
+        ) {
+            val intent = Intent(activity, GalleryPreviewActivity::class.java)
+            intent.putExtra("dataList", arrayListOf(contentBean))
+            intent.putExtra("type", TYPE_CAMERA)
+            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                val result = it.data?.getBooleanExtra("result", false) ?: false
+                onResultCallback.invoke(result)
             }.launch(intent)
         }
     }
@@ -118,8 +134,12 @@ class PhotoPreviewActivity : BaseActivity() {
         updateTitle()
 
         when (type) {
+            TYPE_CAMERA -> {
+                tv_complete.visibility = View.VISIBLE
+            }
+
             TYPE_DELETE -> {
-                if (!isPreview){
+                if (!isPreview) {
                     iv_delete.visibility = View.VISIBLE
                 }
             }
@@ -211,6 +231,11 @@ class PhotoPreviewActivity : BaseActivity() {
             }
 
             R.id.tv_complete -> {
+
+                if (type == TYPE_CAMERA) {
+                    setResult(true)
+                    return
+                }
                 if (selectList.isEmpty()) {
                     selectList.add(dataList[index])
                     updateTitle()
@@ -261,13 +286,14 @@ class PhotoPreviewActivity : BaseActivity() {
         }
     }
 
-    private fun setResult(isFinish: Boolean = false) {
+    private fun setResult(flag: Boolean = false) {
         val intent = Intent()
         when (type) {
+            TYPE_CAMERA -> intent.putExtra("result", flag)
             TYPE_DELETE -> intent.putParcelableArrayListExtra("deleteList", deleteList)
             TYPE_PREVIEW -> {
                 intent.putParcelableArrayListExtra("resultList", selectList)
-                intent.putExtra("isFinish", isFinish)
+                intent.putExtra("isFinish", flag)
             }
         }
         setResult(Activity.RESULT_OK, intent)

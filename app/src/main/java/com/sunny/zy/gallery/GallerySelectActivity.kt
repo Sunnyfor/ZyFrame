@@ -32,11 +32,8 @@ import com.sunny.zy.gallery.bean.GalleryContentBean
 import com.sunny.zy.gallery.bean.GalleryFolderBean
 import com.sunny.zy.gallery.contract.GalleryContract
 import com.sunny.zy.http.ZyConfig
-import com.sunny.zy.preview.PhotoPreviewActivity
-import com.sunny.zy.utils.FileUtil
-import com.sunny.zy.utils.LogUtil
-import com.sunny.zy.utils.StringUtil
-import com.sunny.zy.utils.ToastUtil
+import com.sunny.zy.preview.GalleryPreviewActivity
+import com.sunny.zy.utils.*
 import kotlinx.android.synthetic.main.zy_act_photo_select.*
 import java.io.File
 
@@ -84,7 +81,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
 
         fun intent(
             activity: AppCompatActivity,
-            flags: Bundle? = null,
+            flags: GalleryFlagsBuild? = null,
             onResult: (selectList: ArrayList<GalleryContentBean>) -> Unit
         ) {
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -95,7 +92,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
                         }
                 }
             }.launch(Intent(activity, GallerySelectActivity::class.java).apply {
-                putExtra("flags", flags)
+                putExtra("flags", flags?.build())
             })
         }
     }
@@ -208,7 +205,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
                 dataList.add(data)
             }
 
-            PhotoPreviewActivity.intent(
+            GalleryPreviewActivity.intent(
                 this,
                 dataList,
                 galleryResultList,

@@ -18,12 +18,8 @@ object FileUtil {
     /**
      * 获取换成你文件路径
      */
-    private fun getCacheDir(): File {
-        val file = File(ZyConfig.TEMP)
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
+    private fun getCacheDir(): File? {
+        return File(ZyConfig.TEMP).parentFile
     }
 
 
@@ -105,15 +101,20 @@ object FileUtil {
      * @return size
      * @throws Exception
      */
-    private fun getFolderSize(file: File): Long {
+    private fun getFolderSize(file: File?): Long {
         var size: Long = 0
+
+        if (file == null) {
+            return size
+        }
         try {
-            val fileList = file.listFiles()
-            for (aFileList in fileList!!) {
-                size += if (aFileList.isDirectory) {
-                    getFolderSize(aFileList)
-                } else {
-                    aFileList.length()
+            file.listFiles()?.let {
+                for (aFileList in it) {
+                    size += if (aFileList.isDirectory) {
+                        getFolderSize(aFileList)
+                    } else {
+                        aFileList.length()
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -128,7 +129,7 @@ object FileUtil {
      * 删除所有缓存文件
      */
     fun deleteAllFile() {
-        getCacheDir().listFiles()?.forEach {
+        getCacheDir()?.listFiles()?.forEach {
             deleteFolderFile(it.path)
         }
     }

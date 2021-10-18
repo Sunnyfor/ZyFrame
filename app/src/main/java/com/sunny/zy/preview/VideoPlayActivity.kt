@@ -1,11 +1,13 @@
 package com.sunny.zy.preview
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.view.View
 import android.widget.MediaController
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.ToastUtil
@@ -17,17 +19,28 @@ import kotlinx.android.synthetic.main.zy_act_preview_video.*
  * Mail zhangye98@foxmail.com
  * Date 2021/9/29 16:41
  */
-class VideoPreViewActivity : BaseActivity() {
+class VideoPlayActivity : BaseActivity() {
 
     companion object {
-        fun intent(context: Context, uri: Uri) {
-            val intent = Intent(context, VideoPreViewActivity::class.java)
+        fun intent(
+            context: AppCompatActivity,
+            uri: Uri,
+            resultCallback: ((resultCode: Int, uri: Uri) -> Unit)? = null
+        ) {
+            val intent = Intent(context, VideoPlayActivity::class.java)
             intent.putExtra("uri", uri)
-            context.startActivity(intent)
+            if (resultCallback != null) {
+                intent.putExtra("isComplete", true)
+                context.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    resultCallback(it.resultCode, uri)
+                }.launch(intent)
+            } else {
+                context.startActivity(intent)
+            }
         }
 
         fun intent(context: Context, url: String) {
-            val intent = Intent(context, VideoPreViewActivity::class.java)
+            val intent = Intent(context, VideoPlayActivity::class.java)
             intent.putExtra("url", url)
             context.startActivity(intent)
         }
@@ -42,6 +55,10 @@ class VideoPreViewActivity : BaseActivity() {
         intent.getStringExtra("url")
     }
 
+    private val isComplete by lazy {
+        intent.getBooleanExtra("isComplete", false)
+    }
+
     private val mediaController by lazy {
         MediaController(this)
     }
@@ -50,7 +67,12 @@ class VideoPreViewActivity : BaseActivity() {
 
     override fun initView() {
         setStatusBarColor(R.color.preview_bg)
-        setOnClickListener(zy_ib_back)
+
+        if (isComplete) {
+            tv_complete.visibility = View.VISIBLE
+        }
+
+        setOnClickListener(zy_ib_back, tv_complete)
     }
 
     override fun loadData() {
@@ -64,7 +86,7 @@ class VideoPreViewActivity : BaseActivity() {
 
 
         videoView.setOnPreparedListener {
-            it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+//            it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
             it.start()
         }
 
@@ -80,6 +102,10 @@ class VideoPreViewActivity : BaseActivity() {
     override fun onClickEvent(view: View) {
         when (view.id) {
             zy_ib_back.id -> {
+                finish()
+            }
+            tv_complete.id -> {
+                setResult(Activity.RESULT_OK)
                 finish()
             }
         }

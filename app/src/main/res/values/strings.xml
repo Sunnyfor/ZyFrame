@@ -23,4 +23,7 @@
     <string name="default_duration">00:00</string>
     <string name="select">选择</string>
     <string name="maxSizeHint">你最多只能选择%s个图片或者视频</string>
+
+    <!--camera-->
+    <string name="camera_hint">轻触拍照，长按摄像</string>
 </resources>

@@ -8,7 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
-import com.sunny.zy.utils.QRCodeUtil
+import com.sunny.zy.utils.CameraXUtil
 import kotlinx.android.synthetic.main.zy_frag_qr_code.*
 
 /**
@@ -32,13 +32,7 @@ class QRCodeActivity : BaseActivity() {
     }
 
 
-    private val qrCodeUtil: QRCodeUtil by lazy {
-        QRCodeUtil {
-            intent.putExtra(resultKey, it)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
-    }
+    private val cameraXUtil = CameraXUtil()
 
     override fun initLayout() = R.layout.zy_frag_qr_code
 
@@ -48,7 +42,12 @@ class QRCodeActivity : BaseActivity() {
         setPermissionsNoHintFinish(true)
 
         requestPermissions(Manifest.permission.CAMERA) {
-            qrCodeUtil.init(this, previewView.surfaceProvider)
+            cameraXUtil.init(this, previewView.surfaceProvider)
+            cameraXUtil.startQrCodeScan {
+                intent.putExtra(resultKey, it)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
         }
     }
 
@@ -62,6 +61,6 @@ class QRCodeActivity : BaseActivity() {
     }
 
     override fun onClose() {
-        qrCodeUtil.onDestroy()
+        cameraXUtil.onDestroy()
     }
 }

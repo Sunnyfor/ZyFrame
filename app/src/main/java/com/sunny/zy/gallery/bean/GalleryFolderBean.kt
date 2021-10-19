@@ -1,7 +1,7 @@
 package com.sunny.zy.gallery.bean
 
 /**
- * Desc
+ * Desc 媒体文件夹
  * Author ZY
  * Mail zhangye98@foxmail.com
  * Date 2021/9/22 18:03
@@ -9,7 +9,7 @@ package com.sunny.zy.gallery.bean
 data class GalleryFolderBean(
     var id: Int,
     var name: String,
-    var cover: GalleryContentBean?,
+    var cover: GalleryBean?,
     var dateToken:Long,
-    var list: ArrayList<GalleryContentBean> = arrayListOf()
+    var list: ArrayList<GalleryBean> = arrayListOf()
 )

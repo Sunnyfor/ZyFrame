@@ -18,6 +18,7 @@ import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.sunny.zy.ZyFrameStore
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.http.ZyConfig
 import java.io.File
 import java.util.concurrent.ExecutorService
@@ -137,8 +138,7 @@ class CameraXUtil {
     }
 
 
-
-    fun takePhoto(result: (uri: Uri) -> Unit) {
+    fun takePhoto(result: (galleryBean: GalleryBean) -> Unit) {
         val file = File(
             ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "${StringUtil.getTimeStamp()}.jpg"
@@ -160,7 +160,11 @@ class CameraXUtil {
                     } else {
                         Uri.fromFile(file)
                     }
-                    result.invoke(uri)
+
+                    val galleryBean = GalleryBean(0, uri)
+                    galleryBean.size = file.length()
+                    galleryBean.type = "image/jpg"
+                    result.invoke(galleryBean)
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -179,7 +183,7 @@ class CameraXUtil {
 
 
     @SuppressLint("RestrictedApi", "MissingPermission")
-    fun takeVideo(result: (uri: Uri) -> Unit) {
+    fun takeVideo(result: (galleryBean: GalleryBean) -> Unit) {
         val file = File(
             ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES),
             "${StringUtil.getTimeStamp()}.mp4"
@@ -202,7 +206,10 @@ class CameraXUtil {
                     } else {
                         Uri.fromFile(file)
                     }
-                    result.invoke(uri)
+                    val galleryBean = GalleryBean(0, uri)
+                    galleryBean.size = file.length()
+                    galleryBean.type = "video/mp4"
+                    result.invoke(galleryBean)
                 }
 
                 override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {

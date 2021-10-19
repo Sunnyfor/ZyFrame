@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.view.animation.Animation
@@ -28,7 +27,7 @@ import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.adapter.GalleryContentAdapter
 import com.sunny.zy.gallery.adapter.GalleryFolderAdapter
-import com.sunny.zy.gallery.bean.GalleryContentBean
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.gallery.bean.GalleryFolderBean
 import com.sunny.zy.gallery.contract.GalleryContract
 import com.sunny.zy.http.ZyConfig
@@ -45,7 +44,7 @@ import java.io.File
  */
 class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
 
-    private val galleryResultList = arrayListOf<GalleryContentBean>()
+    private val galleryResultList = arrayListOf<GalleryBean>()
 
     private val folderAdapter = GalleryFolderAdapter()
 
@@ -82,11 +81,11 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         fun intent(
             activity: AppCompatActivity,
             flags: GalleryFlagsBuild? = null,
-            onResult: (selectList: ArrayList<GalleryContentBean>) -> Unit
+            onResult: (selectList: ArrayList<GalleryBean>) -> Unit
         ) {
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
-                    ZyFrameStore.getData<ArrayList<GalleryContentBean>>("gallery_select_list")
+                    ZyFrameStore.getData<ArrayList<GalleryBean>>("gallery_select_list")
                         ?.let { list ->
                             onResult.invoke(list)
                         }
@@ -193,7 +192,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
                 return@setOnItemClickListener
             }
 
-            val dataList = arrayListOf<GalleryContentBean>()
+            val dataList = arrayListOf<GalleryBean>()
 
             if (galleryResultList.isEmpty()) {
                 dataList.addAll(contentAdapter.getData())
@@ -349,7 +348,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         }
     }
 
-    private fun intentCrop(data: GalleryContentBean) {
+    private fun intentCrop(data: GalleryBean) {
         val intent = Intent("com.android.camera.action.CROP")
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)

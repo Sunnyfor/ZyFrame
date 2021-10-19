@@ -5,7 +5,7 @@ import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.gallery.bean.GalleryContentBean
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.gallery.bean.GalleryFolderBean
 import java.util.*
 import kotlin.collections.ArrayList
@@ -104,13 +104,13 @@ class GalleryModel {
                 val bucketId = cursor.getInt(bucketIdColumn)
                 val bucketName = cursor.getString(bucketNameColumn)
                 val imageId = cursor.getLong(imageIdColumn)
-                val size = cursor.getInt(sizeColumn)
+                val size = cursor.getLong(sizeColumn)
                 val date = cursor.getLong(dateColumn)
                 val uri = ContentUris.withAppendedId(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId
                 )
                 if (size > 0) {
-                    val photoInfo = GalleryContentBean(imageId, uri)
+                    val photoInfo = GalleryBean(imageId, uri)
                     photoInfo.type =
                         DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
                     photoInfo.size = size
@@ -181,13 +181,13 @@ class GalleryModel {
                 val bucketName = cursor.getString(bucketNameColumn)
                 val videoId = cursor.getLong(videoIdColumn)
                 val duration = cursor.getInt(durationColumn)
-                val size = cursor.getInt(sizeColumn)
+                val size = cursor.getLong(sizeColumn)
                 val date = cursor.getLong(dateColumn)
                 val uri = ContentUris.withAppendedId(
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI, videoId
                 )
                 if (size > 0) {
-                    val videoInfo = GalleryContentBean(videoId, uri)
+                    val videoInfo = GalleryBean(videoId, uri)
                     videoInfo.duration = duration
                     videoInfo.type =
                         DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""

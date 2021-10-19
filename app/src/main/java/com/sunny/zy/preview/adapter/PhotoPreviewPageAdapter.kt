@@ -9,7 +9,7 @@ import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
-import com.sunny.zy.gallery.bean.GalleryContentBean
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.VideoPlayActivity
 import com.sunny.zy.utils.GlideApp
 import kotlinx.android.synthetic.main.zy_layout_videoview.view.*
@@ -21,8 +21,8 @@ import kotlinx.android.synthetic.main.zy_layout_videoview.view.*
  * Mail zhangye98@foxmail.com
  * Date 2021/9/27 15:43
  */
-class PhotoPreviewPageAdapter(data: ArrayList<GalleryContentBean>) :
-    BaseRecycleAdapter<GalleryContentBean>(data) {
+class PhotoPreviewPageAdapter(data: ArrayList<GalleryBean>) :
+    BaseRecycleAdapter<GalleryBean>(data) {
 
     var onPhotoCallback: (() -> Unit)? = null
 

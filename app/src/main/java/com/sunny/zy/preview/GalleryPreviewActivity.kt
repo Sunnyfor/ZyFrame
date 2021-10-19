@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
-import com.sunny.zy.gallery.bean.GalleryContentBean
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.adapter.PhotoPreviewPageAdapter
 import com.sunny.zy.preview.adapter.PreviewPhotoAdapter
 import com.sunny.zy.utils.ToastUtil
@@ -36,10 +36,10 @@ class GalleryPreviewActivity : BaseActivity() {
 
         fun intent(
             activity: AppCompatActivity,
-            dataList: ArrayList<GalleryContentBean>,
+            dataList: ArrayList<GalleryBean>,
             index: Int = 0,
             isPreview: Boolean,
-            onResultCallback: (deleteList: ArrayList<GalleryContentBean>) -> Unit
+            onResultCallback: (deleteList: ArrayList<GalleryBean>) -> Unit
         ) {
             val intent = Intent(activity, GalleryPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
@@ -55,11 +55,11 @@ class GalleryPreviewActivity : BaseActivity() {
 
         fun intent(
             activity: AppCompatActivity,
-            dataList: ArrayList<GalleryContentBean>,
-            selectList: ArrayList<GalleryContentBean>,
+            dataList: ArrayList<GalleryBean>,
+            selectList: ArrayList<GalleryBean>,
             index: Int = 0,
             maxSize: Int = 0,
-            onResultCallback: (resultList: ArrayList<GalleryContentBean>, isFinish: Boolean) -> Unit
+            onResultCallback: (resultList: ArrayList<GalleryBean>, isFinish: Boolean) -> Unit
         ) {
             val intent = Intent(activity, GalleryPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
@@ -69,7 +69,7 @@ class GalleryPreviewActivity : BaseActivity() {
             intent.putExtra("selectList", selectList)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 onResultCallback.invoke(
-                    it.data?.getParcelableArrayListExtra<GalleryContentBean>("resultList")
+                    it.data?.getParcelableArrayListExtra<GalleryBean>("resultList")
                         ?: arrayListOf(),
                     it.data?.getBooleanExtra("isFinish", false) ?: false
                 )
@@ -79,11 +79,11 @@ class GalleryPreviewActivity : BaseActivity() {
 
         fun intent(
             activity: AppCompatActivity,
-            contentBean: GalleryContentBean,
+            bean: GalleryBean,
             onResultCallback: (isComplete: Boolean) -> Unit
         ) {
             val intent = Intent(activity, GalleryPreviewActivity::class.java)
-            intent.putExtra("dataList", arrayListOf(contentBean))
+            intent.putExtra("dataList", arrayListOf(bean))
             intent.putExtra("type", TYPE_CAMERA)
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 val result = it.data?.getBooleanExtra("result", false) ?: false
@@ -93,11 +93,11 @@ class GalleryPreviewActivity : BaseActivity() {
     }
 
 
-    private val deleteList = arrayListOf<GalleryContentBean>()
+    private val deleteList = arrayListOf<GalleryBean>()
 
-    private val dataList = arrayListOf<GalleryContentBean>()
+    private val dataList = arrayListOf<GalleryBean>()
 
-    private val selectList = arrayListOf<GalleryContentBean>()
+    private val selectList = arrayListOf<GalleryBean>()
 
     private val type by lazy {
         intent.getIntExtra("type", TYPE_PREVIEW)
@@ -169,7 +169,7 @@ class GalleryPreviewActivity : BaseActivity() {
                     }
                 })
 
-                previewAdapter.selectContentBean = dataList[index]
+                previewAdapter.selectBean = dataList[index]
                 rv_preview.adapter = previewAdapter
                 updateChecked()
             }
@@ -205,7 +205,7 @@ class GalleryPreviewActivity : BaseActivity() {
             override fun onPageSelected(position: Int) {
                 index = position
                 if (type == TYPE_PREVIEW) {
-                    previewAdapter.selectContentBean = dataList[index]
+                    previewAdapter.selectBean = dataList[index]
                     previewAdapter.notifyDataSetChanged()
                 }
                 updateTitle()

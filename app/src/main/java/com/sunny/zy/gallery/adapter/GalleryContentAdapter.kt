@@ -8,7 +8,7 @@ import com.sunny.zy.R
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.GallerySelectActivity
-import com.sunny.zy.gallery.bean.GalleryContentBean
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.utils.GlideApp
 import kotlinx.android.synthetic.main.zy_item_gallery_content.view.*
 import java.text.DecimalFormat
@@ -19,8 +19,8 @@ import java.text.DecimalFormat
  * Mail zhangye98@foxmail.com
  * Date 2021/9/23 09:45
  */
-class GalleryContentAdapter(private val selectList: ArrayList<GalleryContentBean>) :
-    BaseRecycleAdapter<GalleryContentBean>(arrayListOf()) {
+class GalleryContentAdapter(private val selectList: ArrayList<GalleryBean>) :
+    BaseRecycleAdapter<GalleryBean>(arrayListOf()) {
 
     var selectType = GallerySelectActivity.SELECT_TYPE_MULTIPLE
 

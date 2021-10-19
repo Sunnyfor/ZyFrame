@@ -5,19 +5,19 @@ import android.os.Parcel
 import android.os.Parcelable
 
 /**
- * Desc
+ * Desc 媒体内容
  * Author ZY
  * Mail zhangye98@foxmail.com
  * Date 2021/9/22 18:12
  */
-data class GalleryContentBean(
+data class GalleryBean(
     var id: Long = 0,
     var uri: Uri?
 ) : Parcelable {
 
     var type = ""
     var duration = 0
-    var size = 0
+    var size = 0L
 
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
@@ -25,11 +25,11 @@ data class GalleryContentBean(
     ) {
         type = parcel.readString() ?: ""
         duration = parcel.readInt()
-        size = parcel.readInt()
+        size = parcel.readLong()
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other == null || other !is GalleryContentBean) {
+        if (other == null || other !is GalleryBean) {
             return false
         }
         return other.uri == uri
@@ -46,19 +46,19 @@ data class GalleryContentBean(
         parcel.writeParcelable(uri, flags)
         parcel.writeString(type)
         parcel.writeInt(duration)
-        parcel.writeInt(size)
+        parcel.writeLong(size)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<GalleryContentBean> {
-        override fun createFromParcel(parcel: Parcel): GalleryContentBean {
-            return GalleryContentBean(parcel)
+    companion object CREATOR : Parcelable.Creator<GalleryBean> {
+        override fun createFromParcel(parcel: Parcel): GalleryBean {
+            return GalleryBean(parcel)
         }
 
-        override fun newArray(size: Int): Array<GalleryContentBean?> {
+        override fun newArray(size: Int): Array<GalleryBean?> {
             return arrayOfNulls(size)
         }
     }

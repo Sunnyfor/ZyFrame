@@ -9,7 +9,7 @@ import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
-import com.sunny.zy.gallery.bean.GalleryContentBean
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.utils.GlideApp
 import kotlinx.android.synthetic.main.zy_item_gallery_preview.view.*
 
@@ -19,16 +19,16 @@ import kotlinx.android.synthetic.main.zy_item_gallery_preview.view.*
  * Mail zhangye98@foxmail.com
  * Date 2021/9/28 11:47
  */
-class PreviewPhotoAdapter(data: ArrayList<GalleryContentBean>) : BaseRecycleAdapter<GalleryContentBean>(data) {
+class PreviewPhotoAdapter(data: ArrayList<GalleryBean>) : BaseRecycleAdapter<GalleryBean>(data) {
 
-    var selectContentBean: GalleryContentBean? = null
+    var selectBean: GalleryBean? = null
 
     override fun onBindViewHolder(holder: BaseRecycleViewHolder, position: Int) {
         GlideApp.with(context)
             .load(getData(position).uri)
             .into(holder.itemView.iv_photo)
 
-        if (selectContentBean == getData(position)) {
+        if (selectBean == getData(position)) {
             holder.itemView.v_border.visibility = View.VISIBLE
         } else {
             holder.itemView.v_border.visibility = View.GONE

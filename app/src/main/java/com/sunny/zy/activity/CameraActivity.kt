@@ -5,13 +5,12 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
-import com.sunny.zy.gallery.bean.GalleryContentBean
+import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.GalleryPreviewActivity
 import com.sunny.zy.preview.VideoPlayActivity
 import com.sunny.zy.utils.CameraXUtil
@@ -33,15 +32,15 @@ class CameraActivity : BaseActivity() {
 
 
     companion object {
-        fun intent(activity: AppCompatActivity, onResult: ((uri: Uri) -> Unit)) {
+        fun intent(activity: AppCompatActivity, onResult: ((bean: GalleryBean) -> Unit)) {
             activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
-                    val uri = it.data?.getParcelableExtra<Uri>("resultUri")
-                    if (uri == null) {
+                    val bean = it.data?.getParcelableExtra<GalleryBean>("result")
+                    if (bean?.uri == null) {
                         ToastUtil.show("uri发生错误！")
                         return@registerForActivityResult
                     }
-                    onResult.invoke(uri)
+                    onResult.invoke(bean)
                 }
 
             }.launch(Intent(activity, CameraActivity::class.java))
@@ -69,17 +68,17 @@ class CameraActivity : BaseActivity() {
                 //拍照
                 startAlphaAnimation()
                 showLoading()
-                cameraXUtil.takePhoto { uri ->
+                cameraXUtil.takePhoto { bean ->
                     GalleryPreviewActivity.intent(
                         this@CameraActivity,
-                        GalleryContentBean(0, uri)
+                        bean
                     ) { result ->
                         hideLoading()
                         if (result) {
-                            setResult(Activity.RESULT_OK, Intent().putExtra("resultUri", uri))
+                            setResult(Activity.RESULT_OK, Intent().putExtra("result", bean))
                             finish()
                         } else {
-                            cameraXUtil.deletePicture(uri)
+                            cameraXUtil.deletePicture(bean.uri ?: return@intent)
                         }
                     }
                 }
@@ -90,11 +89,14 @@ class CameraActivity : BaseActivity() {
             }
 
             override fun recordStart() {
-                cameraXUtil.takeVideo {
-                    VideoPlayActivity.intent(this@CameraActivity, it) { resultCode, uri ->
+                cameraXUtil.takeVideo { bean ->
+                    VideoPlayActivity.intent(
+                        this@CameraActivity,
+                        bean.uri ?: return@takeVideo
+                    ) { resultCode, uri ->
                         hideLoading()
                         if (resultCode == Activity.RESULT_OK) {
-                            setResult(Activity.RESULT_OK, Intent().putExtra("resultUri", uri))
+                            setResult(Activity.RESULT_OK, Intent().putExtra("result", bean))
                             finish()
                         } else {
                             cameraXUtil.deleteMove(uri)

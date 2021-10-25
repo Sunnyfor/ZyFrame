@@ -38,8 +38,12 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
     private var galleryBean: GalleryBean? = null
 
     companion object {
-        fun intent(activity: AppCompatActivity, onResult: ((bean: GalleryBean) -> Unit)) {
-            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+        fun initLauncher(
+            activity: AppCompatActivity,
+            onResult: ((bean: GalleryBean) -> Unit)
+        ): ActivityResultLauncher<Intent> {
+            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     val bean = it.data?.getParcelableExtra<GalleryBean>("result")
                     if (bean?.uri == null) {
@@ -48,8 +52,11 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
                     }
                     onResult.invoke(bean)
                 }
+            }
+        }
 
-            }.launch(Intent(activity, CameraActivity::class.java))
+        fun startActivity(activity: AppCompatActivity, launcher: ActivityResultLauncher<Intent>) {
+            launcher.launch(Intent(activity, CameraActivity::class.java))
         }
     }
 

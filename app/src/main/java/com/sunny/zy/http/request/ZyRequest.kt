@@ -1,6 +1,7 @@
 package com.sunny.zy.http.request
 
 import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.http.ZyHttp
@@ -33,33 +34,22 @@ class ZyRequest {
      */
     fun getRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
+        var paramsStr = ""
         if (params?.isNotEmpty() == true) {
-            urlSb.append("?")
-            params.entries.forEach { entry ->
-                urlSb.append(entry.key)
-                    .append("=")
-                    .append(entry.value)
-                    .append("&")
-            }
-            urlSb.deleteCharAt(urlSb.lastIndex)
+            paramsStr = paramsToString(params)
+            urlSb.append("?").append(paramsStr)
         }
-
-        return Request.Builder().url(urlSb.toString()).build()
+        return Request.Builder().url(urlSb.toString()).tag(paramsStr).build()
     }
 
     fun headRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
+        var paramsStr = ""
         if (params?.isNotEmpty() == true) {
-            urlSb.append("?")
-            params.entries.forEach { entry ->
-                urlSb.append(entry.key)
-                    .append("=")
-                    .append(entry.value)
-                    .append("&")
-            }
-            urlSb.deleteCharAt(urlSb.lastIndex)
+            paramsStr = paramsToString(params)
+            urlSb.append("?").append(paramsStr)
         }
-        return Request.Builder().url(urlSb.toString()).head().build()
+        return Request.Builder().url(urlSb.toString()).head().tag(paramsStr).build()
     }
 
 
@@ -69,7 +59,7 @@ class ZyRequest {
     fun postJsonRequest(url: String, json: String): Request {
         val urlSb = getUrlSb(url)
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
-        return Request.Builder().url(urlSb.toString()).post(body).build()
+        return Request.Builder().url(urlSb.toString()).post(body).tag(json).build()
     }
 
 
@@ -79,10 +69,14 @@ class ZyRequest {
     fun postFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
-        params?.entries?.forEach {
-            body.add(it.key, it.value)
+        var paramsStr = ""
+        if (params?.isNotEmpty() == true) {
+            paramsStr = paramsToString(params)
+            params.entries.forEach {
+                body.add(it.key, it.value)
+            }
         }
-        return Request.Builder().url(urlSb.toString()).post(body.build()).build()
+        return Request.Builder().url(urlSb.toString()).post(body.build()).tag(paramsStr).build()
     }
 
 
@@ -92,10 +86,14 @@ class ZyRequest {
     fun putFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
-        params?.entries?.forEach {
-            body.add(it.key, it.value)
+        var paramsStr = ""
+        if (params?.isNotEmpty() == true) {
+            paramsStr = paramsToString(params)
+            params.entries.forEach {
+                body.add(it.key, it.value)
+            }
         }
-        return Request.Builder().url(urlSb.toString()).put(body.build()).build()
+        return Request.Builder().url(urlSb.toString()).put(body.build()).tag(paramsStr).build()
     }
 
     /**
@@ -104,7 +102,7 @@ class ZyRequest {
     fun putJsonRequest(url: String, json: String): Request {
         val urlSb = getUrlSb(url)
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
-        return Request.Builder().url(urlSb.toString()).put(body).build()
+        return Request.Builder().url(urlSb.toString()).put(body).tag(json).build()
     }
 
 
@@ -114,10 +112,14 @@ class ZyRequest {
     fun patchFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
-        params?.entries?.forEach {
-            body.add(it.key, it.value)
+        var paramsStr = ""
+        if (params?.isNotEmpty() == true) {
+            paramsStr = paramsToString(params)
+            params.entries.forEach {
+                body.add(it.key, it.value)
+            }
         }
-        return Request.Builder().url(urlSb.toString()).patch(body.build()).build()
+        return Request.Builder().url(urlSb.toString()).patch(body.build()).tag(paramsStr).build()
     }
 
     /**
@@ -126,7 +128,7 @@ class ZyRequest {
     fun patchJsonRequest(url: String, json: String): Request {
         val urlSb = getUrlSb(url)
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
-        return Request.Builder().url(urlSb.toString()).patch(body).build()
+        return Request.Builder().url(urlSb.toString()).patch(body).tag(json).build()
     }
 
 
@@ -136,10 +138,14 @@ class ZyRequest {
     fun deleteFormRequest(url: String, params: Map<String, String>?): Request {
         val urlSb = getUrlSb(url)
         val body = FormBody.Builder()
-        params?.entries?.forEach {
-            body.add(it.key, it.value)
+        var paramsStr = ""
+        if (params?.isNotEmpty() == true) {
+            paramsStr = paramsToString(params)
+            params.entries.forEach {
+                body.add(it.key, it.value)
+            }
         }
-        return Request.Builder().url(urlSb.toString()).delete(body.build()).build()
+        return Request.Builder().url(urlSb.toString()).delete(body.build()).tag(paramsStr).build()
     }
 
     /**
@@ -148,7 +154,7 @@ class ZyRequest {
     fun deleteJsonRequest(url: String, json: String): Request {
         val urlSb = getUrlSb(url)
         val body = json.toRequestBody("application/json; charset=utf-8".toMediaType())
-        return Request.Builder().url(urlSb.toString()).delete(body).build()
+        return Request.Builder().url(urlSb.toString()).delete(body).tag(json).build()
     }
 
     /**
@@ -157,32 +163,42 @@ class ZyRequest {
     fun formUploadRequest(url: String, params: Map<String, Any>): Request {
         val urlSb = getUrlSb(url)
         val path = params[ZyHttp.FilePath]
+        var fileName: String? = params[ZyHttp.FileName]?.toString()
 
         val body = MultipartBody.Builder()
         body.setType(MultipartBody.FORM)
 
         when (path) {
             is String -> {
+                if (fileName == null) {
+                    fileName = path.split("/").last()
+                }
                 body.addFormDataPart(
                     "file",
-                    path.split("/").last(),
+                    fileName,
                     File(path).asRequestBody("multipart/form-data".toMediaType())
                 )
             }
 
             is File -> {
+                if (fileName == null) {
+                    fileName = path.name
+                }
                 body.addFormDataPart(
                     "file",
-                    path.name.split("/").last(),
+                    fileName,
                     path.asRequestBody("multipart/form-data".toMediaType())
                 )
             }
 
             is Uri -> {
+                if (fileName == null) {
+                    fileName = DocumentFile.fromSingleUri(ZyFrameStore.getContext(), path)?.name
+                }
                 ZyFrameStore.getContext().contentResolver.openInputStream(path)?.use { stream ->
                     body.addFormDataPart(
                         "file",
-                        path.toString().split("/").last(),
+                        fileName,
                         stream.readBytes().toRequestBody("multipart/form-data".toMediaType())
                     )
                 }
@@ -190,10 +206,28 @@ class ZyRequest {
         }
 
         params.entries.forEach {
-            if (it.key != ZyHttp.FilePath) {
-                body.addFormDataPart(it.key, it.value.toString())
+            if (it.key != ZyHttp.FilePath && it.key != ZyHttp.FileName) {
+                body.addFormDataPart(
+                    it.key,
+                    null,
+                    it.value.toString().toRequestBody("text/plain".toMediaType())
+                )
             }
         }
-        return Request.Builder().url(urlSb.toString()).post(body.build()).build()
+        return Request.Builder().url(urlSb.toString()).post(body.build())
+            .tag(paramsToString(params)).build()
+    }
+
+    private fun paramsToString(params: Map<String, Any>): String {
+        val paramsSb = StringBuilder()
+        params.entries.forEachIndexed { index, entry ->
+            paramsSb.append(entry.key)
+                .append("=")
+                .append(entry.value)
+            if (index < params.size - 1) {
+                paramsSb.append("&")
+            }
+        }
+        return paramsSb.toString()
     }
 }

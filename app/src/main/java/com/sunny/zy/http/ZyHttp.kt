@@ -32,6 +32,8 @@ object ZyHttp {
 
     var FilePath = "path"
 
+    var FileName = "fileName"
+
     /**
      * get请求
      * @param url URL服务器地址

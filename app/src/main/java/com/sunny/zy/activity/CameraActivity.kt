@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
@@ -24,12 +25,17 @@ import kotlinx.android.synthetic.main.zy_act_camera.*
  * Mail zhangye98@foxmail.com
  * Date 2021/10/11 11:47
  */
-class CameraActivity : BaseActivity() {
+class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
 
     private var isFirst = true
 
     private val cameraXUtil = CameraXUtil()
 
+    lateinit var galleryPreViewLauncher: ActivityResultLauncher<Intent>
+
+    lateinit var videoPlayLauncher: ActivityResultLauncher<Intent>
+
+    private var galleryBean: GalleryBean? = null
 
     companion object {
         fun intent(activity: AppCompatActivity, onResult: ((bean: GalleryBean) -> Unit)) {
@@ -53,6 +59,20 @@ class CameraActivity : BaseActivity() {
 
         hideStatusBar(false)
 
+        galleryPreViewLauncher = GalleryPreviewActivity.initLauncher(this, this)
+
+        videoPlayLauncher = VideoPlayActivity.initLauncher(this) { resultCode, uri ->
+            hideLoading()
+            if (resultCode == Activity.RESULT_OK) {
+                setResult(Activity.RESULT_OK, Intent().putExtra("result", galleryBean))
+                finish()
+            } else {
+                uri?.let {
+                    cameraXUtil.deleteMove(it)
+                }
+            }
+        }
+
         requestPermissions(
             arrayOf(
                 Manifest.permission.CAMERA,
@@ -69,18 +89,12 @@ class CameraActivity : BaseActivity() {
                 startAlphaAnimation()
                 showLoading()
                 cameraXUtil.takePhoto { bean ->
-                    GalleryPreviewActivity.intent(
+                    galleryBean = bean
+                    GalleryPreviewActivity.startActivity(
                         this@CameraActivity,
+                        galleryPreViewLauncher,
                         bean
-                    ) { result ->
-                        hideLoading()
-                        if (result) {
-                            setResult(Activity.RESULT_OK, Intent().putExtra("result", bean))
-                            finish()
-                        } else {
-                            cameraXUtil.deletePicture(bean.uri ?: return@intent)
-                        }
-                    }
+                    )
                 }
             }
 
@@ -90,18 +104,12 @@ class CameraActivity : BaseActivity() {
 
             override fun recordStart() {
                 cameraXUtil.takeVideo { bean ->
+                    galleryBean = bean
                     VideoPlayActivity.intent(
                         this@CameraActivity,
+                        videoPlayLauncher,
                         bean.uri ?: return@takeVideo
-                    ) { resultCode, uri ->
-                        hideLoading()
-                        if (resultCode == Activity.RESULT_OK) {
-                            setResult(Activity.RESULT_OK, Intent().putExtra("result", bean))
-                            finish()
-                        } else {
-                            cameraXUtil.deleteMove(uri)
-                        }
-                    }
+                    )
                 }
                 startAlphaAnimation()
             }
@@ -162,5 +170,19 @@ class CameraActivity : BaseActivity() {
         val animatorTxtTip = ObjectAnimator.ofFloat(tv_tip, "alpha", 0f, 1f, 1f, 0f)
         animatorTxtTip.duration = 2500
         animatorTxtTip.start()
+    }
+
+    override fun onDelete(deleteList: ArrayList<GalleryBean>) {}
+
+    override fun onPreview(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {}
+
+    override fun onCamera(isComplete: Boolean) {
+        hideLoading()
+        if (isComplete) {
+            setResult(Activity.RESULT_OK, Intent().putExtra("result", galleryBean))
+            finish()
+        } else {
+            cameraXUtil.deletePicture(galleryBean?.uri ?: return)
+        }
     }
 }

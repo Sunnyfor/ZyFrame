@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,32 +35,55 @@ class GalleryPreviewActivity : BaseActivity() {
         const val TYPE_DELETE = 1
         const val TYPE_CAMERA = 2
 
-        fun intent(
+        fun initLauncher(
             activity: AppCompatActivity,
+            onPreViewResult: OnPreViewResult
+        ): ActivityResultLauncher<Intent> {
+            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                when (it.data?.getIntExtra("type", TYPE_PREVIEW)) {
+                    TYPE_PREVIEW -> {
+                        onPreViewResult.onPreview(
+                            it.data?.getParcelableArrayListExtra("resultList")
+                                ?: arrayListOf(),
+                            it.data?.getBooleanExtra("isFinish", false) ?: false
+                        )
+                    }
+                    TYPE_DELETE -> {
+                        onPreViewResult.onDelete(
+                            it.data?.getParcelableArrayListExtra("deleteList") ?: arrayListOf()
+                        )
+                    }
+
+                    TYPE_CAMERA -> {
+                        val result = it.data?.getBooleanExtra("result", false) ?: false
+                        onPreViewResult.onCamera(result)
+                    }
+                }
+            }
+        }
+
+        fun startActivity(
+            activity: AppCompatActivity,
+            launcher: ActivityResultLauncher<Intent>,
             dataList: ArrayList<GalleryBean>,
             index: Int = 0,
             isPreview: Boolean,
-            onResultCallback: (deleteList: ArrayList<GalleryBean>) -> Unit
         ) {
             val intent = Intent(activity, GalleryPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
             intent.putExtra("index", index)
             intent.putExtra("type", TYPE_DELETE)
             intent.putExtra("isPreview", isPreview)
-            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                onResultCallback.invoke(
-                    it.data?.getParcelableArrayListExtra("deleteList") ?: arrayListOf()
-                )
-            }.launch(intent)
+            launcher.launch(intent)
         }
 
-        fun intent(
+        fun startActivity(
             activity: AppCompatActivity,
+            launcher: ActivityResultLauncher<Intent>,
             dataList: ArrayList<GalleryBean>,
             selectList: ArrayList<GalleryBean>,
             index: Int = 0,
-            maxSize: Int = 0,
-            onResultCallback: (resultList: ArrayList<GalleryBean>, isFinish: Boolean) -> Unit
+            maxSize: Int = 0
         ) {
             val intent = Intent(activity, GalleryPreviewActivity::class.java)
             intent.putExtra("dataList", dataList)
@@ -67,28 +91,19 @@ class GalleryPreviewActivity : BaseActivity() {
             intent.putExtra("maxSize", maxSize)
             intent.putExtra("type", TYPE_PREVIEW)
             intent.putExtra("selectList", selectList)
-            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                onResultCallback.invoke(
-                    it.data?.getParcelableArrayListExtra<GalleryBean>("resultList")
-                        ?: arrayListOf(),
-                    it.data?.getBooleanExtra("isFinish", false) ?: false
-                )
-            }.launch(intent)
+            launcher.launch(intent)
         }
 
 
-        fun intent(
+        fun startActivity(
             activity: AppCompatActivity,
+            launcher: ActivityResultLauncher<Intent>,
             bean: GalleryBean,
-            onResultCallback: (isComplete: Boolean) -> Unit
         ) {
             val intent = Intent(activity, GalleryPreviewActivity::class.java)
             intent.putExtra("dataList", arrayListOf(bean))
             intent.putExtra("type", TYPE_CAMERA)
-            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                val result = it.data?.getBooleanExtra("result", false) ?: false
-                onResultCallback.invoke(result)
-            }.launch(intent)
+            launcher.launch(intent)
         }
     }
 
@@ -288,6 +303,7 @@ class GalleryPreviewActivity : BaseActivity() {
 
     private fun setResult(flag: Boolean = false) {
         val intent = Intent()
+        intent.putExtra("type", type)
         when (type) {
             TYPE_CAMERA -> intent.putExtra("result", flag)
             TYPE_DELETE -> intent.putParcelableArrayListExtra("deleteList", deleteList)
@@ -331,5 +347,13 @@ class GalleryPreviewActivity : BaseActivity() {
             val index = selectList.indexOf(dataList[index])
             rv_preview.scrollToPosition(index)
         }
+    }
+
+    interface OnPreViewResult {
+        fun onDelete(deleteList: ArrayList<GalleryBean>)
+
+        fun onPreview(resultList: ArrayList<GalleryBean>, isFinish: Boolean)
+
+        fun onCamera(isComplete: Boolean)
     }
 }

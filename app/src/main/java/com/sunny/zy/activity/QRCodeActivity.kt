@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
@@ -22,12 +23,19 @@ class QRCodeActivity : BaseActivity() {
     companion object {
         const val resultKey = "qrCode"
 
-        fun intent(activity: AppCompatActivity, resultCallBack: (result: String) -> Unit) {
-            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        fun initLauncher(
+            activity: AppCompatActivity,
+            resultCallBack: (result: String) -> Unit
+        ): ActivityResultLauncher<Intent> {
+            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     resultCallBack.invoke(it.data?.getStringExtra(resultKey) ?: "")
                 }
-            }.launch(Intent(activity, QRCodeActivity::class.java))
+            }
+        }
+
+        fun startActivity(activity: AppCompatActivity, launcher: ActivityResultLauncher<Intent>) {
+            launcher.launch(Intent(activity, QRCodeActivity::class.java))
         }
     }
 

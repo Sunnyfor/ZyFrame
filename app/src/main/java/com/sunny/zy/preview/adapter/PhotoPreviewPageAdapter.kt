@@ -41,8 +41,8 @@ class PhotoPreviewPageAdapter(data: ArrayList<GalleryBean>) :
                 holder.itemView.v_play.setOnClickListener {
                     VideoPlayActivity.intent(
                         context as BaseActivity,
+                        null,
                         getData(position).uri ?: return@setOnClickListener,
-                        null
                     )
                 }
             }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.widget.MediaController
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
@@ -22,18 +23,26 @@ import kotlinx.android.synthetic.main.zy_act_preview_video.*
 class VideoPlayActivity : BaseActivity() {
 
     companion object {
+
+        fun initLauncher(
+            activity: AppCompatActivity,
+            resultCallback: ((resultCode: Int, uri: Uri?) -> Unit)? = null
+        ): ActivityResultLauncher<Intent> {
+            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                resultCallback?.invoke(it.resultCode, it.data?.getParcelableExtra("uri"))
+            }
+        }
+
         fun intent(
             context: AppCompatActivity,
-            uri: Uri,
-            resultCallback: ((resultCode: Int, uri: Uri) -> Unit)? = null
+            launcher: ActivityResultLauncher<Intent>? = null,
+            uri: Uri
         ) {
             val intent = Intent(context, VideoPlayActivity::class.java)
             intent.putExtra("uri", uri)
-            if (resultCallback != null) {
+            if (launcher != null) {
                 intent.putExtra("isComplete", true)
-                context.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    resultCallback(it.resultCode, uri)
-                }.launch(intent)
+                launcher.launch(intent)
             } else {
                 context.startActivity(intent)
             }

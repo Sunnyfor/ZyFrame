@@ -15,6 +15,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +43,8 @@ import java.io.File
  * Mail zhangye98@foxmail.com
  * Date 2021/9/22 17:12
  */
-class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
+class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
+    GalleryPreviewActivity.OnPreViewResult {
 
     private val galleryResultList = arrayListOf<GalleryBean>()
 
@@ -65,6 +67,9 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         GalleryContract.Presenter(this)
     }
 
+    private lateinit var galleryPreViewLauncher: ActivityResultLauncher<Intent>
+
+
     companion object {
         const val SELECT_TYPE_INT = "selectType"
         const val SELECT_TYPE_MULTIPLE = 0  //多选
@@ -78,21 +83,34 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
         const val File_TYPE_IMAGE = 1
         const val File_TYPE_VIDEO = 2
 
-        fun intent(
+        fun initLauncher(
             activity: AppCompatActivity,
-            flags: GalleryFlagsBuild? = null,
             onResult: (selectList: ArrayList<GalleryBean>) -> Unit
-        ) {
-            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        ): ActivityResultLauncher<Intent> {
+            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
                     ZyFrameStore.getData<ArrayList<GalleryBean>>("gallery_select_list")
                         ?.let { list ->
                             onResult.invoke(list)
                         }
                 }
-            }.launch(Intent(activity, GallerySelectActivity::class.java).apply {
-                putExtra("flags", flags?.build())
-            })
+            }
+        }
+
+
+        fun startActivity(
+            activity: AppCompatActivity,
+            launcher: ActivityResultLauncher<Intent>,
+            flags: GalleryFlagsBuild? = null,
+        ) {
+            launcher.launch(
+                Intent(
+                    activity,
+                    GallerySelectActivity::class.java
+                ).apply {
+                    putExtra("flags", flags?.build())
+                }
+            )
         }
     }
 
@@ -204,26 +222,17 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
                 dataList.add(data)
             }
 
-            GalleryPreviewActivity.intent(
+            GalleryPreviewActivity.startActivity(
                 this,
+                galleryPreViewLauncher,
                 dataList,
                 galleryResultList,
                 dataList.indexOf(dataList.find { it.uri == data.uri }),
                 maxSize
-            ) { resultList, isFinish ->
-                galleryResultList.clear()
-                galleryResultList.addAll(resultList)
-
-                if (isFinish) {
-                    ZyFrameStore.setData("gallery_select_list", galleryResultList)
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                } else {
-                    contentAdapter.notifyDataSetChanged()
-                    updateCount()
-                }
-            }
+            )
         }
+
+        galleryPreViewLauncher = GalleryPreviewActivity.initLauncher(this, this)
     }
 
     override fun loadData() {
@@ -395,4 +404,23 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView {
             }
         }.launch(intent)
     }
+
+
+    override fun onDelete(deleteList: ArrayList<GalleryBean>) {}
+
+    override fun onPreview(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {
+        galleryResultList.clear()
+        galleryResultList.addAll(resultList)
+
+        if (isFinish) {
+            ZyFrameStore.setData("gallery_select_list", galleryResultList)
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            contentAdapter.notifyItemRangeChanged(0, contentAdapter.itemCount)
+            updateCount()
+        }
+    }
+
+    override fun onCamera(isComplete: Boolean) {}
 }

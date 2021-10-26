@@ -1,16 +1,15 @@
 package com.sunny.zy.activity
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
+import android.util.DisplayMetrics
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.CameraXUtil
+import com.sunny.zy.utils.IntentManager
+import kotlinx.android.synthetic.main.zy_act_camera.*
 import kotlinx.android.synthetic.main.zy_frag_qr_code.*
+import kotlinx.android.synthetic.main.zy_frag_qr_code.previewView
 
 /**
  * Desc
@@ -19,26 +18,6 @@ import kotlinx.android.synthetic.main.zy_frag_qr_code.*
  * Date 2021/1/4 16:54
  */
 class QRCodeActivity : BaseActivity() {
-
-    companion object {
-        const val resultKey = "qrCode"
-
-        fun initLauncher(
-            activity: AppCompatActivity,
-            resultCallBack: (result: String) -> Unit
-        ): ActivityResultLauncher<Intent> {
-            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    resultCallBack.invoke(it.data?.getStringExtra(resultKey) ?: "")
-                }
-            }
-        }
-
-        fun startActivity(activity: AppCompatActivity, launcher: ActivityResultLauncher<Intent>) {
-            launcher.launch(Intent(activity, QRCodeActivity::class.java))
-        }
-    }
-
 
     private val cameraXUtil = CameraXUtil()
 
@@ -50,10 +29,11 @@ class QRCodeActivity : BaseActivity() {
         setPermissionsNoHintFinish(true)
 
         requestPermissions(Manifest.permission.CAMERA) {
-            cameraXUtil.init(this, previewView.surfaceProvider)
+            val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
+            val screenAspectRatio = CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
+            cameraXUtil.init(this, previewView.surfaceProvider,screenAspectRatio,previewView.display.rotation)
             cameraXUtil.startQrCodeScan {
-                intent.putExtra(resultKey, it)
-                setResult(Activity.RESULT_OK, intent)
+                IntentManager.qrCodeResultCallBack?.invoke(it)
                 finish()
             }
         }
@@ -70,5 +50,6 @@ class QRCodeActivity : BaseActivity() {
 
     override fun onClose() {
         cameraXUtil.onDestroy()
+        IntentManager.qrCodeResultCallBack = null
     }
 }

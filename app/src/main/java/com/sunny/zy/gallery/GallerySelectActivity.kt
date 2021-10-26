@@ -15,16 +15,13 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.adapter.GalleryContentAdapter
 import com.sunny.zy.gallery.adapter.GalleryFolderAdapter
@@ -44,7 +41,7 @@ import java.io.File
  * Date 2021/9/22 17:12
  */
 class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
-    GalleryPreviewActivity.OnPreViewResult {
+    GalleryPreviewActivity.OnPreviewResultCallBack {
 
     private val galleryResultList = arrayListOf<GalleryBean>()
 
@@ -67,8 +64,6 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         GalleryContract.Presenter(this)
     }
 
-    private lateinit var galleryPreViewLauncher: ActivityResultLauncher<Intent>
-
 
     companion object {
         const val SELECT_TYPE_INT = "selectType"
@@ -82,36 +77,6 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         const val FILE_TYPE_ALL = 0
         const val File_TYPE_IMAGE = 1
         const val File_TYPE_VIDEO = 2
-
-        fun initLauncher(
-            activity: AppCompatActivity,
-            onResult: (selectList: ArrayList<GalleryBean>) -> Unit
-        ): ActivityResultLauncher<Intent> {
-            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    ZyFrameStore.getData<ArrayList<GalleryBean>>("gallery_select_list")
-                        ?.let { list ->
-                            onResult.invoke(list)
-                        }
-                }
-            }
-        }
-
-
-        fun startActivity(
-            activity: AppCompatActivity,
-            launcher: ActivityResultLauncher<Intent>,
-            flags: GalleryFlagsBuild? = null,
-        ) {
-            launcher.launch(
-                Intent(
-                    activity,
-                    GallerySelectActivity::class.java
-                ).apply {
-                    putExtra("flags", flags?.build())
-                }
-            )
-        }
     }
 
     override fun initLayout() = R.layout.zy_act_photo_select
@@ -199,12 +164,11 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
             val data = contentAdapter.getData(position)
 
             if (selectType == SELECT_TYPE_SINGLE) {
-                setResult(Activity.RESULT_OK)
                 if (data.type.contains("image") && isCrop) {
                     intentCrop(data)
                 } else {
                     galleryResultList.add(data)
-                    ZyFrameStore.setData("gallery_select_list", galleryResultList)
+                    IntentManager.selectResultCallBack?.invoke(galleryResultList)
                     finish()
                 }
                 return@setOnItemClickListener
@@ -222,17 +186,15 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                 dataList.add(data)
             }
 
-            GalleryPreviewActivity.startActivity(
-                this,
-                galleryPreViewLauncher,
+
+            IntentManager.startGalleryPreviewActivity(
                 dataList,
                 galleryResultList,
                 dataList.indexOf(dataList.find { it.uri == data.uri }),
-                maxSize
+                maxSize,
+                this
             )
         }
-
-        galleryPreViewLauncher = GalleryPreviewActivity.initLauncher(this, this)
     }
 
     override fun loadData() {
@@ -336,15 +298,14 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                 if (galleryResultList.isEmpty()) {
                     return
                 }
-                ZyFrameStore.setData("gallery_select_list", galleryResultList)
-                setResult(Activity.RESULT_OK)
+                IntentManager.selectResultCallBack?.invoke(galleryResultList)
                 finish()
             }
         }
     }
 
     override fun onClose() {
-
+        IntentManager.selectResultCallBack = null
     }
 
     override fun showGalleryData(data: List<GalleryFolderBean>) {
@@ -394,9 +355,8 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                 outUri?.let { uri ->
                     data.uri = uri
                 }
-                setResult(Activity.RESULT_OK)
                 galleryResultList.add(data)
-                ZyFrameStore.setData("gallery_select_list", galleryResultList)
+                IntentManager.selectResultCallBack?.invoke(galleryResultList)
                 finish()
             } else {
                 LogUtil.i("裁剪失败")
@@ -406,15 +366,14 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
     }
 
 
-    override fun onDelete(deleteList: ArrayList<GalleryBean>) {}
+    override fun onPreview(deleteList: ArrayList<GalleryBean>) {}
 
-    override fun onPreview(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {
+    override fun onSelect(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {
         galleryResultList.clear()
         galleryResultList.addAll(resultList)
 
         if (isFinish) {
-            ZyFrameStore.setData("gallery_select_list", galleryResultList)
-            setResult(Activity.RESULT_OK)
+            IntentManager.selectResultCallBack?.invoke(galleryResultList)
             finish()
         } else {
             contentAdapter.notifyItemRangeChanged(0, contentAdapter.itemCount)

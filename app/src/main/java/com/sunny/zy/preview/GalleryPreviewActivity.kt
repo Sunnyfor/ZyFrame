@@ -1,15 +1,11 @@
 package com.sunny.zy.preview
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -18,6 +14,7 @@ import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.adapter.PhotoPreviewPageAdapter
 import com.sunny.zy.preview.adapter.PreviewPhotoAdapter
+import com.sunny.zy.utils.IntentManager
 import com.sunny.zy.utils.ToastUtil
 import kotlinx.android.synthetic.main.zy_act_preview_photo.*
 
@@ -30,81 +27,9 @@ import kotlinx.android.synthetic.main.zy_act_preview_photo.*
 class GalleryPreviewActivity : BaseActivity() {
 
     companion object {
-
-        const val TYPE_PREVIEW = 0
-        const val TYPE_DELETE = 1
+        const val TYPE_SELECT = 0
+        const val TYPE_PREVIEW = 1
         const val TYPE_CAMERA = 2
-
-        fun initLauncher(
-            activity: AppCompatActivity,
-            onPreViewResult: OnPreViewResult
-        ): ActivityResultLauncher<Intent> {
-            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                when (it.data?.getIntExtra("type", TYPE_PREVIEW)) {
-                    TYPE_PREVIEW -> {
-                        onPreViewResult.onPreview(
-                            it.data?.getParcelableArrayListExtra("resultList")
-                                ?: arrayListOf(),
-                            it.data?.getBooleanExtra("isFinish", false) ?: false
-                        )
-                    }
-                    TYPE_DELETE -> {
-                        onPreViewResult.onDelete(
-                            it.data?.getParcelableArrayListExtra("deleteList") ?: arrayListOf()
-                        )
-                    }
-
-                    TYPE_CAMERA -> {
-                        val result = it.data?.getBooleanExtra("result", false) ?: false
-                        onPreViewResult.onCamera(result)
-                    }
-                }
-            }
-        }
-
-        fun startActivity(
-            activity: AppCompatActivity,
-            launcher: ActivityResultLauncher<Intent>,
-            dataList: ArrayList<GalleryBean>,
-            index: Int = 0,
-            isPreview: Boolean,
-        ) {
-            val intent = Intent(activity, GalleryPreviewActivity::class.java)
-            intent.putExtra("dataList", dataList)
-            intent.putExtra("index", index)
-            intent.putExtra("type", TYPE_DELETE)
-            intent.putExtra("isPreview", isPreview)
-            launcher.launch(intent)
-        }
-
-        fun startActivity(
-            activity: AppCompatActivity,
-            launcher: ActivityResultLauncher<Intent>,
-            dataList: ArrayList<GalleryBean>,
-            selectList: ArrayList<GalleryBean>,
-            index: Int = 0,
-            maxSize: Int = 0
-        ) {
-            val intent = Intent(activity, GalleryPreviewActivity::class.java)
-            intent.putExtra("dataList", dataList)
-            intent.putExtra("index", index)
-            intent.putExtra("maxSize", maxSize)
-            intent.putExtra("type", TYPE_PREVIEW)
-            intent.putExtra("selectList", selectList)
-            launcher.launch(intent)
-        }
-
-
-        fun startActivity(
-            activity: AppCompatActivity,
-            launcher: ActivityResultLauncher<Intent>,
-            bean: GalleryBean,
-        ) {
-            val intent = Intent(activity, GalleryPreviewActivity::class.java)
-            intent.putExtra("dataList", arrayListOf(bean))
-            intent.putExtra("type", TYPE_CAMERA)
-            launcher.launch(intent)
-        }
     }
 
 
@@ -115,11 +40,11 @@ class GalleryPreviewActivity : BaseActivity() {
     private val selectList = arrayListOf<GalleryBean>()
 
     private val type by lazy {
-        intent.getIntExtra("type", TYPE_PREVIEW)
+        intent.getIntExtra("type", TYPE_SELECT)
     }
 
-    private val isPreview by lazy {
-        intent.getBooleanExtra("isPreview", false)
+    private val isDelete by lazy {
+        intent.getBooleanExtra("isDelete", false)
     }
 
     private val previewAdapter: PreviewPhotoAdapter by lazy {
@@ -153,12 +78,12 @@ class GalleryPreviewActivity : BaseActivity() {
                 tv_complete.visibility = View.VISIBLE
             }
 
-            TYPE_DELETE -> {
-                if (!isPreview) {
+            TYPE_PREVIEW -> {
+                if (isDelete) {
                     iv_delete.visibility = View.VISIBLE
                 }
             }
-            TYPE_PREVIEW -> {
+            TYPE_SELECT -> {
                 tv_complete.visibility = View.VISIBLE
                 cl_select.visibility = View.VISIBLE
                 rv_preview.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
@@ -197,7 +122,7 @@ class GalleryPreviewActivity : BaseActivity() {
                     hideStatusBar(false)
                     cl_title.visibility = View.GONE
 
-                    if (type == TYPE_PREVIEW) {
+                    if (type == TYPE_SELECT) {
                         cl_preview.visibility = View.GONE
                         cl_select.visibility = View.GONE
                     }
@@ -205,7 +130,7 @@ class GalleryPreviewActivity : BaseActivity() {
                 } else {
                     showStatusBar()
                     cl_title.visibility = View.VISIBLE
-                    if (type == TYPE_PREVIEW) {
+                    if (type == TYPE_SELECT) {
                         if (selectList.isNotEmpty()) {
                             cl_preview.visibility = View.VISIBLE
                         }
@@ -219,7 +144,7 @@ class GalleryPreviewActivity : BaseActivity() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onPageSelected(position: Int) {
                 index = position
-                if (type == TYPE_PREVIEW) {
+                if (type == TYPE_SELECT) {
                     previewAdapter.selectBean = dataList[index]
                     previewAdapter.notifyDataSetChanged()
                 }
@@ -305,14 +230,11 @@ class GalleryPreviewActivity : BaseActivity() {
         val intent = Intent()
         intent.putExtra("type", type)
         when (type) {
-            TYPE_CAMERA -> intent.putExtra("result", flag)
-            TYPE_DELETE -> intent.putParcelableArrayListExtra("deleteList", deleteList)
-            TYPE_PREVIEW -> {
-                intent.putParcelableArrayListExtra("resultList", selectList)
-                intent.putExtra("isFinish", flag)
-            }
+            TYPE_CAMERA -> IntentManager.previewResultCallBackCallBack?.onCamera(flag)
+            TYPE_PREVIEW -> IntentManager.previewResultCallBackCallBack?.onPreview(deleteList)
+            TYPE_SELECT -> IntentManager.previewResultCallBackCallBack?.onSelect(selectList, flag)
         }
-        setResult(Activity.RESULT_OK, intent)
+        IntentManager.previewResultCallBackCallBack = null
         finish()
     }
 
@@ -349,10 +271,10 @@ class GalleryPreviewActivity : BaseActivity() {
         }
     }
 
-    interface OnPreViewResult {
-        fun onDelete(deleteList: ArrayList<GalleryBean>)
+    interface OnPreviewResultCallBack {
+        fun onPreview(deleteList: ArrayList<GalleryBean>)
 
-        fun onPreview(resultList: ArrayList<GalleryBean>, isFinish: Boolean)
+        fun onSelect(resultList: ArrayList<GalleryBean>, isFinish: Boolean)
 
         fun onCamera(isComplete: Boolean)
     }

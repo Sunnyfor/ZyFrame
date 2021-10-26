@@ -3,19 +3,14 @@ package com.sunny.zy.activity
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
+import android.util.DisplayMetrics
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.GalleryPreviewActivity
-import com.sunny.zy.preview.VideoPlayActivity
 import com.sunny.zy.utils.CameraXUtil
-import com.sunny.zy.utils.ToastUtil
+import com.sunny.zy.utils.IntentManager
 import com.sunny.zy.widget.CaptureButton
 import kotlinx.android.synthetic.main.zy_act_camera.*
 
@@ -25,40 +20,13 @@ import kotlinx.android.synthetic.main.zy_act_camera.*
  * Mail zhangye98@foxmail.com
  * Date 2021/10/11 11:47
  */
-class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
+class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCallBack {
 
     private var isFirst = true
 
     private val cameraXUtil = CameraXUtil()
 
-    lateinit var galleryPreViewLauncher: ActivityResultLauncher<Intent>
-
-    lateinit var videoPlayLauncher: ActivityResultLauncher<Intent>
-
     private var galleryBean: GalleryBean? = null
-
-    companion object {
-
-        fun initLauncher(
-            activity: AppCompatActivity,
-            onResult: ((bean: GalleryBean) -> Unit)
-        ): ActivityResultLauncher<Intent> {
-            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    val bean = it.data?.getParcelableExtra<GalleryBean>("result")
-                    if (bean?.uri == null) {
-                        ToastUtil.show("uri发生错误！")
-                        return@registerForActivityResult
-                    }
-                    onResult.invoke(bean)
-                }
-            }
-        }
-
-        fun startActivity(activity: AppCompatActivity, launcher: ActivityResultLauncher<Intent>) {
-            launcher.launch(Intent(activity, CameraActivity::class.java))
-        }
-    }
 
     override fun initLayout() = R.layout.zy_act_camera
 
@@ -66,28 +34,23 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
 
         hideStatusBar(false)
 
-        galleryPreViewLauncher = GalleryPreviewActivity.initLauncher(this, this)
-
-        videoPlayLauncher = VideoPlayActivity.initLauncher(this) { resultCode, uri ->
-            hideLoading()
-            if (resultCode == Activity.RESULT_OK) {
-                setResult(Activity.RESULT_OK, Intent().putExtra("result", galleryBean))
-                finish()
-            } else {
-                uri?.let {
-                    cameraXUtil.deleteMove(it)
-                }
-            }
-        }
-
         requestPermissions(
             arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO
             )
         ) {
-            cameraXUtil.init(this, previewView.surfaceProvider)
-            cameraXUtil.startCamera()
+            previewView.post {
+                val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
+                val screenAspectRatio = CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
+                cameraXUtil.init(
+                    this,
+                    previewView.surfaceProvider,
+                    screenAspectRatio,
+                    previewView.display.rotation
+                )
+                cameraXUtil.startCamera()
+            }
         }
 
         btn_take.setCaptureListener(object : CaptureButton.CaptureListener {
@@ -97,11 +60,7 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
                 showLoading()
                 cameraXUtil.takePhoto { bean ->
                     galleryBean = bean
-                    GalleryPreviewActivity.startActivity(
-                        this@CameraActivity,
-                        galleryPreViewLauncher,
-                        bean
-                    )
+                    IntentManager.startGalleryPreviewActivity(bean, this@CameraActivity)
                 }
             }
 
@@ -112,11 +71,18 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
             override fun recordStart() {
                 cameraXUtil.takeVideo { bean ->
                     galleryBean = bean
-                    VideoPlayActivity.intent(
-                        this@CameraActivity,
-                        videoPlayLauncher,
-                        bean.uri ?: return@takeVideo
-                    )
+
+                    IntentManager.startVideoPlayActivity(bean.uri ?: return@takeVideo) {
+                        hideLoading()
+                        if (it) {
+                            IntentManager.cameraResultCallBack?.invoke(bean)
+                            finish()
+                        } else {
+                            cameraXUtil.deleteMove(bean.uri ?: return@startVideoPlayActivity)
+                        }
+
+                    }
+
                 }
                 startAlphaAnimation()
             }
@@ -159,6 +125,7 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
 
     override fun onClose() {
         cameraXUtil.onDestroy()
+        IntentManager.cameraResultCallBack = null
     }
 
 
@@ -179,14 +146,17 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreViewResult {
         animatorTxtTip.start()
     }
 
-    override fun onDelete(deleteList: ArrayList<GalleryBean>) {}
 
-    override fun onPreview(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {}
+    override fun onPreview(deleteList: ArrayList<GalleryBean>) {}
+
+    override fun onSelect(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {}
 
     override fun onCamera(isComplete: Boolean) {
         hideLoading()
         if (isComplete) {
-            setResult(Activity.RESULT_OK, Intent().putExtra("result", galleryBean))
+            galleryBean?.let {
+                IntentManager.cameraResultCallBack?.invoke(it)
+            }
             finish()
         } else {
             cameraXUtil.deletePicture(galleryBean?.uri ?: return)

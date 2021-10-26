@@ -23,6 +23,9 @@ import com.sunny.zy.http.ZyConfig
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Desc
@@ -39,25 +42,39 @@ class CameraXUtil {
     }
 
     private val imageCapture by lazy {
-        ImageCapture.Builder().build()
+        ImageCapture.Builder()
+            .setTargetAspectRatio(screenAspectRatio)
+            .setTargetRotation(rotation)
+            .build()
     }
 
     private val videoCapture by lazy {
-        VideoCapture.Builder().build()
+        VideoCapture.Builder()
+            .setTargetAspectRatio(screenAspectRatio)
+            .setTargetRotation(rotation)
+            .build()
     }
 
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
     private lateinit var lifecycleOwner: LifecycleOwner
 
+    private var screenAspectRatio = 0
+
+    private var rotation = 0
+
     private lateinit var surfaceProvider: Preview.SurfaceProvider
 
     fun init(
         lifecycleOwner: LifecycleOwner,
-        surfaceProvider: Preview.SurfaceProvider
+        surfaceProvider: Preview.SurfaceProvider,
+        screenAspectRatio: Int,
+        rotation: Int
     ) {
         this.lifecycleOwner = lifecycleOwner
         this.surfaceProvider = surfaceProvider
+        this.screenAspectRatio = screenAspectRatio
+        this.rotation = rotation
     }
 
 
@@ -93,11 +110,11 @@ class CameraXUtil {
                 }
                 return@Runnable
             }
+
             val preview = Preview.Builder()
+                .setTargetAspectRatio(screenAspectRatio)
+                .setTargetRotation(rotation)
                 .build()
-                .also {
-                    it.setSurfaceProvider(surfaceProvider)
-                }
 
             try {
                 // Unbind use cases before rebinding
@@ -120,6 +137,7 @@ class CameraXUtil {
                         videoCapture
                     )
                 }
+                preview.setSurfaceProvider(surfaceProvider)
             } catch (exc: Exception) {
                 exc.printStackTrace()
             }
@@ -266,7 +284,6 @@ class CameraXUtil {
         cameraExecutor.shutdown()
     }
 
-
     fun deleteMove(uri: Uri) {
         ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.let {
             deleteFile(it, uri)
@@ -286,6 +303,10 @@ class CameraXUtil {
 
 
     companion object {
+
+        const val RATIO_4_3_VALUE = 4.0 / 3.0
+        const val RATIO_16_9_VALUE = 16.0 / 9.0
+
         fun createQRCode(content: String, qrcode_size: Int = 300): Bitmap? {
             val hashMap = HashMap<EncodeHintType, Any>()
             // 设置二维码字符编码
@@ -322,5 +343,14 @@ class CameraXUtil {
             }
             return null
         }
+
+        fun aspectRatio(width: Int, height: Int): Int {
+            val previewRatio = max(width, height).toDouble() / min(width, height)
+            if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
+                return AspectRatio.RATIO_4_3
+            }
+            return AspectRatio.RATIO_16_9
+        }
     }
+
 }

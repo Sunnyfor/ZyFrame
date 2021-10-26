@@ -1,16 +1,15 @@
 package com.sunny.zy.preview
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.widget.MediaController
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
+import com.sunny.zy.utils.IntentManager
 import com.sunny.zy.utils.ToastUtil
 import kotlinx.android.synthetic.main.zy_act_preview_video.*
 
@@ -24,15 +23,6 @@ class VideoPlayActivity : BaseActivity() {
 
     companion object {
 
-        fun initLauncher(
-            activity: AppCompatActivity,
-            resultCallback: ((resultCode: Int, uri: Uri?) -> Unit)? = null
-        ): ActivityResultLauncher<Intent> {
-            return activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                resultCallback?.invoke(it.resultCode, it.data?.getParcelableExtra("uri"))
-            }
-        }
-
         fun intent(
             context: AppCompatActivity,
             launcher: ActivityResultLauncher<Intent>? = null,
@@ -41,7 +31,7 @@ class VideoPlayActivity : BaseActivity() {
             val intent = Intent(context, VideoPlayActivity::class.java)
             intent.putExtra("uri", uri)
             if (launcher != null) {
-                intent.putExtra("isComplete", true)
+                intent.putExtra("isShowComplete", true)
                 launcher.launch(intent)
             } else {
                 context.startActivity(intent)
@@ -64,20 +54,22 @@ class VideoPlayActivity : BaseActivity() {
         intent.getStringExtra("url")
     }
 
-    private val isComplete by lazy {
-        intent.getBooleanExtra("isComplete", false)
+    private val isShowComplete by lazy {
+        intent.getBooleanExtra("isShowComplete", false)
     }
 
     private val mediaController by lazy {
         MediaController(this)
     }
 
+    private var isComplete = false
+
     override fun initLayout() = R.layout.zy_act_preview_video
 
     override fun initView() {
         setStatusBarColor(R.color.preview_bg)
 
-        if (isComplete) {
+        if (isShowComplete) {
             tv_complete.visibility = View.VISIBLE
         }
 
@@ -111,10 +103,11 @@ class VideoPlayActivity : BaseActivity() {
     override fun onClickEvent(view: View) {
         when (view.id) {
             zy_ib_back.id -> {
+                isComplete = false
                 finish()
             }
             tv_complete.id -> {
-                setResult(Activity.RESULT_OK)
+                isComplete = true
                 finish()
             }
         }
@@ -123,5 +116,7 @@ class VideoPlayActivity : BaseActivity() {
     override fun onClose() {
         videoView.setMediaController(null)
         videoView.stopPlayback()
+        IntentManager.videoPlayResultCallBack?.invoke(isComplete)
+        IntentManager.videoPlayResultCallBack = null
     }
 }

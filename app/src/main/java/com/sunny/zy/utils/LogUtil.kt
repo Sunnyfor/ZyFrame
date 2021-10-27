@@ -1,9 +1,6 @@
 package com.sunny.zy.utils
 
 import android.util.Log
-import com.orhanobut.logger.AndroidLogAdapter
-import com.orhanobut.logger.Logger
-import com.orhanobut.logger.PrettyFormatStrategy
 
 /**
  * 封装使用Logger日志代码
@@ -37,11 +34,13 @@ object LogUtil {
     var HORIZONTAL_LINE = "─"
 
 
+    @Synchronized
     fun v(message: String) {
         generateBorder(VERBOSE, TOP_BORDER)
         generateLine(VERBOSE, message)
     }
 
+    @Synchronized
     fun v(title: String, message: String) {
         generateTitle(VERBOSE, title)
         generateBorder(VERBOSE, MIDDLE_LINE)
@@ -49,11 +48,13 @@ object LogUtil {
     }
 
 
+    @Synchronized
     fun d(message: String) {
         generateBorder(DEBUG, TOP_BORDER)
         generateLine(DEBUG, message)
     }
 
+    @Synchronized
     fun d(title: String, message: String) {
         generateTitle(DEBUG, title)
         generateBorder(DEBUG, MIDDLE_LINE)
@@ -61,33 +62,39 @@ object LogUtil {
     }
 
 
+    @Synchronized
     fun i(title: String, message: String) {
         generateTitle(INFO, title)
         generateBorder(INFO, MIDDLE_LINE)
         generateLine(INFO, message)
     }
 
+    @Synchronized
     fun i(message: String) {
         generateBorder(INFO, TOP_BORDER)
         generateLine(INFO, message)
     }
 
+    @Synchronized
     fun w(message: String) {
         generateBorder(WARN, TOP_BORDER)
         generateLine(WARN, message)
     }
 
+    @Synchronized
     fun w(title: String, message: String) {
         generateTitle(WARN, title)
         generateBorder(WARN, MIDDLE_LINE)
         generateLine(WARN, message)
     }
 
+    @Synchronized
     fun e(message: String) {
         generateBorder(ERROR, TOP_BORDER)
         generateLine(ERROR, message)
     }
 
+    @Synchronized
     fun e(title: String, message: String) {
         generateTitle(ERROR, title)
         generateBorder(ERROR, MIDDLE_LINE)
@@ -131,12 +138,15 @@ object LogUtil {
                 println(logType, msgSb.toString())
                 msgSb.clear()
                 msgSb.append(VERTICAL_LINE)
-            } else {
-                if (index == msgArray.size - 1) {
-                    println(logType, msgSb.toString())
-                    generateBorder(logType, BOTTOM_BORDER)
-                }
             }
+
+            if (index == msgArray.size - 1) {
+                if (msgSb.isNotEmpty()){
+                    println(logType, msgSb.toString())
+                }
+                generateBorder(logType, BOTTOM_BORDER)
+            }
+
         }
     }
 

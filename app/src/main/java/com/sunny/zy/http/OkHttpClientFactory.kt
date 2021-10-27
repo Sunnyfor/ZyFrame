@@ -3,6 +3,7 @@ package com.sunny.zy.http
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.interceptor.ZyHttpLoggingInterceptor
 import com.sunny.zy.http.interceptor.ZyNetworkInterceptor
+import com.sunny.zy.utils.LogUtil
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
@@ -34,10 +35,11 @@ class OkHttpClientFactory {
     }
 
     /**
-     * 非下载请求复用Client对象
+     * 创建新的Client对象
      */
-    fun getOkHttpClient() = getBuild().build()
-
+    fun getOkHttpClient(): OkHttpClient {
+        return getBuild().build()
+    }
 
     /**
      * 创建附带下载进度的okHttpClient

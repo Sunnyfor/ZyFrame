@@ -137,13 +137,12 @@ class GalleryModel {
 
 
     fun getVideoFolder(): ArrayList<GalleryFolderBean> {
-        MediaStore.MediaColumns.DATA
         val projectionPhotos = arrayOf(
             MediaStore.Video.Media._ID,
             MediaStore.Video.Media.BUCKET_ID,
             MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Video.Media.DURATION,
-            MediaStore.Images.Media.SIZE,
+            MediaStore.Video.Media.SIZE,
             MediaStore.Video.Media.DATE_TAKEN
         )
 

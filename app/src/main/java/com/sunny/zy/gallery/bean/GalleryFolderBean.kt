@@ -8,8 +8,8 @@ package com.sunny.zy.gallery.bean
  */
 data class GalleryFolderBean(
     var id: Int,
-    var name: String,
+    var name: String?,
     var cover: GalleryBean?,
-    var dateToken:Long,
+    var dateToken: Long,
     var list: ArrayList<GalleryBean> = arrayListOf()
 )

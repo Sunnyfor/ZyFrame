@@ -1,5 +1,7 @@
 package com.sunny.zy.gallery.adapter
 
+import android.content.ContentUris
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,7 @@ import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.bean.GalleryFolderBean
 import com.sunny.zy.utils.GlideApp
+import com.sunny.zy.utils.LogUtil
 import kotlinx.android.synthetic.main.zy_item_gallery_folder.view.*
 
 /**
@@ -26,7 +29,7 @@ class GalleryFolderAdapter : BaseRecycleAdapter<GalleryFolderBean>(arrayListOf()
             .load(data.cover?.uri ?: "")
             .into(holder.itemView.iv_gallery_photo)
 
-        holder.itemView.tv_gallery_name.text = data.name
+        holder.itemView.tv_gallery_name.text = data.name ?: "未命名"
         holder.itemView.tv_gallery_count.text = ("(${data.list.size})")
 
         if (selectIndex == position) {

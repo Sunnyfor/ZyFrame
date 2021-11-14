@@ -1,7 +1,6 @@
 package com.sunny.zy.bluetooth
 
 import android.Manifest
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
@@ -13,7 +12,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.ParcelUuid
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.ZyFrameStore
@@ -69,7 +67,7 @@ object ZyBluetoothScanner {
             ToastUtil.show("蓝牙正在扫描中！")
             return
         }
-        checkBlueTooth(activity) {
+        checkBlueTooth() {
             startLeScan(activity, filters, settings)
         }
     }
@@ -177,16 +175,9 @@ object ZyBluetoothScanner {
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADMIN)
-    private fun checkBlueTooth(activity: BaseActivity, callback: () -> Unit) {
+    private fun checkBlueTooth(callback: () -> Unit) {
         if (bluetoothAdapter?.isEnabled == false) {
-            activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    callback.invoke()
-                } else {
-                    ToastUtil.show("请打开蓝牙后扫描！")
-                }
-            }.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-            return
+            ToastUtil.show("请打开蓝牙后扫描！")
         } else {
             callback.invoke()
         }

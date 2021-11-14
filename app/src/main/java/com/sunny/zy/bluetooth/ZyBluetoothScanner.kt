@@ -67,7 +67,7 @@ object ZyBluetoothScanner {
             ToastUtil.show("蓝牙正在扫描中！")
             return
         }
-        checkBlueTooth() {
+        checkBlueTooth(activity) {
             startLeScan(activity, filters, settings)
         }
     }
@@ -175,8 +175,9 @@ object ZyBluetoothScanner {
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADMIN)
-    private fun checkBlueTooth(callback: () -> Unit) {
+    private fun checkBlueTooth(activity: BaseActivity, callback: () -> Unit) {
         if (bluetoothAdapter?.isEnabled == false) {
+            activity.hideLoading()
             ToastUtil.show("请打开蓝牙后扫描！")
         } else {
             callback.invoke()

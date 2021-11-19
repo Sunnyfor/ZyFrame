@@ -2,7 +2,6 @@ package com.sunny.zy.gallery.model
 
 import android.content.ContentUris
 import android.provider.MediaStore
-import androidx.documentfile.provider.DocumentFile
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.gallery.bean.GalleryBean
@@ -68,6 +67,7 @@ class GalleryModel {
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.MIME_TYPE,
             MediaStore.Images.Media.SIZE,
             MediaStore.Images.Media.DATE_TAKEN
         )
@@ -97,6 +97,7 @@ class GalleryModel {
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
             val bucketIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID)
             val imageIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+            val typeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
             val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
 
@@ -111,8 +112,7 @@ class GalleryModel {
                 )
                 if (size > 0) {
                     val photoInfo = GalleryBean(imageId, uri)
-                    photoInfo.type =
-                        DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
+                    photoInfo.type = cursor.getString(typeColumn)
                     photoInfo.size = size
                     if (allPhotoFolderInfo.cover == null) {
                         allPhotoFolderInfo.cover = photoInfo
@@ -142,6 +142,7 @@ class GalleryModel {
             MediaStore.Video.Media.BUCKET_ID,
             MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Video.Media.DURATION,
+            MediaStore.Images.Media.MIME_TYPE,
             MediaStore.Video.Media.SIZE,
             MediaStore.Video.Media.DATE_TAKEN
         )
@@ -172,6 +173,7 @@ class GalleryModel {
             val bucketIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_ID)
             val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
             val videoIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+            val typeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
             val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
 
@@ -180,6 +182,7 @@ class GalleryModel {
                 val bucketName = cursor.getString(bucketNameColumn)
                 val videoId = cursor.getLong(videoIdColumn)
                 val duration = cursor.getInt(durationColumn)
+
                 val size = cursor.getLong(sizeColumn)
                 val date = cursor.getLong(dateColumn)
                 val uri = ContentUris.withAppendedId(
@@ -188,8 +191,7 @@ class GalleryModel {
                 if (size > 0) {
                     val videoInfo = GalleryBean(videoId, uri)
                     videoInfo.duration = duration
-                    videoInfo.type =
-                        DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
+                    videoInfo.type = cursor.getString(typeColumn)
                     videoInfo.size = size
                     if (allVideoFolderInfo.cover == null) {
                         allVideoFolderInfo.cover = videoInfo

@@ -99,6 +99,14 @@ object ZyFrameStore {
         return activityStack.size
     }
 
+    fun getLastBaseActivity(): BaseActivity {
+        return getActivity(getActivitySize<BaseActivity>() - 1)
+    }
+
+    fun getFastBaseActivity(): BaseActivity {
+        return getActivity(0)
+    }
+
     /**
      * 关闭指定TaskTag的Activity
      */

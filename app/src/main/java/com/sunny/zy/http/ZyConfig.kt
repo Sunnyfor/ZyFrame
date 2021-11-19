@@ -44,7 +44,7 @@ object ZyConfig {
     /**
      * 数据bean成功的code值
      */
-    val baseModelSuccessCodes = arrayListOf("0","200")
+    val baseModelSuccessCodes = arrayListOf("0", "200")
 
     /**
      * 后缀
@@ -81,7 +81,11 @@ object ZyConfig {
                 PORT = group.replace(":", "")
                 mValueSb.delete(mValueSb.indexOf(group), mValueSb.length)
             } else {
-                PORT = "80"
+                PORT = when (HOST_PREFIX) {
+                    "ftp" -> "21"
+                    "https" -> "443"
+                    else -> "80"
+                }
             }
             if (mValueSb.contains("/")) {
                 val spaceSb = StringBuilder()

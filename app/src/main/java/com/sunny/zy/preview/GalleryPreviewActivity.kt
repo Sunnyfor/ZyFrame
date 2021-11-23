@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sunny.zy.R
+import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.adapter.PhotoPreviewPageAdapter
@@ -68,8 +69,8 @@ class GalleryPreviewActivity : BaseActivity() {
 
         index = intent.getIntExtra("index", 0)
         maxSize = intent.getIntExtra("maxSize", 0)
-        dataList.addAll(intent.getParcelableArrayListExtra("dataList") ?: arrayListOf())
-        selectList.addAll(intent.getParcelableArrayListExtra("selectList") ?: arrayListOf())
+        dataList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("dataList",true)?: arrayListOf())
+        selectList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("selectList",true)?: arrayListOf())
 
         updateTitle()
 

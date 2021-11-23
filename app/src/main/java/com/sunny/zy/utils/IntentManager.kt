@@ -56,11 +56,11 @@ object IntentManager {
     ) {
         previewResultCallBackCallBack = resultCallback
         val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
-        intent.putExtra("dataList", dataList)
+        ZyFrameStore.setData("dataList", dataList)
         intent.putExtra("index", index)
         intent.putExtra("maxSize", maxSize)
         intent.putExtra("type", GalleryPreviewActivity.TYPE_SELECT)
-        intent.putExtra("selectList", selectList)
+        ZyFrameStore.setData("selectList", selectList)
         getActivity().startActivity(intent)
     }
 
@@ -73,7 +73,7 @@ object IntentManager {
     ) {
         previewResultCallBackCallBack = resultCallback
         val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
-        intent.putExtra("dataList", dataList)
+        ZyFrameStore.setData("dataList", dataList)
         intent.putExtra("index", index)
         intent.putExtra("type", GalleryPreviewActivity.TYPE_PREVIEW)
         intent.putExtra("isDelete", isDelete)
@@ -87,7 +87,7 @@ object IntentManager {
     ) {
         previewResultCallBackCallBack = resultCallback
         val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
-        intent.putExtra("dataList", arrayListOf(bean))
+        ZyFrameStore.setData("dataList", arrayListOf(bean))
         intent.putExtra("type", GalleryPreviewActivity.TYPE_CAMERA)
         getActivity().startActivity(intent)
     }

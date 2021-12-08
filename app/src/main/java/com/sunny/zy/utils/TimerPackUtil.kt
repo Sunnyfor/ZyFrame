@@ -1,10 +1,10 @@
 package com.sunny.zy.utils
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.TextView
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -18,26 +18,36 @@ object TimerPackUtil {
 
     private val calendar = Calendar.getInstance()
 
-    private fun showDatePack(context: Context, onTimePackResult: OnTimePackResult, isResult: Boolean) {
+    private fun showDatePack(
+        context: Context,
+        onTimePackResult: OnTimePackResult,
+        isResult: Boolean
+    ) {
         timeSb.clear()
-        DatePickerDialog(context, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            timeSb.append(year).append("-")
-            if (month + 1 < 10) {
-                timeSb.append("0")
-            }
-            timeSb.append(month + 1).append("-")
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                timeSb.append(year).append("-")
+                if (month + 1 < 10) {
+                    timeSb.append("0")
+                }
+                timeSb.append(month + 1).append("-")
 
-            if (dayOfMonth < 10) {
-                timeSb.append("0")
-            }
-            timeSb.append(dayOfMonth)
-            if (!isResult) {
-                timeSb.append(" ")
-                showTimePack(context, onTimePackResult, false)
-            } else {
-                onTimePackResult.onSelect(timeSb.toString())
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+                if (dayOfMonth < 10) {
+                    timeSb.append("0")
+                }
+                timeSb.append(dayOfMonth)
+                if (!isResult) {
+                    timeSb.append(" ")
+                    showTimePack(context, onTimePackResult, false)
+                } else {
+                    onTimePackResult.onSelect(timeSb.toString())
+                }
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     fun showDatePack(context: Context, onTimePackResult: OnTimePackResult) {
@@ -45,15 +55,26 @@ object TimerPackUtil {
     }
 
 
-    private fun showTimePack(context: Context, onTimePackResult: OnTimePackResult, isClear: Boolean) {
+    private fun showTimePack(
+        context: Context,
+        onTimePackResult: OnTimePackResult,
+        isClear: Boolean
+    ) {
         if (isClear) {
             timeSb.clear()
         }
-        TimePickerDialog(context, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-            timeSb.append(if (hourOfDay < 10) "0$hourOfDay" else hourOfDay).append(":")
+        TimePickerDialog(
+            context,
+            AlertDialog.THEME_HOLO_LIGHT,
+            { _, hourOfDay, minute ->
+                timeSb.append(if (hourOfDay < 10) "0$hourOfDay" else hourOfDay).append(":")
                     .append(if (minute < 10) "0$minute" else minute).append(":").append("00")
-            onTimePackResult.onSelect(timeSb.toString())
-        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+                onTimePackResult.onSelect(timeSb.toString())
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        ).show()
     }
 
     fun showTimePack(context: Context, onTimePackResult: OnTimePackResult) {

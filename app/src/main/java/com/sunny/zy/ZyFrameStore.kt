@@ -145,7 +145,6 @@ object ZyFrameStore {
             it.finish()
         }
         activityStack.clear()
-        exitProcess(0)
     }
 
     /**

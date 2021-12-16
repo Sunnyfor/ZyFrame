@@ -92,15 +92,15 @@ object ZyFrameStore {
     /**
      * 获取Activity的实例数量
      */
-    fun <T : BaseActivity> getActivitySize(clazz: Class<T>? = null): Int {
-        if (clazz != null) {
-            activityStack.filter { it.javaClass == clazz }.size
+    fun getActivitySize(clazz: Class<*> = BaseActivity::class.java): Int {
+        if (clazz != BaseActivity::class.java) {
+           return activityStack.filter { it.javaClass == clazz }.size
         }
         return activityStack.size
     }
 
     fun getLastBaseActivity(): BaseActivity {
-        return getActivity(getActivitySize<BaseActivity>() - 1)
+        return getActivity(getActivitySize() - 1)
     }
 
     fun getFastBaseActivity(): BaseActivity {

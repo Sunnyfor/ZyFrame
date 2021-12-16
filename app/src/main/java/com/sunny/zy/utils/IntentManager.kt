@@ -115,5 +115,5 @@ object IntentManager {
     }
 
 
-    fun getActivity() = ZyFrameStore.getActivity(ZyFrameStore.getActivitySize<BaseActivity>() - 1)
+    fun getActivity() = ZyFrameStore.getActivity(ZyFrameStore.getActivitySize() - 1)
 }

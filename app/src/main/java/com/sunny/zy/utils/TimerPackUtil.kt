@@ -68,7 +68,7 @@ object TimerPackUtil {
             AlertDialog.THEME_HOLO_LIGHT,
             { _, hourOfDay, minute ->
                 timeSb.append(if (hourOfDay < 10) "0$hourOfDay" else hourOfDay).append(":")
-                    .append(if (minute < 10) "0$minute" else minute).append(":").append("00")
+                    .append(if (minute < 10) "0$minute" else minute)
                 onTimePackResult.onSelect(timeSb.toString())
             },
             calendar.get(Calendar.HOUR_OF_DAY),

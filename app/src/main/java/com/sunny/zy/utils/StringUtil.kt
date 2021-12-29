@@ -148,8 +148,15 @@ object StringUtil {
     /**
      * 根据格式获取当前时间
      */
-    fun getCurrentTime(pattern: String? = "yyyy-MM-dd HH:mm:ss"): String {
+    fun getCurrentTime(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
+        return formatTime(pattern, Date())
+    }
+
+    /**
+     * 格式化时间
+     */
+    fun formatTime(pattern: String, date: Date): String {
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
-        return simpleDateFormat.format(Date())
+        return simpleDateFormat.format(date)
     }
 }

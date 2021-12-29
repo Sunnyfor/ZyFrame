@@ -83,4 +83,6 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     implementation 'androidx.documentfile:documentfile:1.0.1'
+
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 }

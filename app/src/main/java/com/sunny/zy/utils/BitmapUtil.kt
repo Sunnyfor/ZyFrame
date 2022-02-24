@@ -1,7 +1,9 @@
 package com.sunny.zy.utils
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import com.sunny.zy.ZyFrameStore
 
 /**
@@ -14,15 +16,16 @@ class BitmapUtil {
     private var resId = 0
     private var originalBitmap: Bitmap? = null
 
-    fun getCroppedBitmap(res: Int, x: Int, y: Int, widget: Int, height: Int): Bitmap? {
-        if (res != resId || originalBitmap == null) {
-            destroy()
-            resId = res
-            originalBitmap = BitmapFactory.decodeResource(ZyFrameStore.getContext().resources, res)
-        }
+    fun initBitmap(@DrawableRes res: Int, width: Int, height: Int) {
+        destroy()
+        resId = res
+        val drawable = AppCompatResources.getDrawable(ZyFrameStore.getContext(), res)
+        originalBitmap = drawable?.toBitmap(width, height)
+    }
 
-        var bitmapWidget = widget
-        if (widget == 0) {
+    fun getCroppedBitmap(x: Int, y: Int, width: Int, height: Int): Bitmap? {
+        var bitmapWidget = width
+        if (width == 0) {
             bitmapWidget = originalBitmap?.width ?: 0
         }
         var bitmapHeight = height

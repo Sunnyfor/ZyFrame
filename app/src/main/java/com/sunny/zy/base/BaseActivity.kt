@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.FitWindowsLinearLayout
@@ -280,33 +282,63 @@ abstract class BaseActivity : AppCompatActivity(),
         }
     }
 
-    override fun setStatusBarColor(color: Int) {
+    override fun setStatusBarColor(@ColorRes color: Int) {
         mStatusBarColor = color
         statusBar.setBackgroundResource(color)
     }
 
-    override fun setStatusBarDrawable(drawable: Int, relevantView: View?) {
-
+    override fun setStatusBarDrawable(@DrawableRes drawable: Int, relevantView: View?) {
         mStatusBarColor = drawable
-
+        val width = DensityUtil.screenWidth(this)
         val statusBarHeight = DensityUtil.getStatusBarHeight(this)
-        val statusBarBitmap =
-            bitmapUtil.getCroppedBitmap(drawable, 0, 0, 0, statusBarHeight)
-        statusBar.background = (BitmapDrawable(resources, statusBarBitmap))
-
         var toolbarHeight = 0
-
         if (toolbar != null) {
             toolbarHeight = DensityUtil.getToolBarHeight(this)
-            val toolBarBitmap =
-                bitmapUtil.getCroppedBitmap(drawable, 0, statusBarHeight, 0, toolbarHeight)
-            toolbarUtil.toolbar?.background = (BitmapDrawable(resources, toolBarBitmap))
         }
 
-        relevantView?.let {
-            val relevantViewBitmap =
-                bitmapUtil.getCroppedBitmap(drawable, 0, statusBarHeight + toolbarHeight, 0, 0)
-            it.background = (BitmapDrawable(resources, relevantViewBitmap))
+        if (relevantView == null) {
+            bitmapUtil.initBitmap(drawable, width, statusBarHeight + toolbarHeight)
+            setStatusBarDrawable(width, statusBarHeight)
+            setToolBarDrawable(width, statusBarHeight, toolbarHeight)
+        } else {
+            relevantView.post {
+
+                val viewHeight = relevantView.height
+                if (viewHeight < 1) {
+                    throw IllegalArgumentException("relevantView的高度不能小于1")
+                }
+
+                bitmapUtil.initBitmap(
+                    drawable, width, statusBarHeight + toolbarHeight + viewHeight
+                )
+                setStatusBarDrawable(width, statusBarHeight)
+                setToolBarDrawable(width, statusBarHeight, toolbarHeight)
+                val relevantViewBitmap =
+                    bitmapUtil.getCroppedBitmap(
+                        0, statusBarHeight + toolbarHeight,
+                        width,
+                        viewHeight
+                    )
+                relevantView.background = (BitmapDrawable(resources, relevantViewBitmap))
+            }
+        }
+    }
+
+    private fun setStatusBarDrawable(width: Int, statusBarHeight: Int) {
+        val statusBarBitmap = bitmapUtil.getCroppedBitmap(0, 0, width, statusBarHeight)
+        statusBar.background = (BitmapDrawable(resources, statusBarBitmap))
+    }
+
+    private fun setToolBarDrawable(width: Int, statusBarHeight: Int, toolbarHeight: Int) {
+        if (toolbar != null) {
+            val toolBarBitmap =
+                bitmapUtil.getCroppedBitmap(
+                    0,
+                    statusBarHeight,
+                    width,
+                    toolbarHeight
+                )
+            toolbarUtil.toolbar?.background = (BitmapDrawable(resources, toolBarBitmap))
         }
     }
 

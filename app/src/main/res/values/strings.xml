@@ -10,6 +10,10 @@
     <string name="connectError">无法连接到服务器！</string>
     <string name="retry">重试</string>
 
+    <!--Dialog-->
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+
     <!--设置-->
     <string name="complete">完成</string>
     <string name="clearComplete">清理完成!</string>

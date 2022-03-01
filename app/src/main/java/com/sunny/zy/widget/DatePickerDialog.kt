@@ -3,8 +3,8 @@ package com.sunny.zy.widget
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import com.bigkoo.pickerview.adapter.ArrayWheelAdapter
 import com.sunny.zy.R
+import com.sunny.zy.adapter.ArrayWheelAdapter
 import com.sunny.zy.base.widget.dialog.BaseDialog
 import kotlinx.android.synthetic.main.dialog_date_select.*
 import java.text.SimpleDateFormat

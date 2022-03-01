@@ -2,8 +2,8 @@ package com.sunny.zy.widget
 
 import android.content.Context
 import android.os.Bundle
-import com.bigkoo.pickerview.adapter.ArrayWheelAdapter
 import com.sunny.zy.R
+import com.sunny.zy.adapter.ArrayWheelAdapter
 import com.sunny.zy.base.widget.dialog.BaseDialog
 import com.sunny.zy.utils.StringUtil
 import kotlinx.android.synthetic.main.dialog_time_select.*

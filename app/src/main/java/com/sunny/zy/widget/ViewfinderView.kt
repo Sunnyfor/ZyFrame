@@ -10,8 +10,8 @@ import com.sunny.zy.R
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2021/1/5 16:42
  */
 class ViewfinderView : View {

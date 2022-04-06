@@ -6,7 +6,7 @@ import com.contrarywind.adapter.WheelAdapter
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2022/3/1 18:49
  */
 class ArrayWheelAdapter(var list: List<Any>) : WheelAdapter<Any> {

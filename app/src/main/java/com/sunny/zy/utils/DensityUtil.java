@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
 
 /**
  * Desc 屏幕密度工具类
- * Author JoannChen
- * Mail yongzuo.chen@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020年2月13日 11:36:55
  */
 public class DensityUtil {

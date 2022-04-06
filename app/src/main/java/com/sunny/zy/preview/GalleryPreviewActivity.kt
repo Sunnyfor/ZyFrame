@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.zy_act_preview_photo.*
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/26 19:11
  */
 class GalleryPreviewActivity : BaseActivity() {

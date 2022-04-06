@@ -4,7 +4,8 @@ import com.sunny.zy.http.ZyConfig
 
 /**
  * Desc 公共实体类
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2017/9/14
  */
 open class BaseModel<T> {

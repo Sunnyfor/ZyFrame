@@ -37,7 +37,7 @@ import java.io.File
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/22 17:12
  */
 class GallerySelectActivity : BaseActivity(), GalleryContract.IView,

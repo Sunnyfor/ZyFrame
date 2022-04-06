@@ -9,8 +9,8 @@ import javax.net.ssl.X509TrustManager
 
 /**
  * Desc 信任所有证书不进行校验
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2021/1/26 15:19
  */
 object ZySSLSocketClient {

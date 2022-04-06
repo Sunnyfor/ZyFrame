@@ -9,8 +9,8 @@ import java.io.InputStream
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/9/29 10:24
  */
 class OkHttpUrlLoader(private val client: Call.Factory) : ModelLoader<GlideUrl, InputStream> {

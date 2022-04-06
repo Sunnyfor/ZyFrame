@@ -18,8 +18,8 @@ import kotlinx.android.synthetic.main.dialog_host_set.view.*
 
 /**
  * Desc 域名设置对话框
- * Author JoannChen
- * Mail yongzuo.chen@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020年3月7日 21:32:59
  */
 class HostSetDialog(context: Context, var defaultHostList: ArrayList<String>) : AlertDialog(context) {

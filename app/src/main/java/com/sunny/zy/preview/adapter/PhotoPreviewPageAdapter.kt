@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.zy_layout_videoview.view.*
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/27 15:43
  */
 class PhotoPreviewPageAdapter(data: ArrayList<GalleryBean>) :

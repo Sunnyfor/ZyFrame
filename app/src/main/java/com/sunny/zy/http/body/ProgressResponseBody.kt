@@ -6,7 +6,8 @@ import okio.*
 
 /**
  * Desc 下载进度
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020.08.24
  */
 class ProgressResponseBody(

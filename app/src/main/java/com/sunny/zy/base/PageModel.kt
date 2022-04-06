@@ -2,7 +2,8 @@ package com.sunny.zy.base
 
 /**
  * Desc 分页公共实体类
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/6/2 16:23
  */
 class PageModel<T> : BaseModel<PageModel.Page<T>>() {

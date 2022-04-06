@@ -16,8 +16,10 @@ import java.util.regex.Pattern
 import javax.net.ssl.HostnameVerifier
 
 /**
- * 框架全局配置清单
- * Created by Zy on 2017/10/12.
+ * Desc 框架全局配置清单
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2017/10/12.
  */
 object ZyConfig {
     /**

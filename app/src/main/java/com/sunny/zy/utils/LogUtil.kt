@@ -3,10 +3,11 @@ package com.sunny.zy.utils
 import android.util.Log
 
 /**
- * 封装使用Logger日志代码
- * Created by Zy on 2021年6月30日
+ * Desc 封装使用Logger日志代码
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2021年6月30日
  */
-
 object LogUtil {
 
     const val VERBOSE = 0

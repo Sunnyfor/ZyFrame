@@ -20,7 +20,7 @@ import com.sunny.zy.utils.LogUtil
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/10/11 15:44
  */
 @Suppress("unused")

@@ -15,7 +15,8 @@ import java.io.File
 
 /**
  * Desc 生成网络请求
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/4/29 12:22
  */
 class ZyRequest {

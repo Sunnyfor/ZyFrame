@@ -5,7 +5,8 @@ import okhttp3.Response
 
 /**
  * Desc Header拦截器
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020.08.24
  */
 class HeaderInterceptor : Interceptor {

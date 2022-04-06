@@ -27,7 +27,8 @@ import com.sunny.zy.utils.*
 
 /**
  * Desc Activity基类
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2018/8/2
  */
 

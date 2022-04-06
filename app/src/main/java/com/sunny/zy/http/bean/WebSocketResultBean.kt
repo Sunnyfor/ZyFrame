@@ -6,7 +6,7 @@ import okhttp3.WebSocketListener
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/4/13 11:28
  */
 abstract class WebSocketResultBean : WebSocketListener() {

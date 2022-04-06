@@ -15,7 +15,7 @@ import java.util.regex.Pattern
 /**
  * Desc 定制化日期选择组件
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2022/2/25 17:36
  */
 class DatePickerDialog(context: Context, var resultCallback: (date: String) -> Unit) :

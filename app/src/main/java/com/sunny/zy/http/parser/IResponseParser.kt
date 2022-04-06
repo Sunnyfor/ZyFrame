@@ -7,7 +7,8 @@ import java.io.File
 
 /**
  * Desc 数据解析
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/4/29 14:47
  */
 interface IResponseParser {

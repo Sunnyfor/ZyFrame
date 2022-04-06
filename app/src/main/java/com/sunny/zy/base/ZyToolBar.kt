@@ -16,8 +16,8 @@ import com.sunny.zy.R
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/11/6 09:48
  */
 class ZyToolBar : Toolbar {

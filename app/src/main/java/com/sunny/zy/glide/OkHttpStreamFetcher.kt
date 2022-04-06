@@ -18,8 +18,8 @@ import java.io.InputStream
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/9/29 10:40
  */
 class OkHttpStreamFetcher(var client: Call.Factory, var url: GlideUrl) : DataFetcher<InputStream>, okhttp3.Callback {

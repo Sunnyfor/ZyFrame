@@ -14,7 +14,7 @@ import com.sunny.zy.utils.ToastUtil
 /**
  * Desc 域名配置入口设置彩蛋
  * Author ZY
- * Mail zuoyu98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/6/3 10:37
  */
 object HostSetUtil {

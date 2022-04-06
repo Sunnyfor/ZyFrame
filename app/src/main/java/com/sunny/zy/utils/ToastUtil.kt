@@ -7,7 +7,8 @@ import com.sunny.zy.ZyFrameStore
 
 /**
  * Desc 单例Toast
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2019/10/25 11:03
  */
 object ToastUtil {

@@ -4,8 +4,10 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 /**
- * MD5加密
- * Created by Zy on 2018/8/3.
+ * Desc MD5加密
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2018/8/3.
  */
 object DigestUtil {
 

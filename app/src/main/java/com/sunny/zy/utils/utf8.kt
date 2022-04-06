@@ -5,8 +5,8 @@ import java.io.EOFException
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/9/29 10:05
  */
 internal fun Buffer.isProbablyUtf8(): Boolean {

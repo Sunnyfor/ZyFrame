@@ -18,8 +18,9 @@ import java.io.InputStream
 import java.lang.reflect.ParameterizedType
 
 /**
- * Desc 仅针对【贞和科技】数据解析器
- * Author Zy
+ * Desc 仅针对【zhkj】数据解析器
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/4/29 14:51
  */
 @Suppress("UNCHECKED_CAST")

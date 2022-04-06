@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.zy_frag_qr_code.*
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2021/1/4 16:54
  */
 class QRCodeActivity : BaseActivity() {

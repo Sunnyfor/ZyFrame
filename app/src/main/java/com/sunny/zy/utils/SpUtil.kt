@@ -9,7 +9,8 @@ import java.lang.reflect.Type
 
 /**
  * Desc SharedPreferences存储工具类
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/6/8 17:17
  */
 class SpUtil {

@@ -10,12 +10,9 @@ import com.sunny.zy.utils.PlaceholderViewUtil
 
 
 /**
- *
- * Created by Zy on 2018/8/2.
- */
-/**
  * Desc Fragment基类
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2018/8/2
  */
 abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTitleListener {

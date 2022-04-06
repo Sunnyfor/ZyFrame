@@ -1,6 +1,5 @@
 package com.sunny.zy.http.interceptor
 
-import android.util.Log
 import com.sunny.zy.utils.LogUtil
 import com.sunny.zy.utils.isProbablyUtf8
 import okhttp3.Headers
@@ -16,8 +15,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/9/29 09:54
  */
 class ZyHttpLoggingInterceptor : Interceptor {

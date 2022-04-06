@@ -5,8 +5,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- *  Holder基类
- * Created by Zy on 2018/1/5.
+ * Desc Holder基类
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2018/1/5.
  */
 @Suppress("UNCHECKED_CAST")
 class BaseRecycleViewHolder(

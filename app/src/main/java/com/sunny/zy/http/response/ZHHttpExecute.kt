@@ -10,7 +10,7 @@ import org.json.JSONObject
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/8/10 10:36
  */
 class ZHHttpExecute : IHttpExecute {

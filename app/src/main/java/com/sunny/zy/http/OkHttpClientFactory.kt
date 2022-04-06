@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Desc
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/8/24 17:06
  */
 class OkHttpClientFactory {

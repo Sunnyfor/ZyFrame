@@ -5,7 +5,7 @@ import android.net.Uri
 /**
  * Desc 媒体内容
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/22 18:12
  */
 data class GalleryBean(

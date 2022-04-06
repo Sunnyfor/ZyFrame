@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.zy_item_gallery_preview.view.*
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/28 11:47
  */
 class PreviewPhotoAdapter(data: ArrayList<GalleryBean>) : BaseRecycleAdapter<GalleryBean>(data) {

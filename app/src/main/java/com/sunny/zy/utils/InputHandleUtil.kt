@@ -9,8 +9,8 @@ import android.widget.ScrollView
 
 /**
  * Desc 用于处理全屏模式下输入框被遮挡问题
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2021/3/17 14:49
  */
 class InputHandleUtil {

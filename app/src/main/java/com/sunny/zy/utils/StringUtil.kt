@@ -8,8 +8,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * 字符串工具类
- * Created by Zy on 2018/6/11.
+ * Desc 字符串工具类
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2018/6/11.
  */
 object StringUtil {
     /**

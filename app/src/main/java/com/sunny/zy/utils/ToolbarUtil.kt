@@ -11,8 +11,8 @@ import com.sunny.zy.base.ZyToolBar
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/11/9 14:49
  */
 class ToolbarUtil(var activity: BaseActivity) {

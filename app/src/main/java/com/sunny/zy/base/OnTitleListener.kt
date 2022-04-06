@@ -4,8 +4,8 @@ import android.view.View
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/11/6 17:35
  */
 interface OnTitleListener {

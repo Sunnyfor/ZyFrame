@@ -5,8 +5,10 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 
 /**
- * Presenter基类
- * Created by Zy on 2018/8/2.
+ * Desc Presenter基类
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2018/8/2.
  */
 abstract class BasePresenter<T : IBaseView>(var view: T?) : CoroutineScope by MainScope() {
 

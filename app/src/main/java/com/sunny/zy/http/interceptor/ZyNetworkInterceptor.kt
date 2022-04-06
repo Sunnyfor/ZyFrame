@@ -9,7 +9,8 @@ import okhttp3.Response
 
 /**
  * Desc 用于拦截网络请进行数据的实施读取
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/8/24 16:20
  */
 class ZyNetworkInterceptor(var downLoadResultBean: DownLoadResultBean) : Interceptor {

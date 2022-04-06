@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.zy_act_camera.*
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/10/11 11:47
  */
 class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCallBack {

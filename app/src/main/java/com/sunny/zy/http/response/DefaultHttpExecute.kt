@@ -9,7 +9,7 @@ import okhttp3.Request
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/8/10 10:33
  */
 open class DefaultHttpExecute : IHttpExecute {

@@ -3,8 +3,10 @@ package com.sunny.zy.base
 import android.view.ViewGroup
 
 /**
- * 接口 IView基类
- * Created by Zy on 2018/8/2.
+ * Desc 接口 IView基类
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2018/8/2.
  */
 interface IBaseView {
 

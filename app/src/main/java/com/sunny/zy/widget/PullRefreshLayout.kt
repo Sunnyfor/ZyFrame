@@ -19,7 +19,8 @@ import com.sunny.zy.utils.PlaceholderViewUtil
 
 /**
  * Desc 下拉刷新自定义View
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2019/11/7 23:24
  */
 @Suppress("MemberVisibilityCanBePrivate", "UNCHECKED_CAST")

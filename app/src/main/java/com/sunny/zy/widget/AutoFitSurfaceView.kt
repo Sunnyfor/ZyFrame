@@ -8,8 +8,8 @@ import kotlin.math.roundToInt
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2021/2/24 11:37
  */
 class AutoFitSurfaceView : SurfaceView {

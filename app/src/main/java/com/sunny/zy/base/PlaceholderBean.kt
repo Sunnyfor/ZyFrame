@@ -1,8 +1,10 @@
 package com.sunny.zy.base
 
 /**
- * 枚举：错误View的类型
- * Created by Zy on 2018/8/2.
+ * Desc 枚举：错误View的类型
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2018/8/2.
  */
 data class PlaceholderBean(var viewType: Int) {
     val viewIdMap = hashMapOf<Int, Any>()

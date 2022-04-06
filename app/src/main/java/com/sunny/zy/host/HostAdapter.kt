@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.dialog_host_item.view.*
 /**
  * Desc 域名配置适配器
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/2/20 18:58
  */
 class HostAdapter(list: ArrayList<String>) : BaseRecycleAdapter<String>(list) {

@@ -9,7 +9,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 
 /**
  * Desc Cookie持久化存储
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/6/12 11:44
  */
 abstract class ZyCookieJar : CookieJar {

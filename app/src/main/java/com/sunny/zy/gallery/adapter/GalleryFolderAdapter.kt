@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.zy_item_gallery_folder.view.*
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/22 18:59
  */
 class GalleryFolderAdapter : BaseRecycleAdapter<GalleryFolderBean>(arrayListOf()) {

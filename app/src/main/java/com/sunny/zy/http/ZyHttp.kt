@@ -17,7 +17,8 @@ import okhttp3.Request
 
 /**
  * Desc
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/4/28 02:07
  */
 @Suppress("UNCHECKED_CAST")

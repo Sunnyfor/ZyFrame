@@ -7,8 +7,10 @@ import java.util.*
 import kotlin.system.exitProcess
 
 /**
- * 应用类
- * Created by Zy on 2018/08/02.
+ * Desc 应用类
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
+ * Date 2018/08/02.
  */
 object ZyFrameStore {
 

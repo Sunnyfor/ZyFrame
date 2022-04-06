@@ -5,8 +5,8 @@ import android.bluetooth.BluetoothGatt
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2021/3/23 14:14
  */
 abstract class BluetoothBean(

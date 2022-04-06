@@ -18,7 +18,7 @@ import java.text.DecimalFormat
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/23 09:45
  */
 class GalleryContentAdapter(private val selectList: ArrayList<GalleryBean>) :

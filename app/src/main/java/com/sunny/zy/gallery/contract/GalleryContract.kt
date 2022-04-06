@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/9/23 09:29
  */
 class GalleryContract {

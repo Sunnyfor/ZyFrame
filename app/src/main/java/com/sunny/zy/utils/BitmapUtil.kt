@@ -8,8 +8,8 @@ import com.sunny.zy.ZyFrameStore
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/11/12 14:53
  */
 class BitmapUtil {

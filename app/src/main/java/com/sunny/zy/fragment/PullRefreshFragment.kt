@@ -11,7 +11,8 @@ import com.sunny.zy.widget.PullRefreshLayout
 
 /**
  * Desc 下拉刷新，上拉加载
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/6/4 16:05
  */
 open class PullRefreshFragment<T> : BaseFragment() {

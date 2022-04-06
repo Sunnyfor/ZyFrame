@@ -4,8 +4,8 @@ import android.view.MenuItem
 
 /**
  * Desc
- * Author ZhangYe
- * Mail zhangye98@foxmail.com
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/10/29 17:27
  */
 class BaseMenuBean {

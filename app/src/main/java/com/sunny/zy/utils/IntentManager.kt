@@ -14,7 +14,7 @@ import com.sunny.zy.preview.VideoPlayActivity
 /**
  * Desc
  * Author ZY
- * Mail zhangye98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2021/10/25 18:40
  */
 object IntentManager {

@@ -3,7 +3,7 @@ package com.sunny.zy.host
 /**
  * Desc SharedPreferences 存储 key
  * Author ZY
- * Mail zuoyu98@foxmail.com
+ * Mail sunnyfor98@gmail.com
  * Date 2019/11/15 14:25
  */
 object HostKey {

@@ -6,7 +6,8 @@ import java.lang.reflect.Type
 
 /**
  * Desc 请求结果实体类
- * Author Zy
+ * Author ZY
+ * Mail sunnyfor98@gmail.com
  * Date 2020/4/29 12:37
  */
 abstract class HttpResultBean<T>(

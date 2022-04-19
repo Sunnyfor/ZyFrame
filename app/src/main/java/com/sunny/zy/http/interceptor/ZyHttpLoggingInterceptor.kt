@@ -30,17 +30,20 @@ class ZyHttpLoggingInterceptor : Interceptor {
         startLogSb.append("${request.method} ${request.url}${if (connection != null) " " + connection.protocol() else ""}")
         startLogSb.append("\n")
 
-
-        for (i in 0 until request.headers.size) {
+        val requestHeaderSize = request.headers.size
+        for (i in 0 until requestHeaderSize) {
             startLogSb.append(logHeader(request.headers, i))
-            startLogSb.append("\n")
+            if (i < requestHeaderSize -1){
+                startLogSb.append("\n")
+            }
         }
 
         val params = request.tag().toString()
         if (params.isNotEmpty()) {
+            startLogSb.append("\n")
             startLogSb.append("Params: $params")
         }
-        LogUtil.w("发起请求", startLogSb.toString())
+        LogUtil.w("发起请求", startLogSb.toString(),false)
 
         val endLogSb = StringBuilder()
         val startNs = System.nanoTime()
@@ -49,7 +52,7 @@ class ZyHttpLoggingInterceptor : Interceptor {
             response = chain.proceed(request)
         } catch (e: Exception) {
             endLogSb.append(e.message)
-            LogUtil.w("请求结束", endLogSb.toString())
+            LogUtil.w("请求结束", endLogSb.toString(),false)
             throw e
         }
 
@@ -60,7 +63,8 @@ class ZyHttpLoggingInterceptor : Interceptor {
         endLogSb.append("\n")
 
         //头信息
-        for (i in 0 until response.headers.size) {
+        val responseHeaderSize = response.headers.size
+        for (i in 0 until responseHeaderSize) {
             endLogSb.append(logHeader(response.headers, i))
             endLogSb.append("\n")
         }
@@ -80,11 +84,15 @@ class ZyHttpLoggingInterceptor : Interceptor {
                     contentType?.charset(StandardCharsets.UTF_8) ?: StandardCharsets.UTF_8
 
                 if (buffer.isProbablyUtf8() && contentLength != 0L) {
-                    endLogSb.append(buffer.clone().readString(charset))
+                    val result = buffer.clone().readString(charset)
+                    if (result.isNotEmpty()){
+                        endLogSb.append("\n")
+                        endLogSb.append(result.trim())
+                    }
                 }
             }
         }
-        LogUtil.w("请求结束", endLogSb.toString())
+        LogUtil.w("请求结束", endLogSb.toString(),false)
         return response
     }
 

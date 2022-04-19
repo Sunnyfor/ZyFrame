@@ -3,7 +3,7 @@ package com.sunny.zy.utils
 import android.util.Log
 
 /**
- * Desc 封装使用Logger日志代码
+ * Desc 封装使用Log日志代码
  * Author ZY
  * Mail sunnyfor98@gmail.com
  * Date 2021年6月30日
@@ -26,6 +26,8 @@ object LogUtil {
 
     var tag = "ZYLog"
 
+    var steIndex = 5
+
     var lineSize = 160
 
     var TOP_BORDER = "┌"
@@ -34,80 +36,121 @@ object LogUtil {
     var VERTICAL_LINE = "│ "
     var HORIZONTAL_LINE = "─"
 
+    var TITLE_START = "【"
 
+    var TITLE_END = "】"
+
+    /**
+     * VERBOSE
+     */
     @Synchronized
     fun v(message: String) {
-        generateBorder(VERBOSE, TOP_BORDER)
-        generateLine(VERBOSE, message)
+        log(VERBOSE, "", message, true)
     }
 
     @Synchronized
     fun v(title: String, message: String) {
-        generateTitle(VERBOSE, title)
-        generateBorder(VERBOSE, MIDDLE_LINE)
-        generateLine(VERBOSE, message)
+        log(VERBOSE, title, message, true)
+    }
+
+    @Synchronized
+    fun v(title: String, message: String, isShowSource: Boolean) {
+        log(VERBOSE, title, message, isShowSource)
     }
 
 
+    /**
+     *  DEBUG
+     */
     @Synchronized
     fun d(message: String) {
-        generateBorder(DEBUG, TOP_BORDER)
-        generateLine(DEBUG, message)
+        log(DEBUG, "", message, true)
     }
 
     @Synchronized
     fun d(title: String, message: String) {
-        generateTitle(DEBUG, title)
-        generateBorder(DEBUG, MIDDLE_LINE)
-        generateLine(DEBUG, message)
+        log(DEBUG, title, message, true)
     }
 
+    @Synchronized
+    fun d(title: String, message: String, isShowSource: Boolean) {
+        log(DEBUG, title, message, isShowSource)
+    }
+
+    /**
+     *  INFO
+     */
+    @Synchronized
+    fun i(message: String) {
+        log(INFO, "", message, true)
+    }
 
     @Synchronized
     fun i(title: String, message: String) {
-        generateTitle(INFO, title)
-        generateBorder(INFO, MIDDLE_LINE)
-        generateLine(INFO, message)
+        log(INFO, title, message, true)
     }
 
     @Synchronized
-    fun i(message: String) {
-        generateBorder(INFO, TOP_BORDER)
-        generateLine(INFO, message)
+    fun i(title: String, message: String, isShowSource: Boolean) {
+        log(INFO, title, message, isShowSource)
     }
 
+
+    /**
+     * WARN
+     */
     @Synchronized
     fun w(message: String) {
-        generateBorder(WARN, TOP_BORDER)
-        generateLine(WARN, message)
+        log(WARN, "", message, true)
     }
 
     @Synchronized
     fun w(title: String, message: String) {
-        generateTitle(WARN, title)
-        generateBorder(WARN, MIDDLE_LINE)
-        generateLine(WARN, message)
+        log(WARN, title, message, true)
     }
 
     @Synchronized
+    fun w(title: String, message: String, isShowSource: Boolean) {
+        log(WARN, title, message, isShowSource)
+    }
+
+    /**
+     *  ERROR
+     */
+    @Synchronized
     fun e(message: String) {
-        generateBorder(ERROR, TOP_BORDER)
-        generateLine(ERROR, message)
+        log(ERROR, "", message, true)
     }
 
     @Synchronized
     fun e(title: String, message: String) {
-        generateTitle(ERROR, title)
-        generateBorder(ERROR, MIDDLE_LINE)
-        generateLine(ERROR, message)
+        log(ERROR, title, message, true)
+    }
+
+    @Synchronized
+    fun e(title: String, message: String, isShowSource: Boolean) {
+        log(ERROR, title, message, isShowSource)
     }
 
 
-    private fun generateTitle(logType: Int, title: String) {
-        generateBorder(logType, TOP_BORDER)
+    private fun generateTitle(logType: Int, title: String, isShowSource: Boolean) {
         val sb = StringBuilder(VERTICAL_LINE)
-        sb.append(title)
+        sb.append("$TITLE_START$title$TITLE_END")
+        if (isShowSource) {
+            sb.append("  ")
+            sb.append(getSourceStr(1))
+        }
         println(logType, sb.toString())
+
+    }
+
+
+    private fun getSourceStr(complement: Int): String {
+        val ste = Thread.currentThread().stackTrace
+        if (ste.size >= steIndex + complement) {
+            return ste[steIndex + complement].toString()
+        }
+        return ""
     }
 
 
@@ -142,7 +185,7 @@ object LogUtil {
             }
 
             if (index == msgArray.size - 1) {
-                if (msgSb.isNotEmpty()){
+                if (msgSb.isNotEmpty()) {
                     println(logType, msgSb.toString())
                 }
                 generateBorder(logType, BOTTOM_BORDER)
@@ -152,10 +195,26 @@ object LogUtil {
     }
 
 
+    private fun log(logType: Int, title: String, message: String, isShowSource: Boolean) {
+        generateBorder(logType, TOP_BORDER)
+        if (title.isNotEmpty()) {
+            generateTitle(logType, title, isShowSource)
+        } else {
+            if (isShowSource) {
+                println(logType, VERTICAL_LINE + getSourceStr(0))
+            }
+        }
+        generateBorder(logType, MIDDLE_LINE)
+        generateLine(logType, message)
+    }
+
+
     private fun println(logType: Int, content: String) {
 
-        onLogListener?.onLog(logType, content)
-
+        if (onLogListener != null) {
+            onLogListener?.onLog(logType, content)
+            return
+        }
         when (logType) {
             VERBOSE -> Log.v(tag, content)
             DEBUG -> Log.d(tag, content)

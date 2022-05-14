@@ -199,7 +199,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         super.onDestroyView()
     }
 
-
     abstract fun onClose()
 
 

@@ -447,11 +447,13 @@ abstract class BaseActivity : AppCompatActivity(),
     }
 
 
-    override fun onDestroy() {
-        ZyFrameStore.removeActivity(this)
-        BitmapUtil().destroy()
-        placeholderViewUtil.clear()
-        onClose()
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
+        if (isFinishing) {
+            ZyFrameStore.removeActivity(this)
+            bitmapUtil.destroy()
+            placeholderViewUtil.clear()
+            onClose()
+        }
     }
 }

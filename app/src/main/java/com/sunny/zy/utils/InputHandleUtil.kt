@@ -4,7 +4,10 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.ScrollView
+import androidx.constraintlayout.widget.ConstraintLayout
 
 
 /**
@@ -15,12 +18,18 @@ import android.widget.ScrollView
  */
 class InputHandleUtil {
     private var mRootView: ViewGroup? = null
-    private var rootViewParams: FrameLayout.LayoutParams? = null
+    private var rootViewParams: ViewGroup.LayoutParams? = null
     private var rootViewMargin = 0
     private var lastRootLayoutHeight = 0
     private var scrollViewParams: ViewGroup.MarginLayoutParams? = null
     private var scrollViewMargin = 0
     private var ignoreViewParams: ViewGroup.MarginLayoutParams? = null
+
+    /**
+     * 布局高度发生改变的监听回调
+     */
+    var onLayoutSizeChangeListener: OnLayoutSizeChangeListener? = null
+
 
     /**
      * 处理包含输入框的容器方法
@@ -33,9 +42,9 @@ class InputHandleUtil {
         scrollView: ScrollView? = null,
         ignoreView: View? = null
     ) {
-        mRootView = rootView.getChildAt(0) as ViewGroup
-        rootViewParams = mRootView?.layoutParams as FrameLayout.LayoutParams
-        rootViewMargin = rootViewParams?.bottomMargin ?: 0
+        mRootView = rootView
+        rootViewParams = mRootView?.layoutParams
+        setRootViewBottomMargin(0, true)
 
         mRootView?.viewTreeObserver?.addOnGlobalLayoutListener {
             possiblyResizeChildOfContent(scrollView, ignoreView)
@@ -62,26 +71,63 @@ class InputHandleUtil {
                     val height = ignoreView?.height ?: 0
                     val topMargin = ignoreViewParams?.topMargin ?: 0
                     val bottomMargin = ignoreViewParams?.bottomMargin ?: 0
-                    scrollViewParams?.bottomMargin =
-                        keyBoardHeight - height - topMargin - bottomMargin
+                    val value = keyBoardHeight - height - topMargin - bottomMargin
+                    scrollViewParams?.bottomMargin = value
                     scrollView.requestLayout()
+                    onLayoutSizeChangeListener?.onChange(value)
+
                 } else {
-                    rootViewParams?.bottomMargin = rootViewMargin + keyBoardHeight
-                    mRootView?.requestLayout()
+                    val value = rootViewMargin + keyBoardHeight
+                    setRootViewBottomMargin(value, false)
+                    onLayoutSizeChangeListener?.onChange(value)
                 }
             } else {
                 if (scrollView != null) {
                     scrollViewParams?.bottomMargin = scrollViewMargin
                     //重绘scrollView布局
                     scrollView.requestLayout()
+                    onLayoutSizeChangeListener?.onChange(scrollViewMargin)
                 } else {
-                    rootViewParams?.bottomMargin = rootViewMargin
-                    //重绘xml根布局
-                    mRootView?.requestLayout()
+                    setRootViewBottomMargin(rootViewMargin, false)
+                    onLayoutSizeChangeListener?.onChange(rootViewMargin)
                 }
             }
             lastRootLayoutHeight = currentRootLayoutHeight
         }
+    }
+
+    private fun setRootViewBottomMargin(margin: Int, isInit: Boolean) {
+        when (rootViewParams) {
+            is LinearLayout.LayoutParams -> {
+                if (isInit) {
+                    rootViewMargin = (rootViewParams as LinearLayout.LayoutParams).bottomMargin
+                } else {
+                    (rootViewParams as LinearLayout.LayoutParams).bottomMargin = margin
+                }
+            }
+            is RelativeLayout.LayoutParams -> {
+                if (isInit) {
+                    rootViewMargin = (rootViewParams as RelativeLayout.LayoutParams).bottomMargin
+                } else {
+                    (rootViewParams as RelativeLayout.LayoutParams).bottomMargin = margin
+                }
+            }
+            is FrameLayout.LayoutParams -> {
+                if (isInit) {
+                    rootViewMargin = (rootViewParams as FrameLayout.LayoutParams).bottomMargin
+                } else {
+                    (rootViewParams as FrameLayout.LayoutParams).bottomMargin = margin
+                }
+            }
+            is ConstraintLayout.LayoutParams -> {
+                if (isInit) {
+                    rootViewMargin = (rootViewParams as ConstraintLayout.LayoutParams).bottomMargin
+                } else {
+                    (rootViewParams as ConstraintLayout.LayoutParams).bottomMargin = margin
+                }
+            }
+        }
+        mRootView?.requestLayout()
     }
 
     private fun getRootLayoutHeight(): Int {
@@ -90,4 +136,8 @@ class InputHandleUtil {
         return r.bottom
     }
 
+
+    interface OnLayoutSizeChangeListener {
+        fun onChange(value: Int)
+    }
 }

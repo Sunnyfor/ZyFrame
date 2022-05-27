@@ -1,6 +1,7 @@
 package com.sunny.zy.utils
 
 import android.util.Log
+import com.sunny.zy.ZyFrameConfig
 
 /**
  * Desc 封装使用Log日志代码
@@ -20,11 +21,7 @@ object LogUtil {
 
     const val ERROR = 4
 
-
     var onLogListener: OnLogListener? = null
-
-
-    var tag = "ZYLog"
 
     var steIndex = 5
 
@@ -211,16 +208,21 @@ object LogUtil {
 
     private fun println(logType: Int, content: String) {
 
+        if (!ZyFrameConfig.isPrintLog) {
+            return
+        }
+
         if (onLogListener != null) {
             onLogListener?.onLog(logType, content)
             return
         }
+
         when (logType) {
-            VERBOSE -> Log.v(tag, content)
-            DEBUG -> Log.d(tag, content)
-            INFO -> Log.i(tag, content)
-            WARN -> Log.w(tag, content)
-            ERROR -> Log.e(tag, content)
+            VERBOSE -> Log.v(ZyFrameConfig.logTag, content)
+            DEBUG -> Log.d(ZyFrameConfig.logTag, content)
+            INFO -> Log.i(ZyFrameConfig.logTag, content)
+            WARN -> Log.w(ZyFrameConfig.logTag, content)
+            ERROR -> Log.e(ZyFrameConfig.logTag, content)
         }
     }
 

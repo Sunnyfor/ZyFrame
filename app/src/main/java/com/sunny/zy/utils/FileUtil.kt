@@ -6,7 +6,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 import java.io.File
 import java.text.DecimalFormat
 
@@ -19,7 +19,7 @@ object FileUtil {
      * 获取换成你文件路径
      */
     private fun getCacheDir(): File? {
-        return File(ZyConfig.TEMP).parentFile
+        return File(ZyFrameConfig.TEMP).parentFile
     }
 
 
@@ -54,7 +54,7 @@ object FileUtil {
                 ZyFrameStore.getContext().contentResolver.delete(uri, null)
                 return FileProvider.getUriForFile(
                     ZyFrameStore.getContext(),
-                    ZyConfig.authorities,
+                    ZyFrameConfig.authorities,
                     file
                 )
             }
@@ -153,7 +153,7 @@ object FileUtil {
         try {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 FileProvider.getUriForFile(
-                    ZyFrameStore.getContext(), ZyConfig.authorities, File(path)
+                    ZyFrameStore.getContext(), ZyFrameConfig.authorities, File(path)
                 )
             } else {
                 Uri.fromFile(File(path))

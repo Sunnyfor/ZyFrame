@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.sunny.zy.widget.ViewfinderView
+    <com.sunny.zy.widget.ScanViewfinderView
         android:id="@+id/viewfinderView"
         android:layout_width="@dimen/dp_260"
         android:layout_height="@dimen/dp_260"

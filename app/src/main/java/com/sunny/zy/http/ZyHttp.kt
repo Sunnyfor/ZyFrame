@@ -210,7 +210,7 @@ object ZyHttp {
         }
 
         withContext(Dispatchers.Main) {
-            ZyConfig.httpResultCallback?.invoke(httpResultBean)
+            ZyHttpConfig.httpResultCallback?.invoke(httpResultBean)
         }
     }
 }

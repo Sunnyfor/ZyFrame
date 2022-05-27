@@ -28,7 +28,7 @@ import com.sunny.zy.gallery.adapter.GalleryFolderAdapter
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.gallery.bean.GalleryFolderBean
 import com.sunny.zy.gallery.contract.GalleryContract
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.preview.GalleryPreviewActivity
 import com.sunny.zy.utils.*
 import kotlinx.android.synthetic.main.zy_act_photo_select.*
@@ -339,7 +339,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         intent.putExtra("return-data", false)
         intent.putExtra("noFaceDetection", true) //
 
-        val outFile = File(ZyConfig.TEMP, StringUtil.getTimeStamp() + ".jpg")
+        val outFile = File(ZyFrameConfig.TEMP, StringUtil.getTimeStamp() + ".jpg")
         var outUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             FileUtil.insertImage(outFile.name)
         } else {

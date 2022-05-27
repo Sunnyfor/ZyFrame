@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.utils.PlaceholderViewUtil
 
 
@@ -85,14 +85,14 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         if (view is ViewGroup) {
             showPlaceholder(
                 view as ViewGroup,
-                ZyConfig.loadingPlaceholderBean
+                ZyFrameConfig.loadingPlaceholderBean
             )
         }
 
     }
 
     override fun hideLoading() {
-        hidePlaceholder(ZyConfig.loadingPlaceholderBean.viewType)
+        hidePlaceholder(ZyFrameConfig.loadingPlaceholderBean.viewType)
     }
 
 

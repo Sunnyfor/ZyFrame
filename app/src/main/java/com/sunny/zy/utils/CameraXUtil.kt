@@ -19,7 +19,7 @@ import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.gallery.bean.GalleryBean
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -172,7 +172,7 @@ class CameraXUtil {
                     val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         FileProvider.getUriForFile(
                             ZyFrameStore.getContext(),
-                            ZyConfig.authorities,
+                            ZyFrameConfig.authorities,
                             file
                         )
                     } else {
@@ -218,7 +218,7 @@ class CameraXUtil {
                     val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         FileProvider.getUriForFile(
                             ZyFrameStore.getContext(),
-                            ZyConfig.authorities,
+                            ZyFrameConfig.authorities,
                             file
                         )
                     } else {

@@ -9,12 +9,12 @@ import androidx.core.content.ContextCompat
 import com.sunny.zy.R
 
 /**
- * Desc
+ * Desc 二维码边框
  * Author ZY
  * Mail sunnyfor98@gmail.com
  * Date 2021/1/5 16:42
  */
-class ViewfinderView : View {
+class ScanViewfinderView : View {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 

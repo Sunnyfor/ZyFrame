@@ -13,7 +13,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.sunny.zy.base.BaseRecycleAdapter
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.utils.PlaceholderViewUtil
 
 
@@ -219,10 +219,10 @@ class PullRefreshLayout : SmartRefreshLayout {
         if (data.isEmpty()) {
             placeholderViewUtil?.showView(
                 rootView,
-                ZyConfig.emptyPlaceholderBean
+                ZyFrameConfig.emptyPlaceholderBean
             )
         } else {
-            placeholderViewUtil?.hideView(ZyConfig.emptyPlaceholderBean.viewType)
+            placeholderViewUtil?.hideView(ZyFrameConfig.emptyPlaceholderBean.viewType)
         }
     }
 

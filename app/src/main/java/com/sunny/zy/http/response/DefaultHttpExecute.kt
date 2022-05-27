@@ -1,7 +1,7 @@
 package com.sunny.zy.http.response
 
-import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.http.ZyHttp
+import com.sunny.zy.http.ZyHttpConfig
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import okhttp3.Request
@@ -26,7 +26,7 @@ open class DefaultHttpExecute : IHttpExecute {
             if (response.isSuccessful) {
                 response.body?.let {
                     resultBean.file =
-                        ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
+                        ZyHttpConfig.iResponseParser.parserDownloadResponse(it, resultBean)
                 }
             }
         }
@@ -44,7 +44,7 @@ open class DefaultHttpExecute : IHttpExecute {
 
             if (response.isSuccessful) {
                 response.body?.let {
-                    resultBean.bean = ZyConfig.iResponseParser.parserHttpResponse(
+                    resultBean.bean = ZyHttpConfig.iResponseParser.parserHttpResponse(
                         it, resultBean
                     )
                 }

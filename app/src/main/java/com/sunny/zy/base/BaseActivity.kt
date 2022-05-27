@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.utils.*
 
 
@@ -31,7 +31,6 @@ import com.sunny.zy.utils.*
  * Mail sunnyfor98@gmail.com
  * Date 2018/8/2
  */
-
 abstract class BaseActivity : AppCompatActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback, IBaseView,
     View.OnClickListener, OnTitleListener {
@@ -84,7 +83,7 @@ abstract class BaseActivity : AppCompatActivity(),
         getRootView().addView(statusBar, 0, statusBarParams)
         mStatusBarColor = R.color.colorPrimary
         setStatusBarColor(mStatusBarColor)
-        setStatusBarTextModel(ZyConfig.statusBarIsDark)
+        setStatusBarTextModel(ZyFrameConfig.statusBarIsDark)
         frameBody = findViewById(android.R.id.content)
 
         when (val layoutView = initLayout()) {
@@ -141,14 +140,14 @@ abstract class BaseActivity : AppCompatActivity(),
      * 显示loading覆盖层
      */
     override fun showLoading() {
-        showPlaceholder(frameBody, ZyConfig.loadingPlaceholderBean)
+        showPlaceholder(frameBody, ZyFrameConfig.loadingPlaceholderBean)
     }
 
     /**
      * 隐藏loading覆盖层
      */
     override fun hideLoading() {
-        hidePlaceholder(ZyConfig.loadingPlaceholderBean.viewType)
+        hidePlaceholder(ZyFrameConfig.loadingPlaceholderBean.viewType)
     }
 
 
@@ -189,7 +188,7 @@ abstract class BaseActivity : AppCompatActivity(),
     fun setOnClickListener(onClick: View.OnClickListener, vararg views: View) {
         views.forEach {
             if (it.getTag(R.id.zy_click_interval) == null) {
-                it.setTag(R.id.zy_click_interval, ZyConfig.click_interval)
+                it.setTag(R.id.zy_click_interval, ZyFrameConfig.clickInterval)
             }
             it.setOnClickListener(onClick)
         }

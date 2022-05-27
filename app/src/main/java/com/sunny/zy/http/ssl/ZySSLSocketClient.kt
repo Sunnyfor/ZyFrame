@@ -1,4 +1,4 @@
-package com.sunny.zy.http
+package com.sunny.zy.http.ssl
 
 import android.annotation.SuppressLint
 import java.security.SecureRandom

@@ -1,13 +1,9 @@
 package com.sunny.zy.http
 
-import android.util.Log
-import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.base.PlaceholderBean
 import com.sunny.zy.http.bean.BaseHttpResultBean
-import com.sunny.zy.http.interceptor.HeaderInterceptor
+import com.sunny.zy.http.interceptor.ZyHeaderInterceptor
+import com.sunny.zy.http.parser.DefaultResponseParser
 import com.sunny.zy.http.parser.IResponseParser
-import com.sunny.zy.http.parser.ZHResponseParser
 import com.sunny.zy.http.request.ZyCookieJar
 import okhttp3.Cookie
 import okhttp3.HttpUrl
@@ -16,16 +12,12 @@ import java.util.regex.Pattern
 import javax.net.ssl.HostnameVerifier
 
 /**
- * Desc 框架全局配置清单
+ * Desc 网络请求配置清单
  * Author ZY
  * Mail sunnyfor98@gmail.com
  * Date 2017/10/12.
  */
-object ZyConfig {
-    /**
-     * 是否打印LOG
-     */
-    var isLog = true
+object ZyHttpConfig {
 
     /**
      * IP地址
@@ -41,12 +33,6 @@ object ZyConfig {
      * 前缀：http? https
      */
     var HOST_PREFIX = "http"
-
-
-    /**
-     * 数据bean成功的code值
-     */
-    val baseModelSuccessCodes = arrayListOf("0", "200")
 
     /**
      * 后缀
@@ -111,26 +97,23 @@ object ZyConfig {
         }
 
 
+    /**
+     * 连接超时时间，单位毫秒
+     */
     var CONNECT_TIME_OUT = 10 * 1000L
 
+    /**
+     * 读取超时时间，单位毫秒
+     */
     var READ_TIME_OUT = 10 * 1000L
 
     /**
-     * provider权限
+     * 数据bean成功的code值
      */
-    var authorities = "com.sunny.zy.provider"
+    val baseModelSuccessCodes = arrayListOf("0", "200")
 
-    var click_interval = 500L
-
-    var TEMP = ZyFrameStore.getContext().getExternalFilesDir("temp")?.path ?: "" //内存卡缓存路径
-
-    /**
-     * 设置StatusBar文字颜色
-     */
-    var statusBarIsDark = false
-
-    val headerInterceptor: HeaderInterceptor by lazy {
-        HeaderInterceptor()
+    val headerInterceptor: ZyHeaderInterceptor by lazy {
+        ZyHeaderInterceptor()
     }
 
     /**
@@ -140,11 +123,10 @@ object ZyConfig {
         headerInterceptor.setHttpHeader(headerMap)
     }
 
-
     /**
      * 数据结果解析器
      */
-    var iResponseParser: IResponseParser = ZHResponseParser()
+    var iResponseParser: IResponseParser = DefaultResponseParser()
 
 
     /**
@@ -171,34 +153,4 @@ object ZyConfig {
      */
     var httpResultCallback: ((resultBean: BaseHttpResultBean) -> Unit)? = null
 
-
-    /**
-     * 设置Glide的日志级别
-     */
-    var glideLogLevel = Log.ERROR
-
-    /**
-     *  无数据展示布局
-     */
-    var emptyLayoutRes = R.layout.zy_layout_placeholder
-    var emptyPlaceholderBean = PlaceholderBean(PlaceholderBean.emptyData).apply {
-        viewIdMap[R.id.tv_desc] = R.string.emptyData
-        viewIdMap[R.id.iv_icon] = R.drawable.svg_placeholder
-    }
-
-    /**
-     *  发生错误展示布局
-     */
-    var errorLayoutRes = R.layout.zy_layout_placeholder
-    var errorPlaceholderBean = PlaceholderBean(PlaceholderBean.error).apply {
-        viewIdMap[R.id.tv_desc] = ""
-        viewIdMap[R.id.iv_icon] = R.drawable.svg_placeholder
-    }
-
-    /**
-     *  加载数据展示布局
-     */
-    var loadingLayoutRes = R.layout.zy_layout_loading
-    var loadingPlaceholderBean = PlaceholderBean(PlaceholderBean.loading)
 }
-

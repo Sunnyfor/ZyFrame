@@ -8,7 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import com.sunny.zy.R
 import com.sunny.zy.base.PlaceholderBean
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 
 /**
  * Desc
@@ -53,13 +53,13 @@ class PlaceholderViewUtil {
     private fun createView(viewGroup: ViewGroup, viewType: Int): ViewBean? {
         val view = when (viewType) {
             PlaceholderBean.loading -> {
-                View.inflate(viewGroup.context, ZyConfig.loadingLayoutRes, null)
+                View.inflate(viewGroup.context, ZyFrameConfig.loadingLayoutRes, null)
             }
             PlaceholderBean.error -> {
-                View.inflate(viewGroup.context, ZyConfig.errorLayoutRes, null)
+                View.inflate(viewGroup.context, ZyFrameConfig.errorLayoutRes, null)
             }
             PlaceholderBean.emptyData -> {
-                View.inflate(viewGroup.context, ZyConfig.emptyLayoutRes, null)
+                View.inflate(viewGroup.context, ZyFrameConfig.emptyLayoutRes, null)
             }
             else -> {
                 View.inflate(viewGroup.context, R.layout.zy_layout_placeholder, null)

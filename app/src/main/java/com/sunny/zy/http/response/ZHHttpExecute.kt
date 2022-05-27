@@ -1,7 +1,7 @@
 package com.sunny.zy.http.response
 
-import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.http.ZyHttp
+import com.sunny.zy.http.ZyHttpConfig
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import okhttp3.Request
@@ -26,7 +26,7 @@ class ZHHttpExecute : IHttpExecute {
             response.body?.let {
                 if (response.isSuccessful) {
                     resultBean.file =
-                        ZyConfig.iResponseParser.parserDownloadResponse(it, resultBean)
+                        ZyHttpConfig.iResponseParser.parserDownloadResponse(it, resultBean)
                 } else {
                     val msg = JSONObject(it.string()).optString("msg")
                     if (msg.isNotEmpty()) {
@@ -50,7 +50,7 @@ class ZHHttpExecute : IHttpExecute {
 
             response.body?.let {
                 if (response.isSuccessful) {
-                    resultBean.bean = ZyConfig.iResponseParser.parserHttpResponse(
+                    resultBean.bean = ZyHttpConfig.iResponseParser.parserHttpResponse(
                         it, resultBean
                     )
                 } else {

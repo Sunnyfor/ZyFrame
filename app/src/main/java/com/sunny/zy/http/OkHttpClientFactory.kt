@@ -3,7 +3,7 @@ package com.sunny.zy.http
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.interceptor.ZyHttpLoggingInterceptor
 import com.sunny.zy.http.interceptor.ZyNetworkInterceptor
-import com.sunny.zy.utils.LogUtil
+import com.sunny.zy.http.ssl.ZySSLSocketClient
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
@@ -18,18 +18,19 @@ class OkHttpClientFactory {
     private fun getBuild(): OkHttpClient.Builder {
         val builder =
             OkHttpClient.Builder()
-                .addInterceptor(ZyConfig.headerInterceptor)
+                .addInterceptor(ZyHttpConfig.headerInterceptor)
                 .addNetworkInterceptor(ZyHttpLoggingInterceptor())
                 .sslSocketFactory(
                     ZySSLSocketClient.createSSLSocketFactory(),
                     ZySSLSocketClient.getTrustManager()
                 )
-                .hostnameVerifier(ZyConfig.hostnameVerifier)
-                .connectTimeout(ZyConfig.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS) //连接超时时间
-                .readTimeout(ZyConfig.READ_TIME_OUT, TimeUnit.MILLISECONDS) //读取超时时间
-                .cookieJar(ZyConfig.zyCookieJar)
+                .hostnameVerifier(ZyHttpConfig.hostnameVerifier)
+                .connectTimeout(ZyHttpConfig.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS) //连接超时时间
+                .readTimeout(ZyHttpConfig.READ_TIME_OUT, TimeUnit.MILLISECONDS) //读取超时时间
+                .cookieJar(ZyHttpConfig.zyCookieJar)
+                .retryOnConnectionFailure(true)
 
-        ZyConfig.networkInterceptor?.let {
+        ZyHttpConfig.networkInterceptor?.let {
             builder.addInterceptor(it)
         }
         return builder

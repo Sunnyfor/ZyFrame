@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sunny.zy.R
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.http.ZyHttpConfig
 import com.sunny.zy.utils.SpUtil
 import com.sunny.zy.utils.ToastUtil
 import kotlinx.android.synthetic.main.dialog_host_set.view.*
@@ -58,7 +58,7 @@ class HostSetDialog(context: Context, var defaultHostList: ArrayList<String>) : 
 
         mView.et_input_host.clearFocus()
         SpUtil.get(HostKey.host_fileName).getString(HostKey.host_config).let {
-            mView.et_input_host.setText(if (it.isEmpty()) ZyConfig.HOST else it)
+            mView.et_input_host.setText(if (it.isEmpty()) ZyHttpConfig.HOST else it)
         }
 
         mView.btn_save.setOnClickListener {
@@ -70,7 +70,7 @@ class HostSetDialog(context: Context, var defaultHostList: ArrayList<String>) : 
                 if (!hostList.contains(host)) {
                     addHostList(host)
                 }
-                ZyConfig.HOST = host
+                ZyHttpConfig.HOST = host
                 SpUtil.get(HostKey.host_fileName).setString(HostKey.host_config, host)
             }
         }

@@ -3,8 +3,8 @@ package com.sunny.zy.http.request
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.http.ZyConfig
 import com.sunny.zy.http.ZyHttp
+import com.sunny.zy.http.ZyHttpConfig
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -23,7 +23,7 @@ class ZyRequest {
 
     private fun getUrlSb(url: String) = StringBuilder().apply {
         if (!url.contains("://")) {
-            append(ZyConfig.HOST)
+            append(ZyHttpConfig.HOST)
             append("/")
         }
         append(url)

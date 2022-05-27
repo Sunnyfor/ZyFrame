@@ -1,9 +1,7 @@
 package com.sunny.zy.http.parser
 
 import com.google.gson.Gson
-import com.sunny.zy.base.BaseModel
-import com.sunny.zy.base.PageModel
-import com.sunny.zy.http.ZyConfig
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.http.bean.DownLoadResultBean
 import com.sunny.zy.http.bean.HttpResultBean
 import kotlinx.coroutines.Dispatchers.IO
@@ -11,20 +9,18 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
-import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.lang.reflect.ParameterizedType
 
 /**
- * Desc 仅针对【zhkj】数据解析器
+ * Desc 默认解析器
  * Author ZY
  * Mail sunnyfor98@gmail.com
  * Date 2020/4/29 14:51
  */
 @Suppress("UNCHECKED_CAST")
-open class ZHResponseParser : IResponseParser {
+open class DefaultResponseParser : IResponseParser {
 
     open val mGSon = Gson()
 
@@ -41,36 +37,7 @@ open class ZHResponseParser : IResponseParser {
         }
 
         //解析泛型类
-        if (type is ParameterizedType) {
-            var data = "data"
-            when (type.rawType) {
-                BaseModel::class.java -> {
-                    val jsonObj = JSONObject(body)
-                    val serializableName = httpResultBean.serializedName
-                    if (serializableName != data) {
-                        jsonObj.put(data, jsonObj.opt(serializableName))
-                        jsonObj.remove(serializableName)
-                    }
-                    val baseModel = mGSon.fromJson<BaseModel<Any>>(jsonObj.toString(), type)
-                    if (!baseModel.isSuccess()) {
-                        httpResultBean.message = baseModel.msg
-                    }
-                    return baseModel as T
-                }
-                PageModel::class.java -> {
-                    val jsonObj = JSONObject(body)
-                    data = "page"
-                    jsonObj.put("data", jsonObj.opt(data))
-                    jsonObj.remove(data)
-                    val pageModel = mGSon.fromJson<PageModel<Any>>(jsonObj.toString(), type)
-                    if (!pageModel.isSuccess()) {
-                        httpResultBean.message = pageModel.msg
-                    }
-                    return pageModel as T
-                }
-            }
-        }
-        return mGSon.fromJson<T>(body, type)
+        return mGSon.fromJson(body, type)
     }
 
     override fun parserDownloadResponse(
@@ -90,7 +57,7 @@ open class ZHResponseParser : IResponseParser {
     ): File {
 
         if (downLoadResultBean.filePath == null) {
-            downLoadResultBean.filePath = ZyConfig.TEMP
+            downLoadResultBean.filePath = ZyFrameConfig.TEMP
         }
 
         val pathFile = File(downLoadResultBean.filePath ?: "")

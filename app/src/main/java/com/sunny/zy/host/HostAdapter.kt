@@ -18,7 +18,7 @@ class HostAdapter(list: ArrayList<String>) : BaseRecycleAdapter<String>(list) {
 
     var onItemDeleteListener: ((Int) -> Unit)? = null
 
-    override fun setLayout(parent: ViewGroup, viewType: Int): View {
+    override fun initLayout(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(R.layout.dialog_host_item, parent, false)
     }
 

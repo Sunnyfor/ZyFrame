@@ -68,7 +68,7 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryBean>) :
         holder.itemView.tv_duration.visibility = holder.itemView.v_play.visibility
     }
 
-    override fun setLayout(parent: ViewGroup, viewType: Int): View {
+    override fun initLayout(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(R.layout.zy_item_gallery_content, parent, false)
     }
 }

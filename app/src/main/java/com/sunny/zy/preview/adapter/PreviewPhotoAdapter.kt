@@ -36,7 +36,7 @@ class PreviewPhotoAdapter(data: ArrayList<GalleryBean>) : BaseRecycleAdapter<Gal
         playViewVisibility(holder.itemView.v_play, getData(position).uri)
     }
 
-    override fun setLayout(parent: ViewGroup, viewType: Int): View {
+    override fun initLayout(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(R.layout.zy_item_gallery_preview, parent, false)
     }
 

@@ -39,7 +39,7 @@ class GalleryFolderAdapter : BaseRecycleAdapter<GalleryFolderBean>(arrayListOf()
         }
     }
 
-    override fun setLayout(parent: ViewGroup, viewType: Int): View {
+    override fun initLayout(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(R.layout.zy_item_gallery_folder, parent, false)
     }
 }

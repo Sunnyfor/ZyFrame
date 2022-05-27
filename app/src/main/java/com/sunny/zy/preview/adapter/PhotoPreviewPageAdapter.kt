@@ -52,7 +52,7 @@ class PhotoPreviewPageAdapter(data: ArrayList<GalleryBean>) :
         }
     }
 
-    override fun setLayout(parent: ViewGroup, viewType: Int): View {
+    override fun initLayout(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(context).inflate(viewType, parent, false)
     }
 

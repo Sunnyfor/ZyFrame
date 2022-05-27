@@ -20,8 +20,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.ZyFrameConfig
+import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.utils.*
 
 
@@ -78,7 +78,7 @@ abstract class BaseActivity : AppCompatActivity(),
 
         val statusBarParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            DensityUtil.getStatusBarHeight(this)
+            DensityUtil.getStatusBarHeight()
         )
         getRootView().addView(statusBar, 0, statusBarParams)
         mStatusBarColor = R.color.colorPrimary
@@ -289,11 +289,11 @@ abstract class BaseActivity : AppCompatActivity(),
 
     override fun setStatusBarDrawable(@DrawableRes drawable: Int, relevantView: View?) {
         mStatusBarColor = drawable
-        val width = DensityUtil.screenWidth(this)
-        val statusBarHeight = DensityUtil.getStatusBarHeight(this)
+        val width = DensityUtil.screenWidth()
+        val statusBarHeight = DensityUtil.getStatusBarHeight()
         var toolbarHeight = 0
         if (toolbar != null) {
-            toolbarHeight = DensityUtil.getToolBarHeight(this)
+            toolbarHeight = DensityUtil.getToolBarHeight()
         }
 
         if (relevantView == null) {

@@ -1,16 +1,12 @@
 package com.sunny.zy.utils
 
-import android.R
-import android.annotation.TargetApi
 import android.content.Context
-import android.content.res.Configuration
-import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewConfiguration
 import android.view.WindowManager
+import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -24,43 +20,35 @@ import kotlin.math.sqrt
 object DensityUtil {
 
     /**
-     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
-     */
-    fun dip2px(dpValue: Float): Int {
-        val scale = ZyFrameStore.getContext().resources.displayMetrics.density
-        return (dpValue * scale + 0.5f).toInt()
-    }
-
-    /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
-    fun px2dip(pxValue: Float): Int {
+    fun px2dp(pxValue: Float): Int {
         val scale: Float = ZyFrameStore.getContext().resources.displayMetrics.density
         return (pxValue / scale + 0.5f).toInt()
     }
 
-    fun dp2pxInt(dpValue: Float): Int {
+    fun dp2px(dpValue: Float): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dpValue,
             ZyFrameStore.getContext().resources.displayMetrics
         ).toInt()
     }
 
-    fun sp2pxInt(spValue: Float): Int {
+    fun sp2px(spValue: Float): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP, spValue,
             ZyFrameStore.getContext().resources.displayMetrics
         ).toInt()
     }
 
-    fun dp2px(dpValue: Float): Float {
+    fun dp2pxFloat(dpValue: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dpValue,
             ZyFrameStore.getContext().resources.displayMetrics
         )
     }
 
-    fun sp2px(spValue: Float): Float {
+    fun sp2pxFloat(spValue: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP, spValue,
             ZyFrameStore.getContext().resources.displayMetrics
@@ -167,11 +155,21 @@ object DensityUtil {
 
     fun getToolBarHeight(): Int {
         val tv = TypedValue()
-        return if (ZyFrameStore.getContext().theme.resolveAttribute(R.attr.actionBarSize, tv, true)) {
-            TypedValue.complexToDimensionPixelSize(tv.data, ZyFrameStore.getContext().resources.displayMetrics)
+        return if (ZyFrameStore.getContext().theme.resolveAttribute(
+                R.attr.actionBarSize, tv, true
+            )
+        ) {
+            TypedValue.complexToDimensionPixelSize(
+                tv.data, ZyFrameStore.getContext().resources.displayMetrics
+            )
         } else 0
     }
 
-
+    /**
+     * 获取软键盘的高度
+     */
+    fun getSoftKeyBoardHeight(): Int {
+        return screenHeight() * 2 / 5
+    }
 
 }

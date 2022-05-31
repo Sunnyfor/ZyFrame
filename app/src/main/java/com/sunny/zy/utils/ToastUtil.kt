@@ -2,6 +2,7 @@ package com.sunny.zy.utils
 
 import android.os.Handler
 import android.os.Looper
+import android.view.Gravity
 import android.widget.Toast
 import com.sunny.zy.ZyFrameStore
 
@@ -30,21 +31,32 @@ object ToastUtil {
      * 显示Toast
      * @param content Toast信息
      */
-    fun show(content: String?, type: Int) {
+    fun show(content: String?, duration: Int, gravity: Int) {
         handler.removeMessages(delay)
         toast?.cancel()
-        toast = Toast.makeText(ZyFrameStore.getContext(), content ?: "", type).apply {
-            show()
-        }
-        val delay = if (type == Toast.LENGTH_SHORT) LENGTH_SHORT else LENGTH_LONG
+        toast = Toast.makeText(ZyFrameStore.getContext(), content ?: "", duration)
+        toast?.setGravity(gravity, 0, 0)
+        toast?.show()
+
+        val delay = if (duration == Toast.LENGTH_SHORT) LENGTH_SHORT else LENGTH_LONG
         handler.sendEmptyMessageDelayed(delay, delay.toLong())
     }
 
     fun show(content: String?) {
-        show(content ?: "", Toast.LENGTH_SHORT)
+        show(content ?: "", Toast.LENGTH_SHORT, Gravity.BOTTOM)
     }
 
-    fun show() {
-        show("阿猿正在玩命开发，敬请期待...", Toast.LENGTH_LONG)
+    fun show(content: String?, duration: Int) {
+        show(content ?: "", duration, Gravity.BOTTOM)
+    }
+
+
+    fun showCenter(content: String?) {
+        show(content ?: "", Toast.LENGTH_SHORT, Gravity.CENTER)
+    }
+
+
+    fun showCenter(content: String?, duration: Int) {
+        show(content ?: "", duration, Gravity.CENTER)
     }
 }

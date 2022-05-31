@@ -1,11 +1,8 @@
 package com.sunny.zy.utils
 
-import android.content.Context
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.view.WindowManager
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import kotlin.math.pow
@@ -22,37 +19,31 @@ object DensityUtil {
     /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
-    fun px2dp(pxValue: Float): Int {
-        val scale: Float = ZyFrameStore.getContext().resources.displayMetrics.density
-        return (pxValue / scale + 0.5f).toInt()
+    fun px2dp(px: Float): Int {
+        return (px2dpFloat(px) + 0.5f).toInt()
     }
 
-    fun dp2px(dpValue: Float): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dpValue,
-            ZyFrameStore.getContext().resources.displayMetrics
-        ).toInt()
+    fun dp2px(dp: Float): Int {
+        return (dp2pxFloat(dp) + 0.5f).toInt()
     }
 
     fun sp2px(spValue: Float): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, spValue,
-            ZyFrameStore.getContext().resources.displayMetrics
-        ).toInt()
+        return (sp2pxFloat(spValue) + 0.5f).toInt()
     }
 
-    fun dp2pxFloat(dpValue: Float): Float {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dpValue,
-            ZyFrameStore.getContext().resources.displayMetrics
-        )
+    fun px2dpFloat(px: Float): Float {
+        val density = ZyFrameStore.getContext().resources.displayMetrics.density
+        return px / density
     }
 
-    fun sp2pxFloat(spValue: Float): Float {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, spValue,
-            ZyFrameStore.getContext().resources.displayMetrics
-        )
+    fun dp2pxFloat(dp: Float): Float {
+        val density = ZyFrameStore.getContext().resources.displayMetrics.density
+        return dp * density
+    }
+
+    fun sp2pxFloat(sp: Float): Float {
+        val density = ZyFrameStore.getContext().resources.displayMetrics.scaledDensity
+        return sp * density
     }
 
     /**
@@ -69,31 +60,6 @@ object DensityUtil {
         return ZyFrameStore.getContext().resources.displayMetrics.widthPixels
     }
 
-    /**
-     * 获取控件的宽度
-     *
-     * @param view 要获取宽度的控件
-     * @return 控件的宽度
-     */
-    fun viewWidth(view: View): Int {
-        val w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        view.measure(w, h)
-        return view.measuredWidth
-    }
-
-    /**
-     * 获取控件的高度
-     *
-     * @param view 要获取高度的控件
-     * @return 控件的高度
-     */
-    fun viewHeight(view: View): Int {
-        val w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        view.measure(w, h)
-        return view.measuredHeight
-    }
 
     /**
      * 获取控件在窗体中的位置
@@ -128,19 +94,6 @@ object DensityUtil {
         return sqrt / (160 * dm.density)
     }
 
-    fun getDisplayMetrics(): DisplayMetrics {
-        requireNotNull(ZyFrameStore.getContext()) { "context can't null" }
-        val windowManager =
-            ZyFrameStore.getContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
-        val displayMetrics = DisplayMetrics()
-        display.getMetrics(displayMetrics)
-        return displayMetrics
-    }
-
-    fun getWindowWidth() = getDisplayMetrics().widthPixels
-
-    fun getWindowHeight() = getDisplayMetrics().heightPixels
 
     fun getStatusBarHeight(): Int {
         val resources = ZyFrameStore.getContext().resources
@@ -156,7 +109,7 @@ object DensityUtil {
     fun getToolBarHeight(): Int {
         val tv = TypedValue()
         return if (ZyFrameStore.getContext().theme.resolveAttribute(
-                R.attr.actionBarSize, tv, true
+                android.R.attr.actionBarSize, tv, true
             )
         ) {
             TypedValue.complexToDimensionPixelSize(

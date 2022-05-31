@@ -13,7 +13,7 @@ import okhttp3.Response
  * Mail sunnyfor98@gmail.com
  * Date 2020/8/24 16:20
  */
-class ZyNetworkInterceptor(var downLoadResultBean: DownLoadResultBean) : Interceptor {
+class DefaultNetworkInterceptor(var downLoadResultBean: DownLoadResultBean) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())

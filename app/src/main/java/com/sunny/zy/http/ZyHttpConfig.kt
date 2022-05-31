@@ -1,6 +1,7 @@
 package com.sunny.zy.http
 
 import com.sunny.zy.http.bean.BaseHttpResultBean
+import com.sunny.zy.http.interceptor.DefaultLogInterceptor
 import com.sunny.zy.http.interceptor.ZyHeaderInterceptor
 import com.sunny.zy.http.parser.DefaultResponseParser
 import com.sunny.zy.http.parser.IResponseParser
@@ -112,9 +113,22 @@ object ZyHttpConfig {
      */
     val baseModelSuccessCodes = arrayListOf("0", "200")
 
+
     val headerInterceptor: ZyHeaderInterceptor by lazy {
         ZyHeaderInterceptor()
     }
+
+    /**
+     * Log拦截器
+     */
+    var logInterceptor: Interceptor = DefaultLogInterceptor()
+
+
+    /**
+     * 扩展的拦截器
+     */
+    var extendInterceptor: Interceptor? = null
+
 
     /**
      * 设置头信息
@@ -140,12 +154,6 @@ object ZyHttpConfig {
      * url验证
      */
     var hostnameVerifier: HostnameVerifier = HostnameVerifier { _, _ -> true }
-
-
-    /**
-     * 网络请求全局拦截器
-     */
-    var networkInterceptor: Interceptor? = null
 
 
     /**

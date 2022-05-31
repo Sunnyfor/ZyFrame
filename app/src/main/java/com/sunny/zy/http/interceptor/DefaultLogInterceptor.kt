@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
  * Mail sunnyfor98@gmail.com
  * Date 2020/9/29 09:54
  */
-class ZyHttpLoggingInterceptor : Interceptor {
+class DefaultLogInterceptor : Interceptor {
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -86,6 +86,7 @@ class ZyHttpLoggingInterceptor : Interceptor {
                 if (buffer.isProbablyUtf8() && contentLength != 0L) {
                     val result = buffer.clone().readString(charset)
                     if (result.isNotEmpty()){
+
                         endLogSb.append("\n")
                         endLogSb.append(result.trim())
                     }

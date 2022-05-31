@@ -9,7 +9,7 @@ import java.io.EOFException
  * Mail sunnyfor98@gmail.com
  * Date 2020/9/29 10:05
  */
-internal fun Buffer.isProbablyUtf8(): Boolean {
+fun Buffer.isProbablyUtf8(): Boolean {
     try {
         val prefix = Buffer()
         val byteCount = size.coerceAtMost(64)

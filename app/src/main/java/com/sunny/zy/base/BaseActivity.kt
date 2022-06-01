@@ -239,7 +239,7 @@ abstract class BaseActivity : AppCompatActivity(),
     }
 
 
-    private fun getRootView() = findViewById<FitWindowsLinearLayout>(R.id.action_bar_root)
+    private fun getRootView() = findViewById<FitWindowsLinearLayout>(androidx.appcompat.R.id.action_bar_root)
 
     /**
      * 只有标题的toolbar

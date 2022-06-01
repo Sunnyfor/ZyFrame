@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
 import android.widget.Toast
+import com.sunny.zy.BuildConfig
 import com.sunny.zy.ZyFrameStore
 
 /**
@@ -42,21 +43,45 @@ object ToastUtil {
         handler.sendEmptyMessageDelayed(delay, delay.toLong())
     }
 
-    fun show(content: String?) {
-        show(content ?: "", Toast.LENGTH_SHORT, Gravity.BOTTOM)
-    }
-
+    /**
+     * Toast底部显示
+     * @param content 打印内容
+     * @param duration 打印长短
+     */
     fun show(content: String?, duration: Int) {
         show(content ?: "", duration, Gravity.BOTTOM)
     }
 
-
-    fun showCenter(content: String?) {
-        show(content ?: "", Toast.LENGTH_SHORT, Gravity.CENTER)
+    /**
+     * Toast底部显示
+     */
+    fun show(content: String?) {
+        show(content ?: "", Toast.LENGTH_SHORT)
     }
 
-
+    /**
+     * Toast居中显示
+     * @param content 打印内容
+     * @param duration 打印长短
+     */
     fun showCenter(content: String?, duration: Int) {
         show(content ?: "", duration, Gravity.CENTER)
     }
+
+    /**
+     * Toast居中显示
+     */
+    fun showCenter(content: String?) {
+        showCenter(content ?: "", Toast.LENGTH_SHORT)
+    }
+
+    /**
+     * 仅Debug包打印
+     */
+    fun showDebug(content: String?) {
+        if (BuildConfig.DEBUG) {
+            show(content ?: "")
+        }
+    }
+
 }

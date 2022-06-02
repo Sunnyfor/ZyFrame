@@ -1,25 +1,24 @@
 package com.sunny.zy.gallery.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.documentfile.provider.DocumentFile
+import com.bumptech.glide.Glide
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.GallerySelectActivity
 import com.sunny.zy.gallery.bean.GalleryBean
-import com.sunny.zy.utils.GlideApp
 import kotlinx.android.synthetic.main.zy_item_gallery_content.view.*
 import java.text.DecimalFormat
 
 /**
- * Desc
+ * Desc 相册
  * Author ZY
  * Mail sunnyfor98@gmail.com
- * Date 2021/9/23 09:45
+ * Date 2021/9/23
  */
 class GalleryContentAdapter(private val selectList: ArrayList<GalleryBean>) :
     BaseRecycleAdapter<GalleryBean>(arrayListOf()) {
@@ -28,9 +27,10 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryBean>) :
 
     var selectCallback: ((position: Int) -> Unit)? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: BaseRecycleViewHolder, position: Int) {
         val data = getData(position)
-        GlideApp.with(context)
+        Glide.with(context)
             .load(data.uri)
             .into(holder.itemView.iv_gallery_photo)
 

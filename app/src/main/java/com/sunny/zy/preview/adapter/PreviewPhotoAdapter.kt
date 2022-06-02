@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.documentfile.provider.DocumentFile
+import com.bumptech.glide.Glide
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.bean.GalleryBean
-import com.sunny.zy.utils.GlideApp
 import kotlinx.android.synthetic.main.zy_item_gallery_preview.view.*
 
 /**
@@ -24,7 +24,7 @@ class PreviewPhotoAdapter(data: ArrayList<GalleryBean>) : BaseRecycleAdapter<Gal
     var selectBean: GalleryBean? = null
 
     override fun onBindViewHolder(holder: BaseRecycleViewHolder, position: Int) {
-        GlideApp.with(context)
+        Glide.with(context)
             .load(getData(position).uri)
             .into(holder.itemView.iv_photo)
 

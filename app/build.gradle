@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -57,8 +57,8 @@ dependencies {
     api 'io.github.scwang90:refresh-footer-classics:2.0.5'
 
     //AndroidX基本组件
-    api 'androidx.core:core-ktx:1.7.0'
-    api 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    api 'androidx.core:core-ktx:1.6.0'
+    api 'androidx.appcompat:appcompat:1.3.0-rc01'
 
     //UI组件库
     api 'com.google.android.material:material:1.4.0'
@@ -80,13 +80,13 @@ dependencies {
     //logger类
     implementation 'com.orhanobut:logger:2.2.0'
 
-    def camerax_version = "1.1.0-alpha10"
+    def camerax_version = "1.1.0-alpha07"
     // CameraX core library using camera2 implementation
     implementation "androidx.camera:camera-camera2:$camerax_version"
     // CameraX Lifecycle Library
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     // CameraX View class
-    implementation "androidx.camera:camera-view:1.0.0-alpha30"
+    implementation "androidx.camera:camera-view:1.0.0-alpha27"
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 

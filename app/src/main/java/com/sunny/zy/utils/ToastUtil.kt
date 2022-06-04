@@ -36,7 +36,9 @@ object ToastUtil {
         handler.removeMessages(delay)
         toast?.cancel()
         toast = Toast.makeText(ZyFrameStore.getContext(), content ?: "", duration)
-        toast?.setGravity(gravity, 0, 0)
+        if (gravity != 0) {
+            toast?.setGravity(gravity, 0, 0)
+        }
         toast?.show()
 
         val delay = if (duration == Toast.LENGTH_SHORT) LENGTH_SHORT else LENGTH_LONG
@@ -49,7 +51,7 @@ object ToastUtil {
      * @param duration 打印长短
      */
     fun show(content: String?, duration: Int) {
-        show(content ?: "", duration, Gravity.BOTTOM)
+        show(content ?: "", duration, 0)
     }
 
     /**

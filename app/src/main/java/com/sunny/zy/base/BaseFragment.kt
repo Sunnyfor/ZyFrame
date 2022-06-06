@@ -19,7 +19,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
     private var savedInstanceState: Bundle? = null
 
-
     var placeholderViewUtil: PlaceholderViewUtil? = null
 
     val toolbar: ZyToolBar?
@@ -192,7 +191,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun onDestroyView() {
-        (view as ViewGroup).removeAllViews()
         placeholderViewUtil?.clear()
         placeholderViewUtil = null
         onClose()

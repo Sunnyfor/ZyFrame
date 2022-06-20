@@ -1,5 +1,6 @@
 package com.sunny.zy.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -94,13 +95,29 @@ abstract class BaseFragment : Fragment(), IBaseView, ICreateStateView, View.OnCl
         defaultStateView.hideError()
     }
 
-    override var tvDescId = ZyFrameConfig.createStateView.tvDescId
+    /**
+     * 加载覆盖View
+     */
+    override fun getLoadView(context: Context): View {
+        return ZyFrameConfig.createStateView.getLoadView(context)
+    }
 
-    override var ivIconId = ZyFrameConfig.createStateView.ivIconId
+    /**
+     * 错误覆盖View
+     */
+    override fun getErrorView(context: Context): View {
+        return ZyFrameConfig.createStateView.getErrorView(context)
+    }
+
 
     override fun getStateViewParent(): ViewGroup {
         return flParentView
     }
+
+    override var tvDescId = ZyFrameConfig.createStateView.tvDescId
+
+    override var ivIconId = ZyFrameConfig.createStateView.ivIconId
+
 
     override fun onClick(v: View) {
         getBaseActivity().clickProcess(v) {

@@ -159,12 +159,11 @@ class PullRefreshLayout : SmartRefreshLayout {
                     adapter.notifyDataSetChanged()
                     getRecyclerView()?.scrollToPosition(adapter.getData().size - 1)
                 } else {
-                    adapter.notifyItemRangeInserted(0, data.size)
+                    adapter.notifyDataSetChanged()
                 }
             } else {
-                val startIndex = adapter.getData().size
                 adapter.getData().addAll(data)
-                adapter.notifyItemRangeInserted(startIndex, data.size)
+                adapter.notifyDataSetChanged()
             }
         } else {
             if (isReverse) {

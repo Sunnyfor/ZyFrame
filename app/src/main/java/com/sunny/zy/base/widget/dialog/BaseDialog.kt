@@ -10,7 +10,6 @@ import android.widget.FrameLayout
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.IBaseView
-import com.sunny.zy.base.ICreateStateView
 import com.sunny.zy.base.bean.ErrorViewBean
 import com.sunny.zy.widget.DefaultStateView
 
@@ -20,14 +19,14 @@ import com.sunny.zy.widget.DefaultStateView
  * Mail sunnyfor98@gmail.com
  * Date 2022/3/1 15:07
  */
-abstract class BaseDialog(context: Context) : Dialog(context), IBaseView, ICreateStateView, View.OnClickListener {
+abstract class BaseDialog(context: Context) : Dialog(context), IBaseView, View.OnClickListener {
 
     private val flParentView by lazy {
         FrameLayout(context)
     }
 
     open val defaultStateView: DefaultStateView by lazy {
-        object : DefaultStateView(this) {
+        object : DefaultStateView(ZyFrameConfig.createStateView) {
             override fun getStateViewParent(): ViewGroup {
                 return this@BaseDialog.getStateViewParent()
             }
@@ -72,37 +71,12 @@ abstract class BaseDialog(context: Context) : Dialog(context), IBaseView, ICreat
         defaultStateView.hideLoading()
     }
 
-    override fun getStateViewParent(): ViewGroup {
-        return flParentView
-    }
-
-    /**
-     * 错误描述组件ID
-     */
-    override var tvDescId = ZyFrameConfig.createStateView.tvDescId
-
-    /**
-     * 错误描述占位图组件ID
-     */
-    override var ivIconId = ZyFrameConfig.createStateView.ivIconId
-
-
-    /**
-     * 加载覆盖View
-     */
-    override fun getLoadView(context: Context): View {
-        return ZyFrameConfig.createStateView.getLoadView(context)
-    }
-
-    /**
-     * 错误覆盖View
-     */
-    override fun getErrorView(context: Context): View {
-        return ZyFrameConfig.createStateView.getErrorView(context)
-    }
-
 
     override fun onClick(v: View) {
         onClickEvent(v)
+    }
+
+    override fun getStateViewParent(): ViewGroup {
+        return flParentView
     }
 }

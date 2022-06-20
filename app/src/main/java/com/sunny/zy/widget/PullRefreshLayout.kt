@@ -14,6 +14,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.sunny.zy.R
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.bean.ErrorViewBean
 
@@ -74,7 +75,11 @@ class PullRefreshLayout : SmartRefreshLayout {
         ClassicsFooter(context)
     }
 
-    var defaultStateView: DefaultStateView? = null
+    var defaultStateView = object : DefaultStateView(ZyFrameConfig.createStateView) {
+        override fun getStateViewParent(): ViewGroup {
+            return rootView
+        }
+    }
 
     private fun init() {
         setRefreshHeader(headerView)
@@ -220,11 +225,11 @@ class PullRefreshLayout : SmartRefreshLayout {
 
     fun <T> updateEmptyView(data: ArrayList<T>) {
         if (data.isEmpty()) {
-            val errorViewBean = ErrorViewBean( resources.getString(R.string.emptyData))
-            defaultStateView?.showError(errorViewBean)
+            val errorViewBean = ErrorViewBean(resources.getString(R.string.emptyData))
+            defaultStateView.showError(errorViewBean)
 
         } else {
-            defaultStateView?.hideError()
+            defaultStateView.hideError()
         }
     }
 

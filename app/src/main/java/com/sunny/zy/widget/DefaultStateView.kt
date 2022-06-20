@@ -15,16 +15,22 @@ import com.sunny.zy.base.bean.ErrorViewBean
 abstract class DefaultStateView(var createStateView: ICreateStateView) : IStateView {
 
     private val loadingView by lazy {
-        createStateView.getLoadView(getStateViewParent().context)
+        createStateView.getLoadView(getStateViewParent().context).apply {
+            setOnClickListener { }
+        }
     }
 
     private val errorView by lazy {
-        createStateView.getErrorView(getStateViewParent().context)
+        createStateView.getErrorView(getStateViewParent().context).apply {
+            setOnClickListener { }
+        }
     }
 
 
     override fun showLoading() {
-        getStateViewParent().addView(loadingView)
+        if (loadingView.parent == null) {
+            getStateViewParent().addView(loadingView)
+        }
     }
 
     override fun hideLoading() {
@@ -43,7 +49,10 @@ abstract class DefaultStateView(var createStateView: ICreateStateView) : IStateV
         } else {
             ivIcon?.setImageResource(bean.resId)
         }
-        getStateViewParent().addView(errorView)
+
+        if (errorView.parent == null) {
+            getStateViewParent().addView(errorView)
+        }
     }
 
     override fun hideError() {

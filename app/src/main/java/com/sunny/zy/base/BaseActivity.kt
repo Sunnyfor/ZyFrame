@@ -38,7 +38,7 @@ import com.sunny.zy.widget.DefaultStateView
  * Date 2018/8/2
  */
 abstract class BaseActivity : AppCompatActivity(),
-    ActivityCompat.OnRequestPermissionsResultCallback, IBaseView, ICreateStateView,
+    ActivityCompat.OnRequestPermissionsResultCallback, IBaseView,
     View.OnClickListener, OnTitleListener {
 
     open var taskTag = "DefaultActivity"
@@ -70,7 +70,7 @@ abstract class BaseActivity : AppCompatActivity(),
     }
 
     open val defaultStateView: DefaultStateView by lazy {
-        object : DefaultStateView(this) {
+        object : DefaultStateView(ZyFrameConfig.createStateView) {
             override fun getStateViewParent(): ViewGroup {
                 return this@BaseActivity.getStateViewParent()
             }
@@ -152,30 +152,6 @@ abstract class BaseActivity : AppCompatActivity(),
         defaultStateView.hideError()
     }
 
-
-    /**
-     * 加载覆盖View
-     */
-    override fun getLoadView(context: Context): View {
-        return ZyFrameConfig.createStateView.getLoadView(context)
-    }
-
-    /**
-     * 错误覆盖View
-     */
-    override fun getErrorView(context: Context): View {
-        return ZyFrameConfig.createStateView.getErrorView(context)
-    }
-
-    /**
-     * 错误描述组件ID
-     */
-    override var tvDescId = ZyFrameConfig.createStateView.tvDescId
-
-    /**
-     * 错误描述占位图组件ID
-     */
-    override var ivIconId = ZyFrameConfig.createStateView.ivIconId
 
     /**
      * 状态覆盖层容器

@@ -1,6 +1,5 @@
 package com.sunny.zy.base
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,7 @@ import com.sunny.zy.widget.DefaultStateView
  * Mail sunnyfor98@gmail.com
  * Date 2018/8/2
  */
-abstract class BaseFragment : Fragment(), IBaseView, ICreateStateView, View.OnClickListener, OnTitleListener {
+abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTitleListener {
 
     private var savedInstanceState: Bundle? = null
 
@@ -32,7 +31,7 @@ abstract class BaseFragment : Fragment(), IBaseView, ICreateStateView, View.OnCl
     }
 
     open val defaultStateView: DefaultStateView by lazy {
-        object : DefaultStateView(this) {
+        object : DefaultStateView(ZyFrameConfig.createStateView) {
             override fun getStateViewParent(): ViewGroup {
                 return this@BaseFragment.getStateViewParent()
             }
@@ -95,28 +94,10 @@ abstract class BaseFragment : Fragment(), IBaseView, ICreateStateView, View.OnCl
         defaultStateView.hideError()
     }
 
-    /**
-     * 加载覆盖View
-     */
-    override fun getLoadView(context: Context): View {
-        return ZyFrameConfig.createStateView.getLoadView(context)
-    }
-
-    /**
-     * 错误覆盖View
-     */
-    override fun getErrorView(context: Context): View {
-        return ZyFrameConfig.createStateView.getErrorView(context)
-    }
-
 
     override fun getStateViewParent(): ViewGroup {
         return flParentView
     }
-
-    override var tvDescId = ZyFrameConfig.createStateView.tvDescId
-
-    override var ivIconId = ZyFrameConfig.createStateView.ivIconId
 
 
     override fun onClick(v: View) {

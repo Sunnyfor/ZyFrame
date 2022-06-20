@@ -17,12 +17,14 @@ abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
     private var onItemClickListener: ((view: View, position: Int) -> Unit)? = null
     lateinit var context: Context
 
+    var currentIndex: Int = -1
+
     /*
      * 创建ViewHolder
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecycleViewHolder {
         context = parent.context
-        return BaseRecycleViewHolder(initLayout(parent, viewType), onItemClickListener)
+        return BaseRecycleViewHolder(initLayout(parent, viewType), this, onItemClickListener)
     }
 
     /*

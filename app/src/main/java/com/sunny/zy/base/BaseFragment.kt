@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.sunny.zy.ZyFrameConfig
-import com.sunny.zy.utils.PlaceholderViewUtil
+import com.sunny.zy.base.bean.ErrorViewBean
+import com.sunny.zy.base.bean.MenuBean
+import com.sunny.zy.widget.DefaultStateView
 
 
 /**
@@ -15,14 +18,25 @@ import com.sunny.zy.utils.PlaceholderViewUtil
  * Mail sunnyfor98@gmail.com
  * Date 2018/8/2
  */
-abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTitleListener {
+abstract class BaseFragment : Fragment(), IBaseView, ICreateStateView, View.OnClickListener, OnTitleListener {
 
     private var savedInstanceState: Bundle? = null
 
-    var placeholderViewUtil: PlaceholderViewUtil? = null
-
     val toolbar: ZyToolBar?
         get() = getBaseActivity().toolbar
+
+
+    private val flParentView by lazy {
+        FrameLayout(requireContext())
+    }
+
+    private val defaultStateView: DefaultStateView by lazy {
+        object : DefaultStateView(this) {
+            override fun getStateViewParent(): ViewGroup {
+                return this@BaseFragment.getStateViewParent()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,19 +46,17 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
         this.savedInstanceState = savedInstanceState
 
-        placeholderViewUtil = PlaceholderViewUtil()
-
         val layoutView = initLayout()
 
         if (layoutView is Int) {
-            return inflater.inflate(layoutView, container, false)
+            flParentView.addView(inflater.inflate(layoutView, container, false))
         }
 
         if (layoutView is View) {
-            return layoutView
+            flParentView.addView(layoutView)
         }
 
-        return null
+        return flParentView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,48 +78,28 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
 
-    abstract fun initLayout(): Any?
-
-    abstract fun initView()
-
-    abstract fun onClickEvent(view: View)
-
-    abstract fun loadData()
-
-
-    override fun showMessage(message: String) {
-        getBaseActivity().showMessage(message)
-    }
-
-
     override fun showLoading() {
-        if (view is ViewGroup) {
-            showPlaceholder(
-                view as ViewGroup,
-                ZyFrameConfig.loadingPlaceholderBean
-            )
-        }
-
+        defaultStateView.showLoading()
     }
 
     override fun hideLoading() {
-        hidePlaceholder(ZyFrameConfig.loadingPlaceholderBean.viewType)
+        defaultStateView.hideLoading()
     }
 
-
-    fun showPlaceholder(placeholderBean: PlaceholderBean) {
-        if (view is ViewGroup) {
-            showPlaceholder(view as ViewGroup, placeholderBean)
-        }
+    override fun showError(bean: ErrorViewBean) {
+        defaultStateView.showError(bean)
     }
 
-    override fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
-        placeholderViewUtil?.showView(viewGroup, placeholderBean)
-
+    override fun hideError() {
+        defaultStateView.hideError()
     }
 
-    override fun hidePlaceholder(viewType: Int) {
-        placeholderViewUtil?.hideView(viewType)
+    override var tvDescId = ZyFrameConfig.createStateView.tvDescId
+
+    override var ivIconId = ZyFrameConfig.createStateView.ivIconId
+
+    override fun getStateViewParent(): ViewGroup {
+        return flParentView
     }
 
     override fun onClick(v: View) {
@@ -128,26 +120,26 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     /**
      * 只有标题的toolbar
      */
-    override fun setTitleSimple(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleSimple(title: String, vararg menuItem: MenuBean) {
         getBaseActivity().setTitleSimple(title, *menuItem)
     }
 
-    override fun setTitleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleCenterSimple(title: String, vararg menuItem: MenuBean) {
         getBaseActivity().setTitleCenterSimple(title, *menuItem)
     }
 
     /**
      * 带返回键的toolbar
      */
-    override fun setTitleDefault(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleDefault(title: String, vararg menuItem: MenuBean) {
         getBaseActivity().setTitleDefault(title, *menuItem)
     }
 
-    override fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
+    override fun setTitleCenterDefault(title: String, vararg menuItem: MenuBean) {
         getBaseActivity().setTitleCenterDefault(title, *menuItem)
     }
 
-    override fun setTitleCustom(layoutRes: Int, vararg menuItem: BaseMenuBean) {
+    override fun setTitleCustom(layoutRes: Int, vararg menuItem: MenuBean) {
         getBaseActivity().setTitleCustom(layoutRes, *menuItem)
     }
 
@@ -191,13 +183,8 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
     }
 
     override fun onDestroyView() {
-        placeholderViewUtil?.clear()
-        placeholderViewUtil = null
         onClose()
         super.onDestroyView()
     }
-
-    abstract fun onClose()
-
 
 }

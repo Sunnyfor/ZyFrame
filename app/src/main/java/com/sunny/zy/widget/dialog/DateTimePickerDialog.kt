@@ -1,4 +1,4 @@
-package com.sunny.zy.widget
+package com.sunny.zy.widget.dialog
 
 import android.content.Context
 

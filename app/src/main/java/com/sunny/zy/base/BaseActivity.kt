@@ -22,7 +22,13 @@ import androidx.fragment.app.Fragment
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.ZyFrameStore
-import com.sunny.zy.utils.*
+import com.sunny.zy.base.bean.ErrorViewBean
+import com.sunny.zy.base.bean.MenuBean
+import com.sunny.zy.utils.BitmapUtil
+import com.sunny.zy.utils.DensityUtil
+import com.sunny.zy.utils.PermissionsUtil
+import com.sunny.zy.utils.ToolbarUtil
+import com.sunny.zy.widget.DefaultStateView
 
 
 /**
@@ -32,12 +38,12 @@ import com.sunny.zy.utils.*
  * Date 2018/8/2
  */
 abstract class BaseActivity : AppCompatActivity(),
-    ActivityCompat.OnRequestPermissionsResultCallback, IBaseView,
+    ActivityCompat.OnRequestPermissionsResultCallback, IBaseView, ICreateStateView,
     View.OnClickListener, OnTitleListener {
 
-    var taskTag = "DefaultActivity"
+    open var taskTag = "DefaultActivity"
 
-    var savedInstanceState: Bundle? = null
+    open var savedInstanceState: Bundle? = null
 
     private var isDark = false
 
@@ -55,21 +61,25 @@ abstract class BaseActivity : AppCompatActivity(),
         BitmapUtil()
     }
 
-    val placeholderViewUtil: PlaceholderViewUtil by lazy {
-        PlaceholderViewUtil()
-    }
-
-    val toolbar: ZyToolBar?
+    open val toolbar: ZyToolBar?
         get() = toolbarUtil.toolbar
 
 
-    val statusBar: View by lazy {
+    open val statusBar: View by lazy {
         View(this)
     }
 
-    lateinit var frameBody: ViewGroup
+    private val defaultStateView: DefaultStateView by lazy {
+        object : DefaultStateView(this) {
+            override fun getStateViewParent(): ViewGroup {
+                return this@BaseActivity.getStateViewParent()
+            }
+        }
+    }
 
-    var screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    //屏幕方向
+    open var screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,11 +90,10 @@ abstract class BaseActivity : AppCompatActivity(),
             LinearLayout.LayoutParams.MATCH_PARENT,
             DensityUtil.getStatusBarHeight()
         )
-        getRootView().addView(statusBar, 0, statusBarParams)
+        getActionBarRootView().addView(statusBar, 0, statusBarParams)
         mStatusBarColor = R.color.colorPrimary
         setStatusBarColor(mStatusBarColor)
         setStatusBarTextModel(ZyFrameConfig.statusBarIsDark)
-        frameBody = findViewById(android.R.id.content)
 
         when (val layoutView = initLayout()) {
             is Int -> {
@@ -106,6 +115,7 @@ abstract class BaseActivity : AppCompatActivity(),
         loadData()
     }
 
+
     override fun onRestart() {
         super.onRestart()
         if (permissionsUtil.isNoHint) {
@@ -113,69 +123,66 @@ abstract class BaseActivity : AppCompatActivity(),
         }
     }
 
-    /**
-     * 设置布局操作
-     */
-    abstract fun initLayout(): Any
-
-    /**
-     * 初始化View操作
-     */
-    abstract fun initView()
-
-    /**
-     * 加载数据操作
-     */
-    abstract fun loadData()
-
-    /**
-     * 点击事件回调
-     */
-    abstract fun onClickEvent(view: View)
-
-    abstract fun onClose()
-
 
     /**
      * 显示loading覆盖层
      */
     override fun showLoading() {
-        showPlaceholder(frameBody, ZyFrameConfig.loadingPlaceholderBean)
+        defaultStateView.showLoading()
     }
 
     /**
      * 隐藏loading覆盖层
      */
     override fun hideLoading() {
-        hidePlaceholder(ZyFrameConfig.loadingPlaceholderBean.viewType)
-    }
-
-
-    fun showPlaceholder(placeholderBean: PlaceholderBean) {
-        placeholderViewUtil.showView(frameBody, placeholderBean)
+        defaultStateView.hideLoading()
     }
 
     /**
-     * 显示error覆盖层
+     * 显示错误覆盖层
      */
-    override fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean) {
-        placeholderViewUtil.showView(viewGroup, placeholderBean)
+    override fun showError(bean: ErrorViewBean) {
+        defaultStateView.showError(bean)
     }
 
     /**
-     * 隐藏error覆盖层
+     * 隐藏错误覆盖层
      */
-    override fun hidePlaceholder(viewType: Int) {
-        placeholderViewUtil.hideView(viewType)
+    override fun hideError() {
+        defaultStateView.hideError()
+    }
+
+
+    /**
+     * 加载覆盖View
+     */
+    override fun getLoadView(context: Context): View {
+        return ZyFrameConfig.createStateView.getLoadView(context)
     }
 
     /**
-     * 显示Toast
+     * 错误覆盖View
      */
-    override fun showMessage(message: String) {
-        ToastUtil.show(message)
+    override fun getErrorView(context: Context): View {
+        return ZyFrameConfig.createStateView.getErrorView(context)
     }
 
+    /**
+     * 错误描述组件ID
+     */
+    override var tvDescId = ZyFrameConfig.createStateView.tvDescId
+
+    /**
+     * 错误描述占位图组件ID
+     */
+    override var ivIconId = ZyFrameConfig.createStateView.ivIconId
+
+    /**
+     * 状态覆盖层容器
+     */
+    override fun getStateViewParent(): ViewGroup {
+        return findViewById(android.R.id.content)
+    }
 
     /**
      * 批量注册点击事件
@@ -239,37 +246,37 @@ abstract class BaseActivity : AppCompatActivity(),
     }
 
 
-    private fun getRootView() = findViewById<FitWindowsLinearLayout>(androidx.appcompat.R.id.action_bar_root)
+    private fun getActionBarRootView() = findViewById<FitWindowsLinearLayout>(androidx.appcompat.R.id.action_bar_root)
 
     /**
      * 只有标题的toolbar
      */
-    override fun setTitleSimple(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(getRootView())
+    override fun setTitleSimple(title: String, vararg menuItem: MenuBean) {
+        toolbarUtil.initToolbar(getActionBarRootView())
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
-    override fun setTitleCenterSimple(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(getRootView(), R.layout.zy_default_title)
+    override fun setTitleCenterSimple(title: String, vararg menuItem: MenuBean) {
+        toolbarUtil.initToolbar(getActionBarRootView(), R.layout.zy_default_title)
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
     /**
      * 带返回键的toolbar
      */
-    override fun setTitleDefault(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(getRootView())
+    override fun setTitleDefault(title: String, vararg menuItem: MenuBean) {
+        toolbarUtil.initToolbar(getActionBarRootView())
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
-    override fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(getRootView(), R.layout.zy_default_title)
+    override fun setTitleCenterDefault(title: String, vararg menuItem: MenuBean) {
+        toolbarUtil.initToolbar(getActionBarRootView(), R.layout.zy_default_title)
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
-    override fun setTitleCustom(layoutRes: Int, vararg menuItem: BaseMenuBean) {
-        toolbarUtil.initToolbar(getRootView(), layoutRes)
-        toolbarUtil.setTitleCustom(layoutRes, *menuItem)
+    override fun setTitleCustom(layoutRes: Int, vararg menuItem: MenuBean) {
+        toolbarUtil.initToolbar(getActionBarRootView(), layoutRes)
+        toolbarUtil.setTitleCustom(*menuItem)
     }
 
     override fun setTitleBackground(textColor: Int, backgroundColor: Int) {
@@ -451,7 +458,6 @@ abstract class BaseActivity : AppCompatActivity(),
         if (isFinishing) {
             ZyFrameStore.removeActivity(this)
             bitmapUtil.destroy()
-            placeholderViewUtil.clear()
             onClose()
         }
     }

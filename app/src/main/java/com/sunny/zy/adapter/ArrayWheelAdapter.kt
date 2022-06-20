@@ -1,6 +1,6 @@
 package com.sunny.zy.adapter
 
-import com.contrarywind.adapter.WheelAdapter
+import com.sunny.zy.widget.wheel.adapter.WheelAdapter
 
 
 /**
@@ -9,7 +9,7 @@ import com.contrarywind.adapter.WheelAdapter
  * Mail sunnyfor98@gmail.com
  * Date 2022/3/1 18:49
  */
-class ArrayWheelAdapter(var list: List<Any>) : WheelAdapter<Any> {
+class ArrayWheelAdapter(var list: List<Any>) : WheelAdapter {
 
 
     override fun getItemsCount() = list.size

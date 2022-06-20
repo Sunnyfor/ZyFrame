@@ -156,10 +156,6 @@
         <item name="android:layout_height">@dimen/dp_40</item>
         <item name="android:background">@drawable/sel_btn_able</item>
         <item name="android:textSize">@dimen/sp_16</item>
-        <item name="android:layout_marginStart">@dimen/dp_20</item>
-        <item name="android:layout_marginEnd">@dimen/dp_20</item>
-        <item name="android:layout_marginTop">@dimen/dp_20</item>
-        <item name="android:layout_marginBottom">@dimen/dp_20</item>
         <item name="android:textColor">@color/font_white</item>
         <item name="android:gravity">center</item>
     </style>

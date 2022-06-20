@@ -5,7 +5,7 @@
     android:layout_height="?attr/actionBarSize">
 
     <ImageView
-        android:id="@+id/iv_back"
+        android:id="@+id/ivBack"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:padding="@dimen/dp_10"
@@ -16,30 +16,30 @@
         android:contentDescription="@string/placeholder"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_title"
+        android:id="@+id/clTitle"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_30"
         android:background="@drawable/sel_title_expand_bg"
         android:paddingStart="@dimen/dp_10"
         android:paddingEnd="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/iv_back"
+        app:layout_constraintStart_toEndOf="@id/ivBack"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_title_gallery_name"
+            android:id="@+id/tvTitleGalleryName"
             style="@style/style_font_black"
             android:layout_marginEnd="@dimen/dp_5"
             android:text="@string/all_image"
             android:textColor="@color/color_white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/iv_expand"
+            app:layout_constraintEnd_toStartOf="@id/ivExpand"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <View
-            android:id="@+id/iv_expand"
+            android:id="@+id/ivExpand"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:background="@drawable/svg_title_expand"
@@ -51,7 +51,7 @@
 
 
     <TextView
-        android:id="@+id/tv_complete"
+        android:id="@+id/tvComplete"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_30"
         android:layout_marginEnd="@dimen/dp_14"

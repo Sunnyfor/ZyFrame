@@ -22,16 +22,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sunny.zy.R
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.adapter.GalleryContentAdapter
 import com.sunny.zy.gallery.adapter.GalleryFolderAdapter
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.gallery.bean.GalleryFolderBean
 import com.sunny.zy.gallery.contract.GalleryContract
-import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.preview.GalleryPreviewActivity
 import com.sunny.zy.utils.*
-import kotlinx.android.synthetic.main.zy_act_photo_select.*
 import java.io.File
 
 /**
@@ -64,7 +63,6 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         GalleryContract.Presenter(this)
     }
 
-
     companion object {
         const val SELECT_TYPE_INT = "selectType"
         const val SELECT_TYPE_MULTIPLE = 0  //多选
@@ -79,6 +77,15 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         const val File_TYPE_VIDEO = 2
     }
 
+
+    private val rvFolder by lazy {
+        findViewById<RecyclerView>(R.id.rvFolder)
+    }
+
+    private val rvContent by lazy {
+        findViewById<RecyclerView>(R.id.rvContent)
+    }
+
     override fun initLayout() = R.layout.zy_act_photo_select
 
     @SuppressLint("NotifyDataSetChanged")
@@ -88,9 +95,9 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         setTitleCustom(R.layout.zy_layout_title_photo_select)
         toolbar?.setBackgroundResource(R.color.preview_bg)
         setStatusBarColor(R.color.preview_bg)
-        toolbar?.findViewById<ImageView>(R.id.iv_back)?.setOnClickListener(this)
-        toolbar?.findViewById<ConstraintLayout>(R.id.cl_title)?.setOnClickListener(this)
-        toolbar?.findViewById<TextView>(R.id.tv_complete)?.setOnClickListener(this)
+        toolbar?.findViewById<ImageView>(R.id.ivBack)?.setOnClickListener(this)
+        toolbar?.findViewById<ConstraintLayout>(R.id.clTitle)?.setOnClickListener(this)
+        toolbar?.findViewById<TextView>(R.id.tvComplete)?.setOnClickListener(this)
 
         intent.getBundleExtra("flags")?.let {
             selectType = it.getInt(SELECT_TYPE_INT, SELECT_TYPE_MULTIPLE)
@@ -103,7 +110,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
 
         contentAdapter.selectType = selectType
 
-        rv_folder.layoutManager = LinearLayoutManager(this)
+        rvFolder.layoutManager = LinearLayoutManager(this)
         folderAdapter.setOnItemClickListener { _, position ->
             val lastPosition = folderAdapter.selectIndex
             folderAdapter.selectIndex = position
@@ -113,8 +120,8 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
             toggleGallery()
         }
 
-        rv_content.layoutManager = GridLayoutManager(this, 4)
-        rv_content.addItemDecoration(object : RecyclerView.ItemDecoration() {
+        rvContent.layoutManager = GridLayoutManager(this, 4)
+        rvContent.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
             ) {
@@ -217,15 +224,15 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
 
 
     private fun updateTitle(position: Int) {
-        toolbar?.findViewById<TextView>(R.id.tv_title_gallery_name)?.text =
+        toolbar?.findViewById<TextView>(R.id.tvTitleGalleryName)?.text =
             folderAdapter.getData(position).name
         contentAdapter.getData().clear()
         contentAdapter.getData().addAll(folderAdapter.getData(position).list)
-        rv_content.adapter = contentAdapter
+        rvContent.adapter = contentAdapter
     }
 
     private fun updateCount() {
-        val completeText = toolbar?.findViewById<TextView>(R.id.tv_complete)
+        val completeText = toolbar?.findViewById<TextView>(R.id.tvComplete)
         val textSb = StringBuilder()
         textSb.append(getString(R.string.complete))
 
@@ -246,22 +253,22 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
 
         val expandAnim: Animation
 
-        if (rv_folder.visibility == View.VISIBLE) {
-            rv_folder.visibility = View.GONE
+        if (rvFolder.visibility == View.VISIBLE) {
+            rvFolder.visibility = View.GONE
             expandAnim = AnimationUtils.loadAnimation(this, R.anim.gallery_folder_collect)
         } else {
-            rv_folder.visibility = View.VISIBLE
+            rvFolder.visibility = View.VISIBLE
             expandAnim = AnimationUtils.loadAnimation(this, R.anim.gallery_folder_expand)
         }
 
-        toolbar?.findViewById<View>(R.id.iv_expand)?.startAnimation(expandAnim)
+        toolbar?.findViewById<View>(R.id.ivExpand)?.startAnimation(expandAnim)
 
-        if (rv_folder.visibility == View.GONE) {
-            rv_folder.animation =
+        if (rvFolder.visibility == View.GONE) {
+            rvFolder.animation =
                 AnimationUtils.loadAnimation(this, R.anim.gallery_folder_out).apply {
                     setAnimationListener(object : Animation.AnimationListener {
                         override fun onAnimationStart(animation: Animation?) {
-                            rv_folder.setBackgroundResource(R.color.color_transparent)
+                            rvFolder.setBackgroundResource(R.color.color_transparent)
                         }
 
                         override fun onAnimationEnd(animation: Animation?) {}
@@ -271,13 +278,13 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                     })
                 }
         } else {
-            rv_folder.animation =
+            rvFolder.animation =
                 AnimationUtils.loadAnimation(this, R.anim.gallery_folder_in).apply {
                     setAnimationListener(object : Animation.AnimationListener {
                         override fun onAnimationStart(animation: Animation?) {}
 
                         override fun onAnimationEnd(animation: Animation?) {
-                            rv_folder.setBackgroundColor(Color.parseColor("#3F000000"))
+                            rvFolder.setBackgroundColor(Color.parseColor("#3F000000"))
                         }
 
                         override fun onAnimationRepeat(animation: Animation?) {}
@@ -289,12 +296,12 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
 
     override fun onClickEvent(view: View) {
         when (view.id) {
-            R.id.iv_back -> finish()
+            R.id.ivBack -> finish()
 
-            R.id.cl_title -> {
+            R.id.clTitle -> {
                 toggleGallery()
             }
-            R.id.tv_complete -> {
+            R.id.tvComplete -> {
                 if (galleryResultList.isEmpty()) {
                     return
                 }
@@ -311,7 +318,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
     override fun showGalleryData(data: List<GalleryFolderBean>) {
         folderAdapter.getData().clear()
         folderAdapter.getData().addAll(data)
-        rv_folder.adapter = folderAdapter
+        rvFolder.adapter = folderAdapter
 
         if (folderAdapter.getData().isNotEmpty()) {
             updateTitle(0)

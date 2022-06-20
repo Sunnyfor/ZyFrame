@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.contrarywind.view.WheelView
+    <com.sunny.zy.widget.wheel.WheelView
         android:id="@+id/wvYear"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -33,7 +33,7 @@
         android:layout_marginStart="@dimen/dp_8"/>
 
 
-    <com.contrarywind.view.WheelView
+    <com.sunny.zy.widget.wheel.WheelView
         android:id="@+id/wvMonth"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -44,7 +44,7 @@
         app:layout_constraintHorizontal_weight="1" />
 
 
-    <com.contrarywind.view.WheelView
+    <com.sunny.zy.widget.wheel.WheelView
         android:id="@+id/wvDay"
         android:layout_width="0dp"
         android:layout_height="0dp"

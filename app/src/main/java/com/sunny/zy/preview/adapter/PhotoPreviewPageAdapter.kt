@@ -3,6 +3,7 @@ package com.sunny.zy.preview.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.github.chrisbanes.photoview.PhotoView
@@ -12,7 +13,6 @@ import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.VideoPlayActivity
-import kotlinx.android.synthetic.main.zy_layout_videoview.view.*
 
 
 /**
@@ -30,15 +30,17 @@ class PhotoPreviewPageAdapter(data: ArrayList<GalleryBean>) :
 
         when (holder.itemView) {
             is PhotoView -> {
+                val photoView = holder.itemView
                 Glide.with(context)
                     .load(getData(position).uri)
-                    .into(holder.itemView)
+                    .into(photoView)
             }
             is ConstraintLayout -> {
+                val ivPhoto: ImageView = holder.getView(R.id.ivPhoto)
                 Glide.with(context)
                     .load(getData(position).uri)
-                    .into(holder.itemView.iv_photo)
-                holder.itemView.v_play.setOnClickListener {
+                    .into(ivPhoto)
+                holder.getView<View>(R.id.vPlay).setOnClickListener {
                     VideoPlayActivity.intent(
                         context as BaseActivity, null, getData(position).uri ?: return@setOnClickListener,
                     )

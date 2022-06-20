@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 @Suppress("UNCHECKED_CAST")
 class BaseRecycleViewHolder(
     itemView: View,
+    var adapter: BaseRecycleAdapter<*>,
     onItemClickListener: ((view: View, position: Int) -> Unit)?
 ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
@@ -36,6 +37,7 @@ class BaseRecycleViewHolder(
     }
 
     override fun onClick(v: View) {
-        onItemClickListener?.invoke(v, adapterPosition)
+        adapter.currentIndex = adapterPosition
+        onItemClickListener?.invoke(v, adapter.currentIndex)
     }
 }

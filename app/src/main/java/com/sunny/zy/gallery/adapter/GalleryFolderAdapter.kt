@@ -1,15 +1,14 @@
 package com.sunny.zy.gallery.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.bean.GalleryFolderBean
-import kotlinx.android.synthetic.main.zy_item_gallery_folder.view.*
 
 /**
  * Desc
@@ -21,20 +20,20 @@ class GalleryFolderAdapter : BaseRecycleAdapter<GalleryFolderBean>(arrayListOf()
 
     var selectIndex = 0
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: BaseRecycleViewHolder, position: Int) {
         val data = getData(position)
         Glide.with(context)
             .load(data.cover?.uri ?: "")
-            .into(holder.itemView.iv_gallery_photo)
+            .into(holder.getView(R.id.ivGalleryPhoto))
 
-        holder.itemView.tv_gallery_name.text = data.name ?: "未命名"
-        holder.itemView.tv_gallery_count.text = ("(${data.list.size})")
+        holder.getView<TextView>(R.id.tvGalleryName).text = data.name ?: "未命名"
+        val countStr = "(${data.list.size})"
+        holder.getView<TextView>(R.id.tvGalleryCount).text = countStr
 
-        if (selectIndex == position) {
-            holder.itemView.v_select.visibility = View.VISIBLE
+        holder.getView<View>(R.id.vSelect).visibility = if (selectIndex == position) {
+            View.VISIBLE
         } else {
-            holder.itemView.v_select.visibility = View.GONE
+            View.GONE
         }
     }
 

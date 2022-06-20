@@ -1,7 +1,8 @@
 package com.sunny.zy
 
 import android.util.Log
-import com.sunny.zy.base.PlaceholderBean
+import com.sunny.zy.base.ICreateStateView
+import com.sunny.zy.widget.DefaultCreateStateView
 
 /**
  * Desc 框架全局配置清单
@@ -18,7 +19,7 @@ object ZyFrameConfig {
     /**
      * 设置Log标签名
      */
-    var logTag  = "ZYLog"
+    var logTag = "ZYLog"
 
     /**
      * 设置Glide的日志级别
@@ -47,26 +48,8 @@ object ZyFrameConfig {
 
 
     /**
-     *  无数据展示布局
+     * 全局创建状态覆盖层View
      */
-    var emptyLayoutRes = R.layout.zy_layout_placeholder
-    var emptyPlaceholderBean = PlaceholderBean(PlaceholderBean.emptyData).apply {
-        viewIdMap[R.id.tv_desc] = R.string.emptyData
-        viewIdMap[R.id.iv_icon] = R.drawable.svg_placeholder
-    }
+    var createStateView: ICreateStateView = DefaultCreateStateView()
 
-    /**
-     *  发生错误展示布局
-     */
-    var errorLayoutRes = R.layout.zy_layout_placeholder
-    var errorPlaceholderBean = PlaceholderBean(PlaceholderBean.error).apply {
-        viewIdMap[R.id.tv_desc] = ""
-        viewIdMap[R.id.iv_icon] = R.drawable.svg_placeholder
-    }
-
-    /**
-     *  加载数据展示布局
-     */
-    var loadingLayoutRes = R.layout.zy_layout_loading
-    var loadingPlaceholderBean = PlaceholderBean(PlaceholderBean.loading)
 }

@@ -1,6 +1,7 @@
 package com.sunny.zy.base
 
 import android.view.View
+import com.sunny.zy.base.bean.MenuBean
 
 /**
  * Desc
@@ -14,15 +15,15 @@ interface OnTitleListener {
 
     fun hideTitle()
 
-    fun setTitleSimple(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleSimple(title: String, vararg menuItem: MenuBean)
 
-    fun setTitleCenterSimple(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleCenterSimple(title: String, vararg menuItem: MenuBean)
 
-    fun setTitleDefault(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleDefault(title: String, vararg menuItem: MenuBean)
 
-    fun setTitleCenterDefault(title: String, vararg menuItem: BaseMenuBean)
+    fun setTitleCenterDefault(title: String, vararg menuItem: MenuBean)
 
-    fun setTitleCustom(layoutRes: Int,vararg menuItem: BaseMenuBean)
+    fun setTitleCustom(layoutRes: Int,vararg menuItem: MenuBean)
 
     fun setTitleBackground(textColor: Int, backgroundColor: Int)
 

@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/iv_switch"
+        android:id="@+id/ivSwitch"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_28"
@@ -27,17 +27,17 @@
 
 
     <TextView
-        android:id="@+id/tv_tip"
+        android:id="@+id/tvTip"
         style="@style/style_font_white_small"
         android:text="@string/camera_hint"
-        app:layout_constraintBottom_toTopOf="@id/btn_take"
+        app:layout_constraintBottom_toTopOf="@id/btnTake"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="@dimen/dp_23"
         />
 
     <com.sunny.zy.widget.CaptureButton
-        android:id="@+id/btn_take"
+        android:id="@+id/btnTake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_32"
@@ -47,16 +47,16 @@
 
 
     <ImageView
-        android:id="@+id/iv_back"
+        android:id="@+id/ivBack"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:contentDescription="@string/app_name"
         android:padding="@dimen/dp_10"
         android:rotation="90"
         android:src="@drawable/svg_title_expand"
-        app:layout_constraintBottom_toBottomOf="@id/btn_take"
-        app:layout_constraintEnd_toStartOf="@id/btn_take"
+        app:layout_constraintBottom_toBottomOf="@id/btnTake"
+        app:layout_constraintEnd_toStartOf="@id/btnTake"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btn_take" />
+        app:layout_constraintTop_toTopOf="@id/btnTake" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

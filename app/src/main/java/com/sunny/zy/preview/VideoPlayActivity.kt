@@ -4,14 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.widget.ImageButton
 import android.widget.MediaController
+import android.widget.TextView
+import android.widget.VideoView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.IntentManager
 import com.sunny.zy.utils.ToastUtil
-import kotlinx.android.synthetic.main.zy_act_preview_video.*
 
 /**
  * Desc
@@ -64,16 +66,28 @@ class VideoPlayActivity : BaseActivity() {
 
     private var isComplete = false
 
+    private val tvComplete by lazy {
+        findViewById<TextView>(R.id.tvComplete)
+    }
+
+    private val btnBack by lazy {
+        findViewById<ImageButton>(R.id.btnBack)
+    }
+
+    private val videoView by lazy {
+        findViewById<VideoView>(R.id.videoView)
+    }
+
     override fun initLayout() = R.layout.zy_act_preview_video
 
     override fun initView() {
         setStatusBarColor(R.color.preview_bg)
 
         if (isShowComplete) {
-            tv_complete.visibility = View.VISIBLE
+            tvComplete.visibility = View.VISIBLE
         }
 
-        setOnClickListener(zy_ib_back, tv_complete)
+        setOnClickListener(btnBack, tvComplete)
     }
 
     override fun loadData() {
@@ -102,11 +116,11 @@ class VideoPlayActivity : BaseActivity() {
 
     override fun onClickEvent(view: View) {
         when (view.id) {
-            zy_ib_back.id -> {
+            btnBack.id -> {
                 isComplete = false
                 finish()
             }
-            tv_complete.id -> {
+            tvComplete.id -> {
                 isComplete = true
                 finish()
             }

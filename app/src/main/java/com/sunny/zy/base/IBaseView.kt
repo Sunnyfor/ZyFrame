@@ -1,6 +1,6 @@
 package com.sunny.zy.base
 
-import android.view.ViewGroup
+import android.view.View
 
 /**
  * Desc 接口 IView基类
@@ -8,15 +8,28 @@ import android.view.ViewGroup
  * Mail sunnyfor98@gmail.com
  * Date 2018/8/2.
  */
-interface IBaseView {
+interface IBaseView : IStateView {
 
-    fun showLoading()
+    /**
+     * 设置布局操作
+     */
+    fun initLayout(): Any?
 
-    fun hideLoading()
+    /**
+     * 初始化View操作
+     */
+    fun initView()
 
-    fun showPlaceholder(viewGroup: ViewGroup, placeholderBean: PlaceholderBean)
+    /**
+     * 加载数据操作
+     */
+    fun loadData()
 
-    fun hidePlaceholder(viewType: Int)
+    /**
+     * 点击事件回调
+     */
+    fun onClickEvent(view: View)
 
-    fun showMessage(message: String)
+
+    fun onClose()
 }

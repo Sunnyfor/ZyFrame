@@ -5,7 +5,7 @@
     android:layout_height="@dimen/dp_90">
 
     <ImageView
-        android:id="@+id/iv_gallery_photo"
+        android:id="@+id/ivGalleryPhoto"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/app_name"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/v_mask"
+        android:id="@+id/vMask"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,7 +27,7 @@
 
 
     <View
-        android:id="@+id/v_play"
+        android:id="@+id/vPlay"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_5"
@@ -39,24 +39,24 @@
 
 
     <TextView
-        android:id="@+id/tv_duration"
+        android:id="@+id/tvDuration"
         style="@style/style_font_white"
         android:layout_marginStart="@dimen/dp_5"
         android:text="@string/default_duration"
-        app:layout_constraintBottom_toBottomOf="@id/v_play"
-        app:layout_constraintStart_toEndOf="@id/v_play"
-        app:layout_constraintTop_toTopOf="@id/v_play" />
+        app:layout_constraintBottom_toBottomOf="@id/vPlay"
+        app:layout_constraintStart_toEndOf="@id/vPlay"
+        app:layout_constraintTop_toTopOf="@id/vPlay" />
 
     <FrameLayout
-        android:id="@+id/fl_select"
+        android:id="@+id/flSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/dp_5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="@dimen/dp_5">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_select"
+            android:id="@+id/tvSelect"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:background="@drawable/svg_gallery_content_unselect"

@@ -1,17 +1,16 @@
 package com.sunny.zy.gallery.adapter
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.GallerySelectActivity
 import com.sunny.zy.gallery.bean.GalleryBean
-import kotlinx.android.synthetic.main.zy_item_gallery_content.view.*
 import java.text.DecimalFormat
 
 /**
@@ -27,45 +26,53 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryBean>) :
 
     var selectCallback: ((position: Int) -> Unit)? = null
 
-    @SuppressLint("SetTextI18n")
+
     override fun onBindViewHolder(holder: BaseRecycleViewHolder, position: Int) {
+
         val data = getData(position)
         Glide.with(context)
             .load(data.uri)
-            .into(holder.itemView.iv_gallery_photo)
+            .into(holder.getView(R.id.ivGalleryPhoto))
+
+        val tvSelect = holder.getView<TextView>(R.id.tvSelect)
+        val vMask = holder.getView<View>(R.id.vMask)
 
         when (selectType) {
             GallerySelectActivity.SELECT_TYPE_SINGLE -> {
-                holder.itemView.tv_select.visibility = View.GONE
+                tvSelect.visibility = View.GONE
             }
             GallerySelectActivity.SELECT_TYPE_MULTIPLE -> {
-                holder.itemView.tv_select.visibility = View.VISIBLE
+                tvSelect.visibility = View.VISIBLE
                 if (selectList.contains(data)) {
-                    holder.itemView.v_mask.setBackgroundColor(Color.parseColor("#3f000000"))
-                    holder.itemView.tv_select.setBackgroundResource(R.drawable.svg_gallery_content_select_number)
-                    holder.itemView.tv_select.text = (selectList.indexOf(data) + 1).toString()
+                    vMask.setBackgroundColor(Color.parseColor("#3f000000"))
+                    tvSelect.setBackgroundResource(R.drawable.svg_gallery_content_select_number)
+                    val selectStr = (selectList.indexOf(data) + 1).toString()
+                    tvSelect.text = selectStr
                 } else {
-                    holder.itemView.v_mask.setBackgroundColor(Color.parseColor("#15000000"))
-                    holder.itemView.tv_select.text = null
-                    holder.itemView.tv_select.setBackgroundResource(R.drawable.svg_gallery_content_unselect)
+                    vMask.setBackgroundColor(Color.parseColor("#15000000"))
+                    tvSelect.text = null
+                    tvSelect.setBackgroundResource(R.drawable.svg_gallery_content_unselect)
                 }
             }
         }
 
+        val vPlay = holder.getView<View>(R.id.vPlay)
+        val tvDuration = holder.getView<TextView>(R.id.tvDuration)
+        val flSelect = holder.getView<TextView>(R.id.tvDuration)
+
         if (data.type.contains("video")) {
-            holder.itemView.v_play.visibility = View.VISIBLE
+            vPlay.visibility = View.VISIBLE
             val mm: String = DecimalFormat("00").format(data.duration / 1000 % 3600 / 60)
             val ss: String = DecimalFormat("00").format(data.duration / 1000 % 60)
-            holder.itemView.tv_duration.text = ("$mm:$ss")
+            val durationStr = "$mm:$ss"
+            tvDuration.text = durationStr
         } else {
-            holder.itemView.v_play.visibility = View.GONE
+            vPlay.visibility = View.GONE
         }
-
-        holder.itemView.fl_select.setOnClickListener {
+        flSelect.setOnClickListener {
             selectCallback?.invoke(position)
         }
-
-        holder.itemView.tv_duration.visibility = holder.itemView.v_play.visibility
+        tvDuration.visibility = vPlay.visibility
     }
 
     override fun initLayout(parent: ViewGroup, viewType: Int): View {

@@ -1,12 +1,16 @@
-package com.sunny.zy.widget
+package com.sunny.zy.widget.dialog
 
 import android.content.Context
-import android.os.Bundle
+import android.graphics.Typeface
+import android.view.Gravity
+import android.view.View
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.sunny.zy.R
 import com.sunny.zy.adapter.ArrayWheelAdapter
 import com.sunny.zy.base.widget.dialog.BaseDialog
 import com.sunny.zy.utils.StringUtil
-import kotlinx.android.synthetic.main.dialog_time_select.*
+import com.sunny.zy.widget.wheel.WheelView
 import java.util.*
 
 /**
@@ -16,7 +20,7 @@ import java.util.*
  * Date 2022/3/1 14:36
  */
 class TimePickerDialog(context: Context, var resultCallback: (date: String) -> Unit) :
-    BaseDialog(context, R.layout.dialog_time_select) {
+    BaseDialog(context) {
 
     private val weekStrList = arrayOf("日", "一", "二", "三", "四", "五", "六")
 
@@ -29,14 +33,25 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
     private var dateSb = StringBuilder()
     private var resultSb = StringBuilder()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        tvCancel.setOnClickListener {
+    private val wvHour by lazy {
+        findViewById<WheelView>(R.id.wvHour)
+    }
+
+    private val wvMinute by lazy {
+        findViewById<WheelView>(R.id.wvMinute)
+    }
+
+
+    override fun initLayout() = R.layout.dialog_time_select
+
+    override fun initView() {
+        window?.setGravity(Gravity.BOTTOM)
+        findViewById<TextView>(R.id.tvCancel).setOnClickListener {
             dismiss()
         }
 
-        tvConfirm.setOnClickListener {
+        findViewById<TextView>(R.id.tvConfirm).setOnClickListener {
             resultSb.clear()
             if (wvHour.currentItem < 10) {
                 resultSb.append("0")
@@ -51,12 +66,9 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
             resultCallback.invoke(resultSb.toString())
             dismiss()
         }
-
-        initData()
     }
 
-
-    private fun initData() {
+    override fun loadData() {
         for (i in 0..59) {
             if (i < 10) {
                 hours.add("0$i$hourLabel")
@@ -67,10 +79,10 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
             }
         }
         setWheelViewStyle(wvHour)
-        wvHour.adapter = ArrayWheelAdapter(hours)
+        wvHour.setAdapter(ArrayWheelAdapter(hours))
 
         setWheelViewStyle(wvMinute)
-        wvMinute.adapter = ArrayWheelAdapter(minutes)
+        wvMinute.setAdapter(ArrayWheelAdapter(minutes))
 
         val currentTime = StringUtil.getCurrentTime("HH:mm")
         val times = currentTime.split(":")
@@ -79,18 +91,32 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
         initTitle()
     }
 
+    override fun onClickEvent(view: View) {}
+
+
+    override fun onClose() {}
+
+
     private fun initTitle() {
         if (dateSb.isEmpty()) {
             dateSb.append(StringUtil.getCurrentTime("yyyy年MM月dd日"))
             dateSb.append(" 周")
             dateSb.append(weekStrList[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1])
         }
-        tvTitle?.text = dateSb.toString()
+        findViewById<TextView>(R.id.tvTitle)?.text = dateSb.toString()
     }
 
     fun setTitle(date: String) {
         dateSb.clear()
         dateSb.append(date)
         initTitle()
+    }
+
+    private fun setWheelViewStyle(wheelView: WheelView) {
+        wheelView.setTextSize(20f)
+        wheelView.setTypeface(Typeface.DEFAULT)
+        wheelView.setDividerColor(ContextCompat.getColor(context, R.color.color_transparent))
+        wheelView.setItemsVisibleCount(5)
+        wheelView.setLineSpacingMultiplier(2f)
     }
 }

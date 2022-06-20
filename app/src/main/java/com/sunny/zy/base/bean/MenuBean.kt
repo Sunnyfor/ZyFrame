@@ -1,4 +1,4 @@
-package com.sunny.zy.base
+package com.sunny.zy.base.bean
 
 import android.view.MenuItem
 
@@ -8,7 +8,7 @@ import android.view.MenuItem
  * Mail sunnyfor98@gmail.com
  * Date 2020/10/29 17:27
  */
-class BaseMenuBean {
+class MenuBean {
 
     companion object {
         //表示永远显示在菜单中

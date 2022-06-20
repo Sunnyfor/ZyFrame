@@ -3,11 +3,12 @@ package com.sunny.zy.activity
 import android.Manifest
 import android.util.DisplayMetrics
 import android.view.View
+import androidx.camera.view.PreviewView
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.CameraXUtil
 import com.sunny.zy.utils.IntentManager
-import kotlinx.android.synthetic.main.zy_frag_qr_code.*
+
 
 /**
  * Desc
@@ -18,6 +19,11 @@ import kotlinx.android.synthetic.main.zy_frag_qr_code.*
 class QRCodeActivity : BaseActivity() {
 
     private val cameraXUtil = CameraXUtil()
+
+    private val previewView by lazy {
+        findViewById<PreviewView>(R.id.previewView)
+    }
+
 
     override fun initLayout() = R.layout.zy_frag_qr_code
 

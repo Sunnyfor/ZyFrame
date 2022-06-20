@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout.LayoutParams
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
-import com.sunny.zy.base.BaseMenuBean
+import com.sunny.zy.base.bean.MenuBean
 import com.sunny.zy.base.ZyToolBar
 
 
@@ -19,7 +19,7 @@ class ToolbarUtil(var activity: BaseActivity) {
 
     var toolbar: ZyToolBar? = null
 
-    private val menuList = ArrayList<BaseMenuBean>()
+    private val menuList = ArrayList<MenuBean>()
 
     /**
      * 初始化Toolbar
@@ -38,7 +38,7 @@ class ToolbarUtil(var activity: BaseActivity) {
     }
 
 
-    fun titleSimple(title: String, vararg menuItem: BaseMenuBean) {
+    fun titleSimple(title: String, vararg menuItem: MenuBean) {
         show()
         menuList.clear()
         menuList.addAll(menuItem)
@@ -49,7 +49,7 @@ class ToolbarUtil(var activity: BaseActivity) {
     }
 
 
-    fun titleDefault(title: String, vararg menuItem: BaseMenuBean) {
+    fun titleDefault(title: String, vararg menuItem: MenuBean) {
         show()
         menuList.clear()
         menuList.addAll(menuItem)
@@ -60,7 +60,7 @@ class ToolbarUtil(var activity: BaseActivity) {
         }
     }
 
-    fun setTitleCustom(layoutRes: Int, vararg menuItem: BaseMenuBean) {
+    fun setTitleCustom(vararg menuItem: MenuBean) {
         show()
         menuList.clear()
         menuList.addAll(menuItem)

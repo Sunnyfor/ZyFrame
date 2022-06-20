@@ -5,14 +5,14 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_title"
+        android:id="@+id/clTitle"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/preview_bg"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@id/zy_ib_back"
+            android:id="@+id/btnBack"
             style="?attr/toolbarNavigationButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -23,7 +23,7 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@id/zy_tv_title"
+            android:id="@id/tvTitle"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
 
 
         <TextView
-            android:id="@+id/tv_complete"
+            android:id="@+id/tvComplete"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_14"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_title">
+        app:layout_constraintTop_toBottomOf="@id/clTitle">
 
         <VideoView
             android:id="@+id/videoView"

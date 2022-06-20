@@ -12,7 +12,7 @@ data class GalleryBean(
     var id: Long = 0,
     var uri: Uri?
 ) {
-
+    var path = ""
     var type = ""
     var duration = 0
     var size = 0L

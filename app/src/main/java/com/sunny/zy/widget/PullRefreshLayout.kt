@@ -1,5 +1,6 @@
 package com.sunny.zy.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -12,9 +13,9 @@ import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import com.sunny.zy.R
 import com.sunny.zy.base.BaseRecycleAdapter
-import com.sunny.zy.ZyFrameConfig
-import com.sunny.zy.utils.PlaceholderViewUtil
+import com.sunny.zy.base.bean.ErrorViewBean
 
 
 /**
@@ -48,8 +49,6 @@ class PullRefreshLayout : SmartRefreshLayout {
     /**
      * 不赋值的情况下不显示占位图
      */
-    var placeholderViewUtil: PlaceholderViewUtil? = null
-
     private val layoutParams =
         FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
@@ -75,6 +74,7 @@ class PullRefreshLayout : SmartRefreshLayout {
         ClassicsFooter(context)
     }
 
+    var defaultStateView: DefaultStateView? = null
 
     private fun init() {
         setRefreshHeader(headerView)
@@ -133,6 +133,7 @@ class PullRefreshLayout : SmartRefreshLayout {
         addData(adapter, -1, data)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun <T> addData(adapter: BaseRecycleAdapter<T>, index: Int = -1, data: ArrayList<T>) {
         if (page == 1) {
             adapter.getData().clear()
@@ -156,8 +157,9 @@ class PullRefreshLayout : SmartRefreshLayout {
                     adapter.notifyItemRangeInserted(0, data.size)
                 }
             } else {
+                val startIndex = adapter.getData().size
                 adapter.getData().addAll(data)
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRangeInserted(startIndex, data.size)
             }
         } else {
             if (isReverse) {
@@ -197,19 +199,20 @@ class PullRefreshLayout : SmartRefreshLayout {
 
     fun <T> deleteData(adapter: BaseRecycleAdapter<T>, index: Int) {
         adapter.getData().removeAt(index)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemRemoved(index)
+        adapter.notifyItemRangeChanged(index, adapter.itemCount)
         updateEmptyView(adapter.getData())
     }
 
     fun <T> deleteData(adapter: BaseRecycleAdapter<T>, data: T) {
-        adapter.getData().remove(data)
-        adapter.notifyDataSetChanged()
-        updateEmptyView(adapter.getData())
+        val index = adapter.getData().indexOf(data)
+        deleteData(adapter, index)
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun <T> deleteData(adapter: BaseRecycleAdapter<T>, data: ArrayList<T>) {
-        adapter.getData().removeAll(data)
+        adapter.getData().removeAll(data.toSet())
         adapter.notifyDataSetChanged()
         updateEmptyView(adapter.getData())
     }
@@ -217,12 +220,11 @@ class PullRefreshLayout : SmartRefreshLayout {
 
     fun <T> updateEmptyView(data: ArrayList<T>) {
         if (data.isEmpty()) {
-            placeholderViewUtil?.showView(
-                rootView,
-                ZyFrameConfig.emptyPlaceholderBean
-            )
+            val errorViewBean = ErrorViewBean( resources.getString(R.string.emptyData))
+            defaultStateView?.showError(errorViewBean)
+
         } else {
-            placeholderViewUtil?.hideView(ZyFrameConfig.emptyPlaceholderBean.viewType)
+            defaultStateView?.hideError()
         }
     }
 

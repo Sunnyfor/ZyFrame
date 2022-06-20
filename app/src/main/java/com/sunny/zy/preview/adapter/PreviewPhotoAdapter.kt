@@ -11,7 +11,6 @@ import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.bean.GalleryBean
-import kotlinx.android.synthetic.main.zy_item_gallery_preview.view.*
 
 /**
  * Desc
@@ -26,14 +25,15 @@ class PreviewPhotoAdapter(data: ArrayList<GalleryBean>) : BaseRecycleAdapter<Gal
     override fun onBindViewHolder(holder: BaseRecycleViewHolder, position: Int) {
         Glide.with(context)
             .load(getData(position).uri)
-            .into(holder.itemView.iv_photo)
+            .into(holder.getView(R.id.ivPhoto))
 
-        if (selectBean == getData(position)) {
-            holder.itemView.v_border.visibility = View.VISIBLE
+        val vBorder = holder.getView<View>(R.id.vBorder)
+        vBorder.visibility = if (selectBean == getData(position)) {
+            View.VISIBLE
         } else {
-            holder.itemView.v_border.visibility = View.GONE
+            View.GONE
         }
-        playViewVisibility(holder.itemView.v_play, getData(position).uri)
+        playViewVisibility(holder.getView(R.id.vPlay), getData(position).uri)
     }
 
     override fun initLayout(parent: ViewGroup, viewType: Int): View {
@@ -44,8 +44,7 @@ class PreviewPhotoAdapter(data: ArrayList<GalleryBean>) : BaseRecycleAdapter<Gal
         if (uri == null) {
             return
         }
-        val type =
-            DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
+        val type = DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
         if (type.contains("video")) {
             view.visibility = View.VISIBLE
         } else {

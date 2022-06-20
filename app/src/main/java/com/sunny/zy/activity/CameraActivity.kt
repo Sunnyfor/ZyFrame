@@ -5,6 +5,9 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.util.DisplayMetrics
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.camera.view.PreviewView
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.bean.GalleryBean
@@ -12,7 +15,6 @@ import com.sunny.zy.preview.GalleryPreviewActivity
 import com.sunny.zy.utils.CameraXUtil
 import com.sunny.zy.utils.IntentManager
 import com.sunny.zy.widget.CaptureButton
-import kotlinx.android.synthetic.main.zy_act_camera.*
 
 /**
  * Desc
@@ -27,6 +29,28 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
     private val cameraXUtil = CameraXUtil()
 
     private var galleryBean: GalleryBean? = null
+
+
+    private val previewView by lazy {
+        findViewById<PreviewView>(R.id.previewView)
+    }
+
+    private val ivBack by lazy {
+        findViewById<ImageView>(R.id.ivBack)
+    }
+
+    private val btnTake by lazy {
+        findViewById<CaptureButton>(R.id.btnTake)
+    }
+
+    private val tvTip by lazy {
+        findViewById<TextView>(R.id.tvTip)
+    }
+
+    private val ivSwitch by lazy {
+        findViewById<ImageView>(R.id.ivSwitch)
+    }
+
 
     override fun initLayout() = R.layout.zy_act_camera
 
@@ -53,7 +77,7 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
             }
         }
 
-        btn_take.setCaptureListener(object : CaptureButton.CaptureListener {
+        btnTake.setCaptureListener(object : CaptureButton.CaptureListener {
             override fun takePictures() {
                 //拍照
                 startAlphaAnimation()
@@ -103,7 +127,7 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
             }
 
         })
-        setOnClickListener(iv_back, btn_take, iv_switch)
+        setOnClickListener(ivBack, btnTake, ivSwitch)
     }
 
     override fun loadData() {
@@ -113,11 +137,11 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
     override fun onClickEvent(view: View) {
         when (view.id) {
 
-            R.id.iv_switch -> {
+            R.id.ivSwitch -> {
                 cameraXUtil.switchCamera()
             }
 
-            R.id.iv_back -> {
+            R.id.ivBack -> {
                 finish()
             }
         }
@@ -131,7 +155,7 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
 
     fun startAlphaAnimation() {
         if (isFirst) {
-            val animatorTxtTip = ObjectAnimator.ofFloat(tv_tip, "alpha", 1f, 0f)
+            val animatorTxtTip = ObjectAnimator.ofFloat(tvTip, "alpha", 1f, 0f)
             animatorTxtTip.duration = 500
             animatorTxtTip.start()
             isFirst = false
@@ -140,8 +164,8 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
 
 
     fun setTextWithAnimation(tip: String) {
-        tv_tip.text = tip
-        val animatorTxtTip = ObjectAnimator.ofFloat(tv_tip, "alpha", 0f, 1f, 1f, 0f)
+        tvTip.text = tip
+        val animatorTxtTip = ObjectAnimator.ofFloat(tvTip, "alpha", 0f, 1f, 1f, 0f)
         animatorTxtTip.duration = 2500
         animatorTxtTip.start()
     }

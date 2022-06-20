@@ -1,12 +1,16 @@
-package com.sunny.zy.widget
+package com.sunny.zy.widget.dialog
 
 import android.content.Context
-import android.os.Bundle
+import android.graphics.Typeface
+import android.view.Gravity
 import android.view.View
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.sunny.zy.R
 import com.sunny.zy.adapter.ArrayWheelAdapter
 import com.sunny.zy.base.widget.dialog.BaseDialog
-import kotlinx.android.synthetic.main.dialog_date_select.*
+import com.sunny.zy.widget.wheel.WheelView
+import com.sunny.zy.widget.wheel.listener.OnItemSelectedListener
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -19,7 +23,7 @@ import java.util.regex.Pattern
  * Date 2022/2/25 17:36
  */
 class DatePickerDialog(context: Context, var resultCallback: (date: String) -> Unit) :
-    BaseDialog(context, R.layout.dialog_date_select) {
+    BaseDialog(context) {
 
     private val calendar by lazy {
         Calendar.getInstance()
@@ -51,6 +55,18 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
     private var isShowDay = true
 
     private var title = ""
+
+    private val wvYear by lazy {
+        findViewById<WheelView>(R.id.wvYear)
+    }
+
+    private val wvMonth by lazy {
+        findViewById<WheelView>(R.id.wvMonth)
+    }
+
+    private val wvDay by lazy {
+        findViewById<WheelView>(R.id.wvDay)
+    }
 
     var isNoLimit = false //月和日是否不限制
 
@@ -95,64 +111,74 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
     }
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initLayout() = R.layout.dialog_date_select
 
+    override fun initView() {
+        window?.setGravity(Gravity.BOTTOM)
         setWheelViewStyle(wvYear)
-        wvYear.setOnItemSelectedListener {
-            val pattern = Pattern.compile("^[0-9]*")
-            val matcher = pattern.matcher(years[it])
-            matcher.find()
-            calendar.set(Calendar.YEAR, matcher.group().toInt())
-            initDay()
-            initTitle()
-        }
-
-        setWheelViewStyle(wvMonth)
-        wvMonth.setOnItemSelectedListener {
-            montIndex = it
-            if (isNoLimit && it == 0) {
-                calendar.set(Calendar.DAY_OF_MONTH, 1)
+        wvYear.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(index: Int) {
+                val pattern = Pattern.compile("^[0-9]*")
+                val matcher = pattern.matcher(years[index])
+                matcher.find()
+                calendar.set(Calendar.YEAR, matcher.group().toInt())
                 initDay()
                 initTitle()
-                return@setOnItemSelectedListener
             }
+        })
 
-            val position = if (isNoLimit) 1 else 0
+        setWheelViewStyle(wvMonth)
+        wvMonth.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(index: Int) {
+                montIndex = index
+                if (isNoLimit && index == 0) {
+                    calendar.set(Calendar.DAY_OF_MONTH, 1)
+                    initDay()
+                    initTitle()
+                    return
+                }
 
-            val mCalendar = Calendar.getInstance()
-            mCalendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-            mCalendar.set(Calendar.DAY_OF_MONTH, 1)
-            mCalendar.set(Calendar.MONTH, it - position)
+                val position = if (isNoLimit) 1 else 0
 
-            val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-            val maxDay = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-            if (currentDay >= maxDay) {
-                calendar.set(Calendar.DAY_OF_MONTH, maxDay)
+                val mCalendar = Calendar.getInstance()
+                mCalendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                mCalendar.set(Calendar.DAY_OF_MONTH, 1)
+                mCalendar.set(Calendar.MONTH, index - position)
+
+                val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+                val maxDay = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+                if (currentDay >= maxDay) {
+                    calendar.set(Calendar.DAY_OF_MONTH, maxDay)
+                }
+
+                calendar.set(Calendar.MONTH, index - position)
+                initDay()
+                initTitle()
             }
-
-            calendar.set(Calendar.MONTH, it - position)
-            initDay()
-            initTitle()
-        }
+        })
 
         setWheelViewStyle(wvDay)
-        wvDay.setOnItemSelectedListener {
-            dayIndex = it
-            if (isNoLimit && it == 0) {
-                initTitle()
-                return@setOnItemSelectedListener
-            }
-            val position = if (isNoLimit) 1 else 0
-            calendar.set(Calendar.DAY_OF_MONTH, it + 1 - position)
-            initTitle()
-        }
 
-        tvCancel.setOnClickListener {
+        wvDay.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onItemSelected(index: Int) {
+                dayIndex = index
+                if (isNoLimit && index == 0) {
+                    initTitle()
+                    return
+                }
+                val position = if (isNoLimit) 1 else 0
+                calendar.set(Calendar.DAY_OF_MONTH, index + 1 - position)
+                initTitle()
+            }
+
+        })
+
+
+        findViewById<TextView>(R.id.tvCancel).setOnClickListener {
             dismiss()
         }
 
-        tvConfirm.setOnClickListener {
+        findViewById<TextView>(R.id.tvConfirm).setOnClickListener {
             val regex = Regex("[^0-9]")
             val resultSb = StringBuilder(dateSb.replace(regex, dateSplit))
 
@@ -169,11 +195,18 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         initMonth()
         initDay()
         initTitle()
+
         if (isNoLimit) {
             wvMonth.setCyclic(false)
             wvDay.setCyclic(false)
         }
     }
+
+    override fun loadData() {}
+
+    override fun onClickEvent(view: View) {}
+
+    override fun onClose() {}
 
 
     private fun initYear() {
@@ -191,7 +224,7 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
             years.add("${currentYear + i}$labelYear")
             years.add(0, "${currentYear - i}$labelYear")
         }
-        wvYear.adapter = ArrayWheelAdapter(years)
+        wvYear.setAdapter(ArrayWheelAdapter(years))
         wvYear.currentItem = years.indexOf(currentYearStr)
     }
 
@@ -211,7 +244,7 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
             for (i in 1..12) {
                 months.add("$i$labelMonth")
             }
-            wvMonth.adapter = ArrayWheelAdapter(months)
+            wvMonth.setAdapter(ArrayWheelAdapter(months))
         }
 
         if (only) {
@@ -234,14 +267,14 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         }
 
         if (isNoLimit && montIndex == 0) {
-            wvDay.adapter = ArrayWheelAdapter(days)
+            wvDay.setAdapter(ArrayWheelAdapter(days))
             dayIndex = 0
             wvDay.currentItem = dayIndex
         } else {
             for (i in 1..calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                 days.add("$i$labelDay")
             }
-            wvDay.adapter = ArrayWheelAdapter(days)
+            wvDay.setAdapter(ArrayWheelAdapter(days))
             if (dayIndex != 0) {
                 wvDay.currentItem = calendar.get(Calendar.DAY_OF_MONTH) - 1 + size
             }
@@ -280,11 +313,10 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
             SimpleDateFormat(patternSb.toString(), Locale.CHINA).format(calendar.time)
         )
 
-        if (title.isNotEmpty()) {
-            tvTitle.text = title
+        findViewById<TextView>(R.id.tvTitle).text = if (title.isNotEmpty()) {
+            title
         } else {
-            val dateStr = dateSb.toString() + weekSb.toString()
-            tvTitle.text = dateStr
+            dateSb.toString() + weekSb.toString()
         }
     }
 
@@ -304,7 +336,7 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         return weekSb.toString()
     }
 
-    fun getTitle(): String = tvTitle.text.toString()
+    fun getTitle(): String = findViewById<TextView>(R.id.tvTitle).text.toString()
 
 
     /**
@@ -359,5 +391,13 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         wvMonth.visibility = View.VISIBLE
         wvDay.visibility = View.VISIBLE
         super.dismiss()
+    }
+
+    private fun setWheelViewStyle(wheelView: WheelView) {
+        wheelView.setTextSize(20f)
+        wheelView.setTypeface(Typeface.DEFAULT)
+        wheelView.setDividerColor(ContextCompat.getColor(context, R.color.color_transparent))
+        wheelView.setItemsVisibleCount(5)
+        wheelView.setLineSpacingMultiplier(2f)
     }
 }

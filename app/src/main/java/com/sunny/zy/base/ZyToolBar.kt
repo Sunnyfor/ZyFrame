@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.sunny.zy.R
+import com.sunny.zy.base.bean.MenuBean
 
 /**
  * Desc
@@ -58,7 +59,7 @@ class ZyToolBar : Toolbar {
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
-            getView<TextView>(R.id.zy_tv_title).text = resources.getString(resId)
+            getView<TextView>(R.id.tvTitle).text = resources.getString(resId)
             return
         }
     }
@@ -73,7 +74,7 @@ class ZyToolBar : Toolbar {
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
-            getView<TextView>(R.id.zy_tv_title).text = title
+            getView<TextView>(R.id.tvTitle).text = title
             return
         }
     }
@@ -84,7 +85,7 @@ class ZyToolBar : Toolbar {
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
-            getView<TextView>(R.id.zy_tv_title).setTextColor(color)
+            getView<TextView>(R.id.tvTitle).setTextColor(color)
             return
         }
     }
@@ -96,8 +97,8 @@ class ZyToolBar : Toolbar {
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
-            getView<TextView>(R.id.zy_tv_title).setTextColor(color)
-            getView<AppCompatImageButton>(R.id.zy_ib_back).drawable?.mutate()?.setTint(color)
+            getView<TextView>(R.id.tvTitle).setTextColor(color)
+            getView<AppCompatImageButton>(R.id.ibBack).drawable?.mutate()?.setTint(color)
             return
         }
     }
@@ -114,7 +115,7 @@ class ZyToolBar : Toolbar {
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
-            getView<AppCompatImageButton>(R.id.zy_ib_back).let {
+            getView<AppCompatImageButton>(R.id.ibBack).let {
                 if (resId != 0) {
                     it.visibility = View.VISIBLE
                 } else {
@@ -137,7 +138,7 @@ class ZyToolBar : Toolbar {
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
-            getView<AppCompatImageButton>(R.id.zy_ib_back).let {
+            getView<AppCompatImageButton>(R.id.ibBack).let {
                 if (icon != null) {
                     it.visibility = View.VISIBLE
                 } else {
@@ -156,7 +157,7 @@ class ZyToolBar : Toolbar {
             return
         }
         if (layoutRes == R.layout.zy_default_title) {
-            getView<AppCompatImageButton>(R.id.zy_ib_back).setOnClickListener(listener)
+            getView<AppCompatImageButton>(R.id.ibBack).setOnClickListener(listener)
             return
         }
     }
@@ -170,13 +171,13 @@ class ZyToolBar : Toolbar {
 
     override fun getMenu(): Menu? {
         if (layoutRes == R.layout.zy_default_title) {
-            return getView<ActionMenuView>(R.id.zy_menu_view).menu
+            return getView<ActionMenuView>(R.id.menuView).menu
         }
         return super.getMenu()
     }
 
 
-    fun createMenu(menuItem: ArrayList<BaseMenuBean>) {
+    fun createMenu(menuItem: ArrayList<MenuBean>) {
         menuItem.forEach { bean ->
             menu?.add(bean.title)?.let { menuItem ->
                 menuItem.setOnMenuItemClickListener {

@@ -6,6 +6,9 @@ import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -17,7 +20,7 @@ import com.sunny.zy.preview.adapter.PhotoPreviewPageAdapter
 import com.sunny.zy.preview.adapter.PreviewPhotoAdapter
 import com.sunny.zy.utils.IntentManager
 import com.sunny.zy.utils.ToastUtil
-import kotlinx.android.synthetic.main.zy_act_preview_photo.*
+
 
 /**
  * Desc
@@ -48,6 +51,54 @@ class GalleryPreviewActivity : BaseActivity() {
         intent.getBooleanExtra("isDelete", false)
     }
 
+    private val clTitle by lazy {
+        findViewById<ConstraintLayout>(R.id.clTitle)
+    }
+
+    private val viewPager by lazy {
+        findViewById<ViewPager2>(R.id.viewPager)
+    }
+
+    private val tvTitle by lazy {
+        findViewById<TextView>(R.id.tvTitle)
+
+    }
+
+    private val ivBack by lazy {
+        findViewById<ImageView>(R.id.ivBack)
+    }
+
+    private val tvComplete by lazy {
+        findViewById<TextView>(R.id.tvComplete)
+
+    }
+
+    private val ivDelete by lazy {
+        findViewById<ImageView>(R.id.ivDelete)
+    }
+
+    private val clPreview by lazy {
+        findViewById<ConstraintLayout>(R.id.clPreview)
+    }
+
+    private val rvPreview by lazy {
+        findViewById<RecyclerView>(R.id.rvPreview)
+
+    }
+
+    private val clSelect by lazy {
+        findViewById<ConstraintLayout>(R.id.clSelect)
+    }
+
+    private val ivSelect by lazy {
+        findViewById<ImageView>(R.id.ivSelect)
+    }
+
+    private val tvSelect by lazy {
+        findViewById<TextView>(R.id.tvSelect)
+    }
+
+
     private val previewAdapter: PreviewPhotoAdapter by lazy {
         PreviewPhotoAdapter(selectList).apply {
             setOnItemClickListener { _, position ->
@@ -69,26 +120,26 @@ class GalleryPreviewActivity : BaseActivity() {
 
         index = intent.getIntExtra("index", 0)
         maxSize = intent.getIntExtra("maxSize", 0)
-        dataList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("dataList",true)?: arrayListOf())
-        selectList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("selectList",true)?: arrayListOf())
+        dataList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("dataList", true) ?: arrayListOf())
+        selectList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("selectList", true) ?: arrayListOf())
 
         updateTitle()
 
         when (type) {
             TYPE_CAMERA -> {
-                tv_complete.visibility = View.VISIBLE
+                tvComplete.visibility = View.VISIBLE
             }
 
             TYPE_PREVIEW -> {
                 if (isDelete) {
-                    iv_delete.visibility = View.VISIBLE
+                    ivDelete.visibility = View.VISIBLE
                 }
             }
             TYPE_SELECT -> {
-                tv_complete.visibility = View.VISIBLE
-                cl_select.visibility = View.VISIBLE
-                rv_preview.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-                rv_preview.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                tvComplete.visibility = View.VISIBLE
+                clSelect.visibility = View.VISIBLE
+                rvPreview.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+                rvPreview.addItemDecoration(object : RecyclerView.ItemDecoration() {
                     override fun getItemOffsets(
                         outRect: Rect,
                         view: View,
@@ -111,7 +162,7 @@ class GalleryPreviewActivity : BaseActivity() {
                 })
 
                 previewAdapter.selectBean = dataList[index]
-                rv_preview.adapter = previewAdapter
+                rvPreview.adapter = previewAdapter
                 updateChecked()
             }
         }
@@ -119,23 +170,23 @@ class GalleryPreviewActivity : BaseActivity() {
 
         viewPager.adapter = PhotoPreviewPageAdapter(dataList).apply {
             onPhotoCallback = {
-                if (cl_title.visibility == View.VISIBLE) {
+                if (clTitle.visibility == View.VISIBLE) {
                     hideStatusBar(false)
-                    cl_title.visibility = View.GONE
+                    clTitle.visibility = View.GONE
 
                     if (type == TYPE_SELECT) {
-                        cl_preview.visibility = View.GONE
-                        cl_select.visibility = View.GONE
+                        clPreview.visibility = View.GONE
+                        clSelect.visibility = View.GONE
                     }
 
                 } else {
                     showStatusBar()
-                    cl_title.visibility = View.VISIBLE
+                    clTitle.visibility = View.VISIBLE
                     if (type == TYPE_SELECT) {
                         if (selectList.isNotEmpty()) {
-                            cl_preview.visibility = View.VISIBLE
+                            clPreview.visibility = View.VISIBLE
                         }
-                        cl_select.visibility = View.VISIBLE
+                        clSelect.visibility = View.VISIBLE
                     }
                 }
             }
@@ -156,7 +207,7 @@ class GalleryPreviewActivity : BaseActivity() {
 
         viewPager.setCurrentItem(index, false)
 
-        setOnClickListener(cl_title, iv_back, tv_complete, iv_delete, iv_select, tv_select)
+        setOnClickListener(clTitle, ivBack, tvComplete, ivDelete, ivSelect, tvSelect)
 
     }
 
@@ -167,11 +218,11 @@ class GalleryPreviewActivity : BaseActivity() {
 
     override fun onClickEvent(view: View) {
         when (view.id) {
-            R.id.iv_back -> setResult()
-            R.id.cl_title -> {
+            R.id.ivBack -> setResult()
+            R.id.clTitle -> {
             }
 
-            R.id.tv_complete -> {
+            R.id.tvComplete -> {
 
                 if (type == TYPE_CAMERA) {
                     setResult(true)
@@ -188,7 +239,7 @@ class GalleryPreviewActivity : BaseActivity() {
                 }, 100)
             }
 
-            R.id.iv_delete -> {
+            R.id.ivDelete -> {
                 deleteList.add(dataList[index])
                 dataList.removeAt(index)
                 if (dataList.isEmpty()) {
@@ -199,7 +250,7 @@ class GalleryPreviewActivity : BaseActivity() {
                     updateTitle()
                 }
             }
-            R.id.iv_select, R.id.tv_select -> {
+            R.id.ivSelect, R.id.tvSelect -> {
                 if (!selectList.contains(dataList[index])) {
 
                     if (selectList.size >= maxSize) {
@@ -248,27 +299,29 @@ class GalleryPreviewActivity : BaseActivity() {
     }
 
     fun updateTitle() {
-        tv_title.text = ("${index + 1}/${dataList.size}")
+        val titleStr = "${index + 1}/${dataList.size}"
+        tvTitle.text = titleStr
         if (selectList.isNotEmpty()) {
-            tv_complete.text = ("${getString(R.string.complete)}(${selectList.size}/$maxSize)")
+            val completeStr = "${getString(R.string.complete)}(${selectList.size}/$maxSize)"
+            tvComplete.text = completeStr
         } else {
-            tv_complete.text = getString(R.string.complete)
+            tvComplete.text = getString(R.string.complete)
         }
     }
 
     fun updateChecked() {
         if (selectList.isEmpty()) {
-            cl_preview.visibility = View.GONE
+            clPreview.visibility = View.GONE
         } else {
-            cl_preview.visibility = View.VISIBLE
+            clPreview.visibility = View.VISIBLE
         }
 
         if (!selectList.contains(dataList[index])) {
-            iv_select.setImageResource(R.drawable.svg_gallery_content_unselect)
+            ivSelect.setImageResource(R.drawable.svg_gallery_content_unselect)
         } else {
-            iv_select.setImageResource(R.drawable.svg_gallery_content_select)
+            ivSelect.setImageResource(R.drawable.svg_gallery_content_select)
             val index = selectList.indexOf(dataList[index])
-            rv_preview.scrollToPosition(index)
+            rvPreview.scrollToPosition(index)
         }
     }
 

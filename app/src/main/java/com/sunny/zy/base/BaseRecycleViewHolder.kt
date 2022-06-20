@@ -37,7 +37,7 @@ class BaseRecycleViewHolder(
     }
 
     override fun onClick(v: View) {
+        onItemClickListener?.invoke(v, adapterPosition)
         adapter.currentIndex = adapterPosition
-        onItemClickListener?.invoke(v, adapter.currentIndex)
     }
 }

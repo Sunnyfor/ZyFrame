@@ -31,7 +31,7 @@ abstract class BaseFragment : Fragment(), IBaseView, ICreateStateView, View.OnCl
         FrameLayout(requireContext())
     }
 
-    private val defaultStateView: DefaultStateView by lazy {
+    open val defaultStateView: DefaultStateView by lazy {
         object : DefaultStateView(this) {
             override fun getStateViewParent(): ViewGroup {
                 return this@BaseFragment.getStateViewParent()

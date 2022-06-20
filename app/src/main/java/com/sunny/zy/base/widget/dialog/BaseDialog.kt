@@ -26,7 +26,7 @@ abstract class BaseDialog(context: Context) : Dialog(context), IBaseView, ICreat
         FrameLayout(context)
     }
 
-    private val defaultStateView: DefaultStateView by lazy {
+    open val defaultStateView: DefaultStateView by lazy {
         object : DefaultStateView(this) {
             override fun getStateViewParent(): ViewGroup {
                 return this@BaseDialog.getStateViewParent()

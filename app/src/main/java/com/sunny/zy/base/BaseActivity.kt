@@ -69,7 +69,7 @@ abstract class BaseActivity : AppCompatActivity(),
         View(this)
     }
 
-    private val defaultStateView: DefaultStateView by lazy {
+    open val defaultStateView: DefaultStateView by lazy {
         object : DefaultStateView(this) {
             override fun getStateViewParent(): ViewGroup {
                 return this@BaseActivity.getStateViewParent()

@@ -78,6 +78,22 @@ object ToastUtil {
     }
 
     /**
+     * Toast顶部显示
+     * @param content 打印内容
+     * @param duration 打印长短
+     */
+    fun showTop(content: String?, duration: Int) {
+        show(content ?: "", duration, Gravity.TOP)
+    }
+
+    /**
+     * Toast顶部显示
+     */
+    fun showTop(content: String?) {
+        showTop(content ?: "", Toast.LENGTH_SHORT)
+    }
+
+    /**
      * 仅Debug包打印
      */
     fun showDebug(content: String?) {

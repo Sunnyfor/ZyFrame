@@ -50,19 +50,19 @@
         <item name="android:textColor">@color/font_black</item>
     </style>
 
-    <style name="style_font_black_small" parent="style_font_black">
-        <item name="android:textSize">@dimen/dp_12</item>
-    </style>
-
-    <style name="style_font_black_smaller" parent="style_font_black">
+    <style name="style_font_black_10" parent="style_font_black">
         <item name="android:textSize">@dimen/dp_10</item>
     </style>
 
-    <style name="style_font_black_big" parent="style_font_black">
+    <style name="style_font_black_12" parent="style_font_black">
+        <item name="android:textSize">@dimen/dp_12</item>
+    </style>
+
+    <style name="style_font_black_16" parent="style_font_black">
         <item name="android:textSize">@dimen/dp_16</item>
     </style>
 
-    <style name="style_font_black_bigger" parent="style_font_black">
+    <style name="style_font_black_18" parent="style_font_black">
         <item name="android:textSize">@dimen/dp_18</item>
     </style>
 
@@ -72,19 +72,19 @@
         <item name="android:textColor">@color/font_white</item>
     </style>
 
-    <style name="style_font_white_small" parent="style_font_white">
-        <item name="android:textSize">@dimen/dp_12</item>
-    </style>
-
-    <style name="style_font_white_smaller" parent="style_font_white">
+    <style name="style_font_white_10" parent="style_font_white">
         <item name="android:textSize">@dimen/dp_10</item>
     </style>
 
-    <style name="style_font_white_big" parent="style_font_white">
+    <style name="style_font_white_12" parent="style_font_white">
+        <item name="android:textSize">@dimen/dp_12</item>
+    </style>
+
+    <style name="style_font_white_16" parent="style_font_white">
         <item name="android:textSize">@dimen/dp_16</item>
     </style>
 
-    <style name="style_font_white_bigger" parent="style_font_white">
+    <style name="style_font_white_18" parent="style_font_white">
         <item name="android:textSize">@dimen/dp_18</item>
     </style>
 
@@ -94,19 +94,19 @@
         <item name="android:textColor">@color/font_gray</item>
     </style>
 
-    <style name="style_font_gray_small" parent="style_font_gray">
-        <item name="android:textSize">@dimen/dp_12</item>
-    </style>
-
-    <style name="style_font_gray_smaller" parent="style_font_gray">
+    <style name="style_font_gray_10" parent="style_font_gray">
         <item name="android:textSize">@dimen/dp_10</item>
     </style>
 
-    <style name="style_font_gray_big" parent="style_font_gray">
+    <style name="style_font_gray_12" parent="style_font_gray">
+        <item name="android:textSize">@dimen/dp_12</item>
+    </style>
+
+    <style name="style_font_gray_16" parent="style_font_gray">
         <item name="android:textSize">@dimen/dp_16</item>
     </style>
 
-    <style name="style_font_gray_bigger" parent="style_font_gray">
+    <style name="style_font_gray_18" parent="style_font_gray">
         <item name="android:textSize">@dimen/dp_18</item>
     </style>
 
@@ -116,39 +116,21 @@
         <item name="android:textColor">@color/color_theme</item>
     </style>
 
-    <style name="style_font_theme_small" parent="style_font_theme">
+    <style name="style_font_theme_10" parent="style_font_theme">
+        <item name="android:textSize">@dimen/dp_10</item>
+    </style>
+
+    <style name="style_font_theme_12" parent="style_font_theme">
         <item name="android:textSize">@dimen/dp_12</item>
     </style>
 
-    <style name="style_font_theme_big" parent="style_font_theme">
+    <style name="style_font_theme_16" parent="style_font_theme">
         <item name="android:textSize">@dimen/dp_16</item>
     </style>
 
-    <style name="style_font_theme_bigger" parent="style_font_theme">
+    <style name="style_font_theme_18" parent="style_font_theme">
         <item name="android:textSize">@dimen/dp_18</item>
     </style>
-
-    <!--菜单CardView样式-->
-    <style name="style_item_card_view">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/dp_1</item>
-        <item name="android:paddingTop">@dimen/dp_14</item>
-        <item name="android:paddingBottom">@dimen/dp_14</item>
-    </style>
-
-    <!--菜单条目字体样式-->
-    <style name="style_item_card_font" parent="style_font_black_big" />
-
-    <style name="style_item_card_more">
-        <item name="android:layout_width">@dimen/dp_15</item>
-        <item name="android:layout_height">@dimen/dp_15</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:src">@drawable/svg_more</item>
-        <item name="contentDescription">@string/placeholder</item>
-    </style>
-
 
     <!--通用按钮样式-->
     <style name="style_common_btn">
@@ -159,7 +141,6 @@
         <item name="android:textColor">@color/font_white</item>
         <item name="android:gravity">center</item>
     </style>
-
 
     <!--通用小按钮样式-->
 
@@ -176,7 +157,7 @@
 
     <!--通用横线分割样式-->
 
-    <style name="style_line_horizontal">
+    <style name="style_common_line_horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0.5dp</item>
         <item name="android:background">@color/color_line</item>
@@ -184,12 +165,32 @@
 
     <!--通用竖线分割样式-->
 
-    <style name="style_line_vertical">
+    <style name="style_common_line_vertical">
         <item name="android:layout_width">0.5dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/color_line</item>
     </style>
 
+    <!--菜单CardView样式-->
+    <style name="style_item_card_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_1</item>
+        <item name="android:paddingTop">@dimen/dp_14</item>
+        <item name="android:paddingBottom">@dimen/dp_14</item>
+    </style>
+
+    <!--菜单条目字体样式-->
+    <style name="style_item_card_font" parent="style_font_black_16" />
+
+    <style name="style_item_card_more">
+        <item name="android:layout_width">@dimen/dp_15</item>
+        <item name="android:layout_height">@dimen/dp_15</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:src">@drawable/svg_more</item>
+        <item name="contentDescription">@string/placeholder</item>
+    </style>
 
     <style name="ZyMenuTextStyle">
         <item name="android:textSize">@dimen/dp_14</item>

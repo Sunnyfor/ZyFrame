@@ -28,7 +28,7 @@
 
     <TextView
         android:id="@+id/tvTip"
-        style="@style/style_font_white_small"
+        style="@style/style_font_white_12"
         android:text="@string/camera_hint"
         app:layout_constraintBottom_toTopOf="@id/btnTake"
         app:layout_constraintStart_toStartOf="parent"

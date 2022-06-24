@@ -5,13 +5,8 @@
     <color name="colorAccent">@color/color_theme</color>
     <color name="textColorPrimary">@color/color_white</color>
 
-    <!--标题栏图标颜色-->
+    <!--基础色值-->
     <color name="color_theme">#2A90FC</color>
-    <color name="font_black">#404040</color>
-    <color name="font_white">#ffffff</color>
-    <color name="font_gray">#818181</color>
-    <color name="font_red">#DA3E3E</color>
-
     <color name="color_gray">#e8e8e8</color>
     <color name="color_line">#d9d9d9</color>
     <color name="color_layout">#CAE3ED</color>
@@ -19,6 +14,12 @@
     <color name="color_black">#000000</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_transparent">#00000000</color>
+
+    <!--字体颜色-->
+    <color name="font_black">#404040</color>
+    <color name="font_white">#ffffff</color>
+    <color name="font_gray">#818181</color>
+    <color name="font_theme">@color/color_theme</color>
 
     <color name="preview_bg">#343434</color>
 </resources>

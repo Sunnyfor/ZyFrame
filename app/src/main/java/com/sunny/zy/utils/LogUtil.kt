@@ -47,6 +47,14 @@ object LogUtil {
     var TITLE_END = "】"
 
     /**
+     * 简单打印，不带框和类路径，打印长度有限制
+     */
+    @Synchronized
+    fun println(message: String) {
+        if (isPrintLog) Log.i(logTag, message)
+    }
+
+    /**
      * VERBOSE
      */
     @Synchronized

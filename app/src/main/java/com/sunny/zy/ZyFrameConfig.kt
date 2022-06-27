@@ -11,15 +11,6 @@ import com.sunny.zy.widget.DefaultCreateStateView
  * Date 2017/10/12.
  */
 object ZyFrameConfig {
-    /**
-     * 是否打印LOG
-     */
-    var isPrintLog = true
-
-    /**
-     * 设置Log标签名
-     */
-    var logTag = "ZYLog"
 
     /**
      * 设置Glide的日志级别

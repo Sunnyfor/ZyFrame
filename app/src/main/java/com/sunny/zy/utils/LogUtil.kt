@@ -1,7 +1,6 @@
 package com.sunny.zy.utils
 
 import android.util.Log
-import com.sunny.zy.ZyFrameConfig
 
 /**
  * Desc 封装使用Log日志代码
@@ -10,6 +9,16 @@ import com.sunny.zy.ZyFrameConfig
  * Date 2021年6月30日
  */
 object LogUtil {
+
+    /**
+     * 是否打印LOG
+     */
+    var isPrintLog = true
+
+    /**
+     * 设置Log标签名
+     */
+    var logTag = "ZYLog"
 
     const val VERBOSE = 0
 
@@ -208,7 +217,7 @@ object LogUtil {
 
     private fun println(logType: Int, content: String) {
 
-        if (!ZyFrameConfig.isPrintLog) {
+        if (!isPrintLog) {
             return
         }
 
@@ -218,11 +227,11 @@ object LogUtil {
         }
 
         when (logType) {
-            VERBOSE -> Log.v(ZyFrameConfig.logTag, content)
-            DEBUG -> Log.d(ZyFrameConfig.logTag, content)
-            INFO -> Log.i(ZyFrameConfig.logTag, content)
-            WARN -> Log.w(ZyFrameConfig.logTag, content)
-            ERROR -> Log.e(ZyFrameConfig.logTag, content)
+            VERBOSE -> Log.v(logTag, content)
+            DEBUG -> Log.d(logTag, content)
+            INFO -> Log.i(logTag, content)
+            WARN -> Log.w(logTag, content)
+            ERROR -> Log.e(logTag, content)
         }
     }
 

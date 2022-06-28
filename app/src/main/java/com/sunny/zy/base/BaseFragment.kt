@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.bean.ErrorViewBean
 import com.sunny.zy.base.bean.MenuBean
+import com.sunny.zy.event.BindEventBus
 import com.sunny.zy.widget.DefaultStateView
+import org.greenrobot.eventbus.EventBus
 
 
 /**
@@ -56,6 +58,12 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
             flParentView.addView(layoutView)
         }
 
+        // 自动注册EventBus
+        if (javaClass.isAnnotationPresent(BindEventBus::class.java)) {
+            if (!EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().register(this)
+            }
+        }
         return flParentView
     }
 
@@ -77,6 +85,12 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         getBaseActivity().setOnClickListener(this, *views)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+    }
 
     override fun showLoading() {
         defaultStateView.showLoading()

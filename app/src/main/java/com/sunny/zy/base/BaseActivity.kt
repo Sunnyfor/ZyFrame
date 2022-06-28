@@ -24,11 +24,13 @@ import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.bean.ErrorViewBean
 import com.sunny.zy.base.bean.MenuBean
+import com.sunny.zy.event.BindEventBus
 import com.sunny.zy.utils.BitmapUtil
 import com.sunny.zy.utils.DensityUtil
 import com.sunny.zy.utils.PermissionsUtil
 import com.sunny.zy.utils.ToolbarUtil
 import com.sunny.zy.widget.DefaultStateView
+import org.greenrobot.eventbus.EventBus
 
 
 /**
@@ -113,8 +115,14 @@ abstract class BaseActivity : AppCompatActivity(),
         ZyFrameStore.addActivity(this)
         initView()
         loadData()
-    }
 
+        // 自动注册EventBus
+        if (javaClass.isAnnotationPresent(BindEventBus::class.java)) {
+            if (!EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().register(this)
+            }
+        }
+    }
 
     override fun onRestart() {
         super.onRestart()
@@ -123,6 +131,22 @@ abstract class BaseActivity : AppCompatActivity(),
         }
     }
 
+
+    override fun onPause() {
+        super.onPause()
+        if (isFinishing) {
+            ZyFrameStore.removeActivity(this)
+            bitmapUtil.destroy()
+            onClose()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+    }
 
     /**
      * 显示loading覆盖层
@@ -428,13 +452,4 @@ abstract class BaseActivity : AppCompatActivity(),
         permissionsUtil.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
-
-    override fun onPause() {
-        super.onPause()
-        if (isFinishing) {
-            ZyFrameStore.removeActivity(this)
-            bitmapUtil.destroy()
-            onClose()
-        }
-    }
 }

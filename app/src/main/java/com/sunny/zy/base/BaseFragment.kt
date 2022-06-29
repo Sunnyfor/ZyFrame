@@ -85,13 +85,6 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         getBaseActivity().setOnClickListener(this, *views)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this)
-        }
-    }
-
     override fun showLoading() {
         defaultStateView.showLoading()
     }
@@ -196,6 +189,9 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
 
     override fun onDestroyView() {
         onClose()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
         super.onDestroyView()
     }
 

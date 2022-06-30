@@ -33,9 +33,10 @@ object ToastUtil {
      * @param content Toast信息
      */
     fun show(content: String?, duration: Int, gravity: Int) {
+        if (content?.isEmpty() == true) return
         handler.removeMessages(delay)
         toast?.cancel()
-        toast = Toast.makeText(ZyFrameStore.getContext(), content ?: "", duration)
+        toast = Toast.makeText(ZyFrameStore.getContext(), content, duration)
         if (gravity != 0) {
             toast?.setGravity(gravity, 0, 0)
         }
@@ -51,14 +52,14 @@ object ToastUtil {
      * @param duration 打印长短
      */
     fun show(content: String?, duration: Int) {
-        show(content ?: "", duration, 0)
+        show(content, duration, 0)
     }
 
     /**
      * Toast底部显示
      */
     fun show(content: String?) {
-        show(content ?: "", Toast.LENGTH_SHORT)
+        show(content, Toast.LENGTH_SHORT)
     }
 
     /**
@@ -67,14 +68,14 @@ object ToastUtil {
      * @param duration 打印长短
      */
     fun showCenter(content: String?, duration: Int) {
-        show(content ?: "", duration, Gravity.CENTER)
+        show(content, duration, Gravity.CENTER)
     }
 
     /**
      * Toast居中显示
      */
     fun showCenter(content: String?) {
-        showCenter(content ?: "", Toast.LENGTH_SHORT)
+        showCenter(content, Toast.LENGTH_SHORT)
     }
 
     /**
@@ -83,14 +84,14 @@ object ToastUtil {
      * @param duration 打印长短
      */
     fun showTop(content: String?, duration: Int) {
-        show(content ?: "", duration, Gravity.TOP)
+        show(content, duration, Gravity.TOP)
     }
 
     /**
      * Toast顶部显示
      */
     fun showTop(content: String?) {
-        showTop(content ?: "", Toast.LENGTH_SHORT)
+        showTop(content, Toast.LENGTH_SHORT)
     }
 
     /**
@@ -98,7 +99,7 @@ object ToastUtil {
      */
     fun showDebug(content: String?) {
         if (BuildConfig.DEBUG) {
-            show(content ?: "")
+            show(content)
         }
     }
 

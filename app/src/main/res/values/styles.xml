@@ -10,6 +10,14 @@
         <item name="actionMenuTextColor">@color/textColorPrimary</item>
     </style>
 
+    <style name="ZyMenuTextStyle">
+        <item name="android:textSize">@dimen/dp_14</item>
+    </style>
+
+    <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+    </style>
+
     <!--通用图标样式-->
 
     <style name="style_common_icon">
@@ -157,7 +165,7 @@
 
     <!--通用横线分割样式-->
 
-    <style name="style_common_line_horizontal">
+    <style name="style_line_horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0.5dp</item>
         <item name="android:background">@color/color_line</item>
@@ -165,7 +173,7 @@
 
     <!--通用竖线分割样式-->
 
-    <style name="style_common_line_vertical">
+    <style name="style_line_vertical">
         <item name="android:layout_width">0.5dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/color_line</item>
@@ -192,11 +200,4 @@
         <item name="contentDescription">@string/placeholder</item>
     </style>
 
-    <style name="ZyMenuTextStyle">
-        <item name="android:textSize">@dimen/dp_14</item>
-    </style>
-
-    <style name="OverflowMenuStyle" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
-        <item name="overlapAnchor">false</item>
-    </style>
 </resources>

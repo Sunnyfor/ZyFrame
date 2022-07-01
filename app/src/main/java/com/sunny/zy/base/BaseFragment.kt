@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.bean.ErrorViewBean
@@ -172,6 +173,9 @@ abstract class BaseFragment : Fragment(), IBaseView, View.OnClickListener, OnTit
         getBaseActivity().hideStatusBar(showText)
     }
 
+    fun <T : View> findViewById(@IdRes id: Int): T {
+        return flParentView.findViewById(id)
+    }
 
     fun requestPermissions(
         permission: Array<String>,

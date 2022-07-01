@@ -92,7 +92,7 @@ abstract class BaseActivity : AppCompatActivity(),
             LinearLayout.LayoutParams.MATCH_PARENT,
             DensityUtil.getStatusBarHeight()
         )
-        getActionBarRootView().addView(statusBar, 0, statusBarParams)
+        getFitWindowsLinearLayout().addView(statusBar, 0, statusBarParams)
         mStatusBarColor = R.color.colorPrimary
         setStatusBarColor(mStatusBarColor)
         setStatusBarTextModel(ZyFrameConfig.statusBarIsDark)
@@ -242,18 +242,18 @@ abstract class BaseActivity : AppCompatActivity(),
     }
 
 
-    private fun getActionBarRootView() = findViewById<FitWindowsLinearLayout>(androidx.appcompat.R.id.action_bar_root)
+    fun getFitWindowsLinearLayout(): FitWindowsLinearLayout = findViewById(androidx.appcompat.R.id.action_bar_root)
 
     /**
      * 只有标题的toolbar
      */
     override fun setTitleSimple(title: String, vararg menuItem: MenuBean) {
-        toolbarUtil.initToolbar(getActionBarRootView())
+        toolbarUtil.initToolbar(getFitWindowsLinearLayout())
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
     override fun setTitleCenterSimple(title: String, vararg menuItem: MenuBean) {
-        toolbarUtil.initToolbar(getActionBarRootView(), R.layout.zy_default_title)
+        toolbarUtil.initToolbar(getFitWindowsLinearLayout(), R.layout.zy_default_title)
         toolbarUtil.titleSimple(title, *menuItem)
     }
 
@@ -261,17 +261,17 @@ abstract class BaseActivity : AppCompatActivity(),
      * 带返回键的toolbar
      */
     override fun setTitleDefault(title: String, vararg menuItem: MenuBean) {
-        toolbarUtil.initToolbar(getActionBarRootView())
+        toolbarUtil.initToolbar(getFitWindowsLinearLayout())
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
     override fun setTitleCenterDefault(title: String, vararg menuItem: MenuBean) {
-        toolbarUtil.initToolbar(getActionBarRootView(), R.layout.zy_default_title)
+        toolbarUtil.initToolbar(getFitWindowsLinearLayout(), R.layout.zy_default_title)
         toolbarUtil.titleDefault(title, *menuItem)
     }
 
     override fun setTitleCustom(layoutRes: Int, vararg menuItem: MenuBean) {
-        toolbarUtil.initToolbar(getActionBarRootView(), layoutRes)
+        toolbarUtil.initToolbar(getFitWindowsLinearLayout(), layoutRes)
         toolbarUtil.setTitleCustom(*menuItem)
     }
 

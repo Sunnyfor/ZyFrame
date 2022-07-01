@@ -1,9 +1,14 @@
 package com.sunny.zy.utils
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import com.sunny.zy.R
+import android.view.ViewConfiguration
+import android.view.WindowManager
 import com.sunny.zy.ZyFrameStore
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -118,11 +123,57 @@ object DensityUtil {
         } else 0
     }
 
+
     /**
-     * 获取软键盘的高度
+     * 检查是否存在虚拟按键栏
      */
-    fun getSoftKeyBoardHeight(): Int {
-        return screenHeight() * 2 / 5
+    @SuppressLint("PrivateApi")
+    fun hasNavBar(): Boolean {
+        val res: Resources = ZyFrameStore.getContext().resources
+        val resourceId = res.getIdentifier("config_showNavigationBar", "bool", "android")
+        return if (resourceId != 0) {
+            var hasNav = res.getBoolean(resourceId)
+
+            var sNavBarOverride: String? = null
+
+            try {
+                val c = Class.forName("android.os.SystemProperties")
+                val m = c.getDeclaredMethod("get", String::class.java)
+                m.isAccessible = true
+                sNavBarOverride = m.invoke(null, "qemu.hw.mainkeys") as String
+            } catch (e: Throwable) {
+            }
+
+            if ("1" == sNavBarOverride) {
+                hasNav = false
+            } else if ("0" == sNavBarOverride) {
+                hasNav = true
+            }
+            hasNav
+        } else { // fallback
+            !ViewConfiguration.get(ZyFrameStore.getContext()).hasPermanentMenuKey()
+            false
+        }
     }
 
+
+    /**
+     * 通过反射，获取包含虚拟键的整体屏幕高度
+     */
+    fun getNavBarHeight(): Int {
+        var dpi = 0
+        val windowManager = ZyFrameStore.getContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        val dm = DisplayMetrics()
+        val c: Class<*>
+        try {
+            c = Class.forName("android.view.Display")
+            val method = c.getMethod("getRealMetrics", DisplayMetrics::class.java)
+            method.invoke(display, dm)
+            dpi = dm.heightPixels
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return dpi
+    }
 }

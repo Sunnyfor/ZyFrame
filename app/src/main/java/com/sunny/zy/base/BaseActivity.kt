@@ -241,7 +241,6 @@ abstract class BaseActivity : AppCompatActivity(),
         toolbarUtil.show()
     }
 
-
     fun getFitWindowsLinearLayout(): FitWindowsLinearLayout = findViewById(androidx.appcompat.R.id.action_bar_root)
 
     /**

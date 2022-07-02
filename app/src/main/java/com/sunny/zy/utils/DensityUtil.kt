@@ -170,7 +170,7 @@ object DensityUtil {
             c = Class.forName("android.view.Display")
             val method = c.getMethod("getRealMetrics", DisplayMetrics::class.java)
             method.invoke(display, dm)
-            dpi = dm.heightPixels
+            dpi = dm.heightPixels - screenHeight()
         } catch (e: Exception) {
             e.printStackTrace()
         }

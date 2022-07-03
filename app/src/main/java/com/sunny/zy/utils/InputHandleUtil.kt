@@ -46,30 +46,20 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
         height = ViewGroup.LayoutParams.MATCH_PARENT
         activity?.lifecycle?.addObserver(object : LifecycleObserver {
 
-            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-            fun onResume() {
-                if (!isShowing) {
-                    LogUtil.i("显示popupWindow")
-                    parentView.viewTreeObserver.addOnGlobalLayoutListener(this@InputHandleUtil)
-                    activity?.getFitWindowsLinearLayout()?.post {
-                        showAtLocation(activity?.getFitWindowsLinearLayout(), Gravity.NO_GRAVITY, 0, 0)
-                    }
+            @OnLifecycleEvent(Lifecycle.Event.ON_START)
+            fun onStart() {
+                parentView.viewTreeObserver.addOnGlobalLayoutListener(this@InputHandleUtil)
+                activity?.getFitWindowsLinearLayout()?.post {
+                    showAtLocation(activity?.getFitWindowsLinearLayout(), Gravity.NO_GRAVITY, 0, 0)
                 }
-            }
-
-            @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-            fun onPause() {
-                LogUtil.i("关闭popupWindow")
-                parentView.viewTreeObserver.removeOnGlobalLayoutListener(this@InputHandleUtil)
-                dismiss()
             }
 
             @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
             fun onDestroy() {
-                LogUtil.i("销毁popupWindow")
+                parentView.viewTreeObserver.removeOnGlobalLayoutListener(this@InputHandleUtil)
+                dismiss()
                 activity = null
             }
-
         })
     }
 
@@ -90,7 +80,7 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
         var keyboardHeight: Int = DensityUtil.screenHeight() - (rect.bottom - rect.top)
         if (keyboardHeight < 100) {
             keyboardHeight = 0
-        }else{
+        } else {
             if (activity?.getFitWindowsLinearLayout()?.height == DensityUtil.screenHeight()) {
                 keyboardHeight -= DensityUtil.getStatusBarHeight()
             }

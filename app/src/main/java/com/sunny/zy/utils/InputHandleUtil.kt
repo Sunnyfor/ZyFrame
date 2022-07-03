@@ -1,8 +1,6 @@
 package com.sunny.zy.utils
 
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -44,10 +42,8 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
         softInputMode =
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
         inputMethodMode = INPUT_METHOD_NEEDED
-        width = 10
+        width = 0
         height = ViewGroup.LayoutParams.MATCH_PARENT
-        setBackgroundDrawable(ColorDrawable(Color.BLUE))
-
         activity?.lifecycle?.addObserver(object : LifecycleObserver {
 
             @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

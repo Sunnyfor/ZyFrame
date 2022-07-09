@@ -24,7 +24,7 @@ abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecycleViewHolder {
         context = parent.context
-        return BaseRecycleViewHolder(initLayout(parent, viewType), this, onItemClickListener)
+        return BaseRecycleViewHolder(initLayout(parent, viewType), onItemClickListener)
     }
 
     /*

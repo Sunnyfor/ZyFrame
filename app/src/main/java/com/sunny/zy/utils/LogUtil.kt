@@ -50,25 +50,25 @@ object LogUtil {
      * 简单打印，不带框和类路径，打印长度有限制
      */
     @Synchronized
-    fun println(message: String) {
-        if (isPrintLog) Log.i(logTag, message)
+    fun println(message: String?) {
+        if (isPrintLog) Log.i(logTag, message ?: "")
     }
 
     /**
      * VERBOSE
      */
     @Synchronized
-    fun v(message: String) {
+    fun v(message: String?) {
         log(VERBOSE, "", message, true)
     }
 
     @Synchronized
-    fun v(title: String, message: String) {
+    fun v(title: String?, message: String?) {
         log(VERBOSE, title, message, true)
     }
 
     @Synchronized
-    fun v(title: String, message: String, isShowSource: Boolean) {
+    fun v(title: String?, message: String?, isShowSource: Boolean) {
         log(VERBOSE, title, message, isShowSource)
     }
 
@@ -77,17 +77,17 @@ object LogUtil {
      *  DEBUG
      */
     @Synchronized
-    fun d(message: String) {
+    fun d(message: String?) {
         log(DEBUG, "", message, true)
     }
 
     @Synchronized
-    fun d(title: String, message: String) {
+    fun d(title: String?, message: String?) {
         log(DEBUG, title, message, true)
     }
 
     @Synchronized
-    fun d(title: String, message: String, isShowSource: Boolean) {
+    fun d(title: String?, message: String?, isShowSource: Boolean) {
         log(DEBUG, title, message, isShowSource)
     }
 
@@ -95,17 +95,17 @@ object LogUtil {
      *  INFO
      */
     @Synchronized
-    fun i(message: String) {
+    fun i(message: String?) {
         log(INFO, "", message, true)
     }
 
     @Synchronized
-    fun i(title: String, message: String) {
+    fun i(title: String?, message: String?) {
         log(INFO, title, message, true)
     }
 
     @Synchronized
-    fun i(title: String, message: String, isShowSource: Boolean) {
+    fun i(title: String?, message: String?, isShowSource: Boolean) {
         log(INFO, title, message, isShowSource)
     }
 
@@ -114,17 +114,17 @@ object LogUtil {
      * WARN
      */
     @Synchronized
-    fun w(message: String) {
+    fun w(message: String?) {
         log(WARN, "", message, true)
     }
 
     @Synchronized
-    fun w(title: String, message: String) {
+    fun w(title: String?, message: String?) {
         log(WARN, title, message, true)
     }
 
     @Synchronized
-    fun w(title: String, message: String, isShowSource: Boolean) {
+    fun w(title: String?, message: String?, isShowSource: Boolean) {
         log(WARN, title, message, isShowSource)
     }
 
@@ -132,17 +132,17 @@ object LogUtil {
      *  ERROR
      */
     @Synchronized
-    fun e(message: String) {
+    fun e(message: String?) {
         log(ERROR, "", message, true)
     }
 
     @Synchronized
-    fun e(title: String, message: String) {
+    fun e(title: String?, message: String?) {
         log(ERROR, title, message, true)
     }
 
     @Synchronized
-    fun e(title: String, message: String, isShowSource: Boolean) {
+    fun e(title: String?, message: String?, isShowSource: Boolean) {
         log(ERROR, title, message, isShowSource)
     }
 
@@ -183,7 +183,10 @@ object LogUtil {
     }
 
 
-    private fun generateLine(logType: Int, content: String) {
+    private fun generateLine(logType: Int, content: String?) {
+        if (content == null) {
+            return
+        }
         val msgArray = content.toCharArray()
         val msgSb = StringBuilder()
         msgSb.append(VERTICAL_LINE)
@@ -209,8 +212,11 @@ object LogUtil {
     }
 
 
-    private fun log(logType: Int, title: String, message: String, isShowSource: Boolean) {
+    private fun log(logType: Int, title: String?, message: String?, isShowSource: Boolean) {
         generateBorder(logType, TOP_BORDER)
+        if (title == null) {
+            return
+        }
         if (title.isNotEmpty()) {
             generateTitle(logType, title, isShowSource)
         } else {

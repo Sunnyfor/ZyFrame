@@ -17,8 +17,6 @@ abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
     private var onItemClickListener: ((view: View, position: Int) -> Unit)? = null
     lateinit var context: Context
 
-    var currentIndex: Int = -1
-
     /*
      * 创建ViewHolder
      */

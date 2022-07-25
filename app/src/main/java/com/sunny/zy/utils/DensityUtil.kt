@@ -65,6 +65,31 @@ object DensityUtil {
         return ZyFrameStore.getContext().resources.displayMetrics.widthPixels
     }
 
+    /**
+     * 获取控件的宽度
+     *
+     * @param view 要获取宽度的控件
+     * @return 控件的宽度
+     */
+    fun viewWidth(view: View): Int {
+        val w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        view.measure(w, h)
+        return view.measuredWidth
+    }
+
+    /**
+     * 获取控件的高度
+     *
+     * @param view 要获取高度的控件
+     * @return 控件的高度
+     */
+    fun viewHeight(view: View): Int {
+        val w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        view.measure(w, h)
+        return view.measuredHeight
+    }
 
     /**
      * 获取控件在窗体中的位置

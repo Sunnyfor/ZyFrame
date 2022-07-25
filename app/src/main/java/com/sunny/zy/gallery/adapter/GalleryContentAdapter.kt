@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.sunny.zy.R
@@ -58,7 +59,7 @@ class GalleryContentAdapter(private val selectList: ArrayList<GalleryBean>) :
 
         val vPlay = holder.getView<View>(R.id.vPlay)
         val tvDuration = holder.getView<TextView>(R.id.tvDuration)
-        val flSelect = holder.getView<TextView>(R.id.tvDuration)
+        val flSelect = holder.getView<FrameLayout>(R.id.flSelect)
 
         if (data.type.contains("video")) {
             vPlay.visibility = View.VISIBLE

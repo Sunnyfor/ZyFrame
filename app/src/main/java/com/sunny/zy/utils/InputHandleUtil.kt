@@ -46,19 +46,20 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
         height = ViewGroup.LayoutParams.MATCH_PARENT
         activity?.lifecycle?.addObserver(object : LifecycleObserver {
 
-            @OnLifecycleEvent(Lifecycle.Event.ON_START)
-            fun onStart() {
-                parentView.viewTreeObserver.addOnGlobalLayoutListener(this@InputHandleUtil)
-                activity?.getFitWindowsLinearLayout()?.post {
-                    showAtLocation(activity?.getFitWindowsLinearLayout(), Gravity.NO_GRAVITY, 0, 0)
+            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+            fun onResume() {
+                if (!isShowing) {
+                    parentView.viewTreeObserver.addOnGlobalLayoutListener(this@InputHandleUtil)
+                    activity?.getFitWindowsLinearLayout()?.post {
+                        showAtLocation(activity?.getFitWindowsLinearLayout(), Gravity.NO_GRAVITY, 0, 0)
+                    }
                 }
             }
 
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
+            @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+            fun onStop() {
                 parentView.viewTreeObserver.removeOnGlobalLayoutListener(this@InputHandleUtil)
                 dismiss()
-                activity = null
             }
         })
     }

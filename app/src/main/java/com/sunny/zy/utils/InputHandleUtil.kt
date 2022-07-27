@@ -64,6 +64,9 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
         })
     }
 
+    fun cancel() {
+        onLayoutSizeChangeListener = null
+    }
 
     private fun getParentViewRect(): Rect {
         val rect = Rect()

@@ -3,6 +3,8 @@ package com.sunny.zy.utils
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import com.sunny.zy.BuildConfig
 import com.sunny.zy.ZyFrameStore
@@ -17,8 +19,8 @@ object ToastUtil {
 
     private var toast: Toast? = null
 
-    private var LENGTH_LONG = 3500
-    private var LENGTH_SHORT = 2000
+    private var LENGTH_LONG = 7000
+    private var LENGTH_SHORT = 4000
 
     private val delay = LENGTH_SHORT
 
@@ -26,6 +28,10 @@ object ToastUtil {
         toast?.cancel()
         toast = null
         return@Handler false
+    }
+
+    private val layoutRes by lazy {
+        ZyFrameStore.getContext().resources.getIdentifier("transient_notification", "layout", "android")
     }
 
     /**
@@ -36,7 +42,14 @@ object ToastUtil {
         if (content?.isEmpty() == true) return
         handler.removeMessages(delay)
         toast?.cancel()
-        toast = Toast.makeText(ZyFrameStore.getContext(), content, duration)
+
+        val view = LayoutInflater.from(ZyFrameStore.getContext()).inflate(layoutRes, null)
+        val textView = view.findViewById<TextView>(android.R.id.message)
+        textView.text = content
+        toast = Toast(ZyFrameStore.getContext())
+        toast?.view = view
+        toast?.duration = duration
+
         if (gravity != 0) {
             toast?.setGravity(gravity, 0, 0)
         }

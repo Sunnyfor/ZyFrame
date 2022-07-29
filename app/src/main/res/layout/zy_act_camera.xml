@@ -29,12 +29,11 @@
     <TextView
         android:id="@+id/tvTip"
         style="@style/style_font_white_12"
+        android:layout_marginBottom="@dimen/dp_23"
         android:text="@string/camera_hint"
         app:layout_constraintBottom_toTopOf="@id/btnTake"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/dp_23"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.sunny.zy.widget.CaptureButton
         android:id="@+id/btnTake"
@@ -44,7 +43,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <ImageView
         android:id="@+id/ivBack"

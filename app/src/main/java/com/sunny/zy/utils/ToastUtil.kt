@@ -2,6 +2,7 @@ package com.sunny.zy.utils
 
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -19,14 +20,22 @@ object ToastUtil {
 
     private var toast: Toast? = null
 
-    private var LENGTH_LONG = 7000
-    private var LENGTH_SHORT = 4000
+    private var LENGTH_LONG = 7000L
+    private var LENGTH_SHORT = 4000L
 
-    private val delay = LENGTH_SHORT
 
     private val handler = Handler(Looper.getMainLooper()) {
-        toast?.cancel()
-        toast = null
+        when (it.what) {
+            0 -> {
+                val content = it.data.getString("content")
+                val duration = it.data.getInt("duration")
+                show(content, duration)
+            }
+            1 -> {
+                toast?.cancel()
+                toast = null
+            }
+        }
         return@Handler false
     }
 
@@ -40,23 +49,30 @@ object ToastUtil {
      */
     fun show(content: String?, duration: Int, gravity: Int) {
         if (content?.isEmpty() == true) return
-        handler.removeMessages(delay)
+        handler.removeMessages(0)
+        handler.removeMessages(1)
         toast?.cancel()
 
-        val view = LayoutInflater.from(ZyFrameStore.getContext()).inflate(layoutRes, null)
-        val textView = view.findViewById<TextView>(android.R.id.message)
-        textView.text = content
-        toast = Toast(ZyFrameStore.getContext())
-        toast?.view = view
-        toast?.duration = duration
-
-        if (gravity != 0) {
-            toast?.setGravity(gravity, 0, 0)
+        if (Looper.getMainLooper().thread == Thread.currentThread()) {
+            val view = LayoutInflater.from(ZyFrameStore.getContext()).inflate(layoutRes, null)
+            val textView = view.findViewById<TextView>(android.R.id.message)
+            textView.text = content
+            toast = Toast(ZyFrameStore.getContext())
+            toast?.view = view
+            toast?.duration = duration
+            if (gravity != 0) {
+                toast?.setGravity(gravity, 0, 0)
+            }
+            toast?.show()
+        } else {
+            val message = Message()
+            message.what = 0
+            message.data.putString("content", content)
+            message.data.putInt("duration", duration)
+            handler.sendMessage(message)
         }
-        toast?.show()
-
         val delay = if (duration == Toast.LENGTH_SHORT) LENGTH_SHORT else LENGTH_LONG
-        handler.sendEmptyMessageDelayed(delay, delay.toLong())
+        handler.sendEmptyMessageDelayed(1, delay)
     }
 
     /**

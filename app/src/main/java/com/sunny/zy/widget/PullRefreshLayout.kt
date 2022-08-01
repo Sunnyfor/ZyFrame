@@ -50,7 +50,7 @@ class PullRefreshLayout : SmartRefreshLayout {
     /**
      * 不赋值的情况下不显示占位图
      */
-    private val layoutParams =
+    private val defaultLayoutParams =
         FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
     var isReverse = false //如果为true 就标识下拉加载  上拉刷新
@@ -86,10 +86,7 @@ class PullRefreshLayout : SmartRefreshLayout {
         setRefreshFooter(footerView)
 
         setEnableAutoLoadMore(true)//开启自动加载功能
-        addView(rootView, layoutParams)
-        setContentView(RecyclerView(context).apply {
-            layoutManager = LinearLayoutManager(context)
-        })
+
         setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onLoadMore(refreshLayout: RefreshLayout) {
                 if (isReverse) {
@@ -109,13 +106,18 @@ class PullRefreshLayout : SmartRefreshLayout {
                 loadData?.invoke()
             }
         })
-
+        addView(rootView, defaultLayoutParams)
     }
+
+    fun setContentView(contentView: View) {
+        setContentView(contentView, defaultLayoutParams)
+    }
+
 
     /**
      * 设置刷新内容
      */
-    fun setContentView(contentView: View) {
+    fun setContentView(contentView: View, layoutParams: ViewGroup.LayoutParams) {
         if (contentView.parent != null) {
             (contentView.parent as ViewGroup).removeView(contentView)
         }
@@ -124,19 +126,25 @@ class PullRefreshLayout : SmartRefreshLayout {
         rootView.addView(contentView, layoutParams)
     }
 
-
     /**
      *  通过反射创建View
      */
     fun <T : View> setContentView(contentView: Class<T>) {
+        setContentView(contentView, defaultLayoutParams)
+    }
+
+
+    fun <T : View> setContentView(contentView: Class<T>, layoutParams: ViewGroup.LayoutParams) {
         rootView.removeView(this.contentView)
         this.contentView = contentView.getConstructor(Context::class.java).newInstance(context)
         rootView.addView(this.contentView, layoutParams)
     }
 
+
     fun <T> addData(adapter: BaseRecycleAdapter<T>, data: ArrayList<T>) {
         addData(adapter, -1, data)
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     fun <T> addData(adapter: BaseRecycleAdapter<T>, index: Int = -1, data: ArrayList<T>) {
@@ -246,4 +254,21 @@ class PullRefreshLayout : SmartRefreshLayout {
         return getContentView()
     }
 
+
+    override fun onFinishInflate() {
+        if (childCount < 4) {
+            contentView = RecyclerView(context).apply {
+                layoutManager = LinearLayoutManager(context)
+            }
+            setContentView(contentView ?: return)
+        } else {
+            contentView = getChildAt(childCount - 1)
+            contentView?.let {
+                val layoutParams = it.layoutParams
+                setContentView(it, layoutParams)
+                removeView(it)
+            }
+        }
+        super.onFinishInflate()
+    }
 }

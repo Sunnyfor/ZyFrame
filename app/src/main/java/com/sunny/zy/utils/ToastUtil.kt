@@ -48,7 +48,7 @@ object ToastUtil {
      * @param content Toast信息
      */
     fun show(content: String?, duration: Int, gravity: Int) {
-        if (content?.isEmpty() == true) return
+        if (content.isNullOrEmpty()) return
         handler.removeMessages(0)
         handler.removeMessages(1)
         toast?.cancel()

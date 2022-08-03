@@ -5,5 +5,8 @@
     <item name="ibBack" type="id" />
     <item name="tvTitle" type="id" />
     <item name="menuView" type="id" />
-    <item name="zy_click_interval" type="id" />
+
+    <!--两次点击间隔-->
+    <item name="clickInterval" type="id" />
+
 </resources>

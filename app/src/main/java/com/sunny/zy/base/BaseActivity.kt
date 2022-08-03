@@ -187,8 +187,8 @@ abstract class BaseActivity : AppCompatActivity(),
 
     fun setOnClickListener(onClick: View.OnClickListener, vararg views: View) {
         views.forEach {
-            if (it.getTag(R.id.zy_click_interval) == null) {
-                it.setTag(R.id.zy_click_interval, ZyFrameConfig.clickInterval)
+            if (it.getTag(R.id.clickInterval) == null) {
+                it.setTag(R.id.clickInterval, ZyFrameConfig.clickInterval)
             }
             it.setOnClickListener(onClick)
         }
@@ -201,7 +201,7 @@ abstract class BaseActivity : AppCompatActivity(),
     private var lastClickTime = 0L
 
     fun clickProcess(view: View, onClick: () -> Unit) {
-        val tag = view.getTag(R.id.zy_click_interval)
+        val tag = view.getTag(R.id.clickInterval)
         if (tag == null) {
             onClick.invoke()
         } else {

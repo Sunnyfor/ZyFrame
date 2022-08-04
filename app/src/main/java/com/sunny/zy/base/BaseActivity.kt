@@ -132,13 +132,13 @@ abstract class BaseActivity : AppCompatActivity(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         ZyFrameStore.removeActivity(this)
         bitmapUtil.destroy()
         onClose()
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this)
         }
+        super.onDestroy()
     }
 
     /**

@@ -2,11 +2,16 @@ package com.sunny.zy.base.widget.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.IBaseView
@@ -23,6 +28,21 @@ abstract class BaseDialog(context: Context) : Dialog(context), IBaseView, View.O
 
     private val flParentView by lazy {
         FrameLayout(context)
+    }
+
+    init {
+        // 解决页面被后台回收后，dialog 窗体泄漏
+        if (context is ContextWrapper) {
+            if (context.baseContext is FragmentActivity) {
+                val activity = context.baseContext as FragmentActivity
+                activity.lifecycle.addObserver(object : LifecycleObserver {
+                    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+                    fun onDestroy() {
+                        dismiss()
+                    }
+                })
+            }
+        }
     }
 
     open val defaultStateView: DefaultStateView by lazy {

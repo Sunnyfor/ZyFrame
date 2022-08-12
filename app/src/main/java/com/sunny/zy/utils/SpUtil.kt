@@ -78,6 +78,16 @@ class SpUtil {
         fun getInteger(key: String, defValue: Int): Int = sharedPreferences.getInt(key, defValue)
 
         /**
+         * 保存Long信息
+         */
+        fun setLong(key: String, content: Long = 0) =
+            sharedPreferences.edit().putLong(key, content).apply()
+
+        fun getLong(key: String): Long = getLong(key, 0)
+
+        fun getLong(key: String, defValue: Long): Long = sharedPreferences.getLong(key, defValue)
+
+        /**
          * 保存Object信息
          */
         fun setObject(key: String, obj: Any) {

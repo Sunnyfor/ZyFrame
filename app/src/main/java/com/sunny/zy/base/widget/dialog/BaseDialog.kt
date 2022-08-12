@@ -16,6 +16,7 @@ import com.sunny.zy.R
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.IBaseView
 import com.sunny.zy.base.bean.ErrorViewBean
+import com.sunny.zy.utils.ButtonUtil
 import com.sunny.zy.widget.DefaultStateView
 
 /**
@@ -65,13 +66,28 @@ abstract class BaseDialog(context: Context) : Dialog(context), IBaseView, View.O
             }
         }
         setContentView(flParentView)
-        setCancelable(false)
-        setCanceledOnTouchOutside(false)
+//        setCancelable(false)
+//        setCanceledOnTouchOutside(false)
 //        window?.setGravity(Gravity.BOTTOM)
         window?.setBackgroundDrawableResource(R.color.color_transparent)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         initView()
         loadData()
+    }
+
+
+    /**
+     * 批量注册点击事件
+     * @param views 注册事件的View
+     */
+    fun setOnClickListener(vararg views: View) {
+        setOnClickListener(this, *views)
+    }
+
+    fun setOnClickListener(onClick: View.OnClickListener, vararg views: View) {
+        views.forEach {
+            it.setOnClickListener(onClick)
+        }
     }
 
 
@@ -93,6 +109,9 @@ abstract class BaseDialog(context: Context) : Dialog(context), IBaseView, View.O
 
 
     override fun onClick(v: View) {
+        if (ButtonUtil.onClick(v)) {
+            return
+        }
         onClickEvent(v)
     }
 

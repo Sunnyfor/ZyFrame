@@ -9,4 +9,38 @@
         <attr name="textSize" format="dimension" />
         <attr name="lineSpacingMultiplier" format="float" />
     </declare-styleable>
+
+    <!--自定义子条目布局属性,参考：https://dwz.cn/GQG6d3gP-->
+    <declare-styleable name="ItemLayout">
+        <attr name="startIcon" format="reference|color" />
+        <attr name="startIconSize" format="dimension" />
+
+        <attr name="startText" format="string" />
+        <attr name="startTextSize" format="dimension" />
+        <attr name="startTextColor" format="reference" />
+
+        <attr name="startAfterText" format="string" />
+        <attr name="startAfterTextSize" format="dimension" />
+        <attr name="startAfterTextColor" format="reference" />
+
+        <attr name="endIcon" format="reference" />
+        <attr name="endIconSize" format="dimension" />
+
+        <attr name="endText" format="string" />
+        <attr name="endTextSize" format="dimension" />
+        <attr name="endTextColor" format="color" />
+
+        <attr name="endBeforeText" format="string" />
+        <attr name="endBeforeTextSize" format="dimension" />
+        <attr name="endBeforeTextColor" format="reference" />
+
+        <attr name="lineColor" format="color" />
+        <attr name="lineHeight" format="dimension" />
+        <attr name="lineVisible" format="boolean" />
+
+        <attr name="leftMargin" format="dimension" />
+        <attr name="rightMargin" format="dimension" />
+
+    </declare-styleable>
+
 </resources>

@@ -9,4 +9,10 @@
     <!--两次点击间隔-->
     <item name="clickInterval" type="id" />
 
+    <!--自定义子条目样式-->
+    <item name="tv_start" type="id" />
+    <item name="iv_start" type="id" />
+    <item name="tv_end" type="id" />
+    <item name="iv_end" type="id" />
+
 </resources>

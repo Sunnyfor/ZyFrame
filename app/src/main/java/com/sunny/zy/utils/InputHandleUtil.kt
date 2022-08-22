@@ -1,6 +1,7 @@
 package com.sunny.zy.utils
 
 import android.graphics.Rect
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -25,12 +26,19 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
      */
     var onLayoutSizeChangeListener: OnLayoutSizeChangeListener? = null
 
+    var keyboardOpen = false
+
     private val parentView by lazy {
         LinearLayout(activity)
     }
 
+    private var screenHeight = 0
 
     init {
+
+        val dm = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getRealMetrics(dm)
+        screenHeight = dm.heightPixels
 
         parentView.layoutParams =
             LinearLayout.LayoutParams(
@@ -49,23 +57,25 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
             @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
             fun onResume() {
                 if (!isShowing) {
-                    parentView.viewTreeObserver.addOnGlobalLayoutListener(this@InputHandleUtil)
-                    activity?.getFitWindowsLinearLayout()?.post {
-                        showAtLocation(activity?.getFitWindowsLinearLayout(), Gravity.NO_GRAVITY, 0, 0)
+                    activity?.getStateViewParent()?.post {
+                        showAtLocation(activity?.getStateViewParent(), Gravity.NO_GRAVITY, 0, 0)
                     }
+                    parentView.viewTreeObserver.addOnGlobalLayoutListener(this@InputHandleUtil)
                 }
             }
 
-            @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-            fun onStop() {
+            @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+            fun onPause() {
                 parentView.viewTreeObserver.removeOnGlobalLayoutListener(this@InputHandleUtil)
                 dismiss()
             }
-        })
-    }
 
-    fun cancel() {
-        onLayoutSizeChangeListener = null
+            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+            fun onDestroy() {
+                activity = null
+                onLayoutSizeChangeListener = null
+            }
+        })
     }
 
     private fun getParentViewRect(): Rect {
@@ -74,22 +84,23 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
         return rect
     }
 
-
     interface OnLayoutSizeChangeListener {
         fun onChange(value: Int, keyboardOpen: Boolean)
     }
 
     override fun onGlobalLayout() {
         val rect = getParentViewRect()
-        var keyboardHeight: Int = DensityUtil.screenHeight() - (rect.bottom - rect.top)
+        var keyboardHeight: Int = screenHeight - (rect.bottom - rect.top)
         if (keyboardHeight < 100) {
             keyboardHeight = 0
         } else {
-            if (activity?.getFitWindowsLinearLayout()?.height == DensityUtil.screenHeight()) {
-                keyboardHeight -= DensityUtil.getStatusBarHeight()
+            if (!keyboardOpen && keyboardHeight > screenHeight * 0.75) {
+                //拦截不正常高度
+                return
             }
+            keyboardHeight -= DensityUtil.getStatusBarHeight()
         }
-        val keyboardOpen = keyboardHeight > 0
+        keyboardOpen = keyboardHeight > 0
         onLayoutSizeChangeListener?.onChange(keyboardHeight, keyboardOpen)
     }
 }

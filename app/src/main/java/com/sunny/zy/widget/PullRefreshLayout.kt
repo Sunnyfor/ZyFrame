@@ -229,7 +229,6 @@ class PullRefreshLayout : SmartRefreshLayout {
         updateEmptyView(adapter.getData())
     }
 
-
     fun <T> updateEmptyView(data: ArrayList<T>) {
         if (data.isEmpty()) {
             val errorViewBean = ErrorViewBean(resources.getString(R.string.emptyData))
@@ -240,27 +239,16 @@ class PullRefreshLayout : SmartRefreshLayout {
         }
     }
 
-
-    fun <T> getContentView(): T? {
-        try {
-            return contentView as T
-        } catch (e: ClassCastException) {
-            e.printStackTrace()
+    fun getRecyclerView(): RecyclerView {
+        if (contentView !is RecyclerView){
+            setRecyclerView()
         }
-        return null
+        return contentView as RecyclerView
     }
-
-    fun getRecyclerView(): RecyclerView? {
-        return getContentView()
-    }
-
 
     override fun onFinishInflate() {
         if (childCount < 4) {
-            contentView = RecyclerView(context).apply {
-                layoutManager = LinearLayoutManager(context)
-            }
-            setContentView(contentView ?: return)
+            setRecyclerView()
         } else {
             contentView = getChildAt(childCount - 1)
             contentView?.let {
@@ -270,5 +258,12 @@ class PullRefreshLayout : SmartRefreshLayout {
             }
         }
         super.onFinishInflate()
+    }
+
+    private fun setRecyclerView(){
+        contentView = RecyclerView(context).apply {
+            layoutManager = LinearLayoutManager(context)
+        }
+        setContentView(contentView ?: return)
     }
 }

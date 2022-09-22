@@ -71,8 +71,8 @@ class ItemLayout : RelativeLayout {
          * 最外层View
          */
 
-        val leftMargin = typeArray.getDimension(R.styleable.ItemLayout_leftMargin, defaultMargin)
-        val rightMargin = typeArray.getDimension(R.styleable.ItemLayout_rightMargin, defaultMargin)
+        val leftMargin = typeArray.getDimension(R.styleable.ItemLayout_itemLeftMargin, defaultMargin)
+        val rightMargin = typeArray.getDimension(R.styleable.ItemLayout_itemRightMargin, defaultMargin)
 
         val parentLayout = RelativeLayout(context)
         val layout = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
@@ -86,10 +86,13 @@ class ItemLayout : RelativeLayout {
          */
         val startImage = typeArray.getResourceId(R.styleable.ItemLayout_startIcon, 0)
         val startImageSize = typeArray.getResourceId(R.styleable.ItemLayout_startIconSize, 0)
+        val startImageMargin = typeArray.getDimension(R.styleable.ItemLayout_startIconRightMargin, defaultMargin)
+
         if (startImage != 0) {
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             lp.width = context.resources.getDimension(startImageSize).toInt()
             lp.height = context.resources.getDimension(startImageSize).toInt()
+            lp.rightMargin = startImageMargin.toInt()
             lp.addRule(CENTER_VERTICAL)
             startImageView.setImageResource(startImage)
             parentLayout.addView(startImageView, lp)
@@ -102,9 +105,11 @@ class ItemLayout : RelativeLayout {
         val startText = typeArray.getString(R.styleable.ItemLayout_startText) ?: ""
         val startTextSize = typeArray.getDimension(R.styleable.ItemLayout_startTextSize, defaultTextSize)
         val startTextColor = typeArray.getColor(R.styleable.ItemLayout_startTextColor, defaultTextColor)
+        val startTextMargin = typeArray.getDimension(R.styleable.ItemLayout_startTextRightMargin, defaultMargin)
 
         if (startText.isNotEmpty()) {
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+            lp.rightMargin = startTextMargin.toInt()
             startTextView.text = startText
             startTextView.setTextColor(startTextColor)
             startTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, startTextSize)
@@ -132,7 +137,6 @@ class ItemLayout : RelativeLayout {
                 else -> 0
             }
             if (mLeft != 0) {
-                lp.leftMargin = defaultMargin.toInt()
                 lp.addRule(RIGHT_OF, mLeft)
             }
             parentLayout.addView(startAfterTextView, lp)
@@ -143,16 +147,16 @@ class ItemLayout : RelativeLayout {
          */
         endImage = typeArray.getResourceId(R.styleable.ItemLayout_endIcon, 0)
         val endImageSize = typeArray.getResourceId(R.styleable.ItemLayout_endIconSize, 0)
+        val endImageMargin = typeArray.getDimension(R.styleable.ItemLayout_endIconLeftMargin, defaultMargin)
+
         if (endImage != 0) {
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-            endImageView.setPadding(defaultMargin.toInt(), 0, 0, 0)
             lp.width = context.resources.getDimension(endImageSize).toInt()
             lp.height = context.resources.getDimension(endImageSize).toInt()
+            lp.leftMargin = endImageMargin.toInt()
             lp.addRule(ALIGN_PARENT_RIGHT)
             lp.addRule(CENTER_VERTICAL)
             endImageView.setImageResource(endImage)
-
-
             parentLayout.addView(endImageView, lp)
         }
 
@@ -162,9 +166,11 @@ class ItemLayout : RelativeLayout {
         val endText = typeArray.getString(R.styleable.ItemLayout_endText) ?: ""
         val endTextSize = typeArray.getDimension(R.styleable.ItemLayout_endTextSize, defaultTextSize)
         val endTextColor = typeArray.getColor(R.styleable.ItemLayout_endTextColor, defaultTextColor)
+        val endTextMargin = typeArray.getDimension(R.styleable.ItemLayout_endTextLeftMargin, defaultMargin)
 
         if (endText.isNotEmpty()) {
             val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+            lp.leftMargin = endTextMargin.toInt()
             if (endImage != 0) {
                 lp.addRule(LEFT_OF, endImageView.id)
             } else {
@@ -204,8 +210,6 @@ class ItemLayout : RelativeLayout {
             } else {
                 lp.addRule(ALIGN_PARENT_RIGHT)
             }
-
-            lp.marginEnd = defaultMargin.toInt()
 
             parentLayout.addView(endBeforeTextView, lp)
         }

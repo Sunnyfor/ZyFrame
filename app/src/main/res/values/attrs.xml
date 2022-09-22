@@ -14,10 +14,12 @@
     <declare-styleable name="ItemLayout">
         <attr name="startIcon" format="reference|color" />
         <attr name="startIconSize" format="dimension" />
+        <attr name="startIconRightMargin" format="dimension" />
 
         <attr name="startText" format="string" />
         <attr name="startTextSize" format="dimension" />
         <attr name="startTextColor" format="reference" />
+        <attr name="startTextRightMargin" format="dimension" />
 
         <attr name="startAfterText" format="string" />
         <attr name="startAfterTextSize" format="dimension" />
@@ -25,10 +27,12 @@
 
         <attr name="endIcon" format="reference" />
         <attr name="endIconSize" format="dimension" />
+        <attr name="endIconLeftMargin" format="dimension" />
 
         <attr name="endText" format="string" />
         <attr name="endTextSize" format="dimension" />
         <attr name="endTextColor" format="color" />
+        <attr name="endTextLeftMargin" format="dimension" />
 
         <attr name="endBeforeText" format="string" />
         <attr name="endBeforeTextSize" format="dimension" />
@@ -38,8 +42,8 @@
         <attr name="lineHeight" format="dimension" />
         <attr name="lineVisible" format="boolean" />
 
-        <attr name="leftMargin" format="dimension" />
-        <attr name="rightMargin" format="dimension" />
+        <attr name="itemLeftMargin" format="dimension" />
+        <attr name="itemRightMargin" format="dimension" />
 
     </declare-styleable>
 

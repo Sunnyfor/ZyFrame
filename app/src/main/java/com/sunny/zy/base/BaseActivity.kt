@@ -2,6 +2,7 @@ package com.sunny.zy.base
 
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
@@ -442,6 +443,27 @@ abstract class BaseActivity : AppCompatActivity(),
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionsUtil.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+    }
+
+    /**
+     * 设置字体大小不随系统改变
+     */
+    override fun getResources(): Resources {
+        var resources = super.getResources()
+        val newConfig = resources.configuration
+        val displayMetrics = resources.displayMetrics
+        if (resources != null && newConfig.fontScale != 1f) {
+            newConfig.fontScale = 1f
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                val configurationContext = createConfigurationContext(newConfig)
+                resources = configurationContext.resources
+                displayMetrics.scaledDensity = displayMetrics.density * newConfig.fontScale
+            } else {
+                resources.updateConfiguration(newConfig, displayMetrics)
+            }
+        }
+        return resources
+
     }
 
 }

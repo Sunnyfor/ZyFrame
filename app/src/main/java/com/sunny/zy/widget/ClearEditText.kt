@@ -14,8 +14,8 @@ import android.view.animation.CycleInterpolator
 import android.view.animation.TranslateAnimation
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import com.sunny.zy.R
 import com.sunny.zy.BuildConfig
+import com.sunny.zy.R
 
 
 /**
@@ -25,6 +25,11 @@ import com.sunny.zy.BuildConfig
  */
 class ClearEditText @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = android.R.attr.editTextStyle) :
     AppCompatEditText(context, attrs, defStyle), OnFocusChangeListener, TextWatcher {
+
+    /**
+     * 是否展示删除图标
+     */
+    var isShowClearBtn: Boolean = true
 
     /**
      * 删除按钮的引用
@@ -44,8 +49,6 @@ class ClearEditText @JvmOverloads constructor(context: Context, attrs: Attribute
         // 获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
         mClearDrawable = compoundDrawables[2]
         if (mClearDrawable == null) {
-            // throw new
-            // NullPointerException("You can add drawableRight attribute in XML");
             mClearDrawable = ContextCompat.getDrawable(context, R.drawable.sel_edit_clear)
         }
 
@@ -98,6 +101,9 @@ class ClearEditText @JvmOverloads constructor(context: Context, attrs: Attribute
      * 设置清除图标的显示与隐藏，调用setCompoundDrawables为EditText绘制上去
      */
     private fun setClearIconVisible(visible: Boolean) {
+        if (!isShowClearBtn) {
+            return
+        }
         val right = if (visible) mClearDrawable else null
         setCompoundDrawables(
             compoundDrawables[0],

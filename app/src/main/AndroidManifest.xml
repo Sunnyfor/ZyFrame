@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.sunny.zy">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application>
         <activity android:name=".activity.QRCodeActivity" />
-        <activity android:name=".activity.CameraActivity"/>
+        <activity android:name=".activity.CameraActivity" />
         <activity android:name=".gallery.GallerySelectActivity" />
         <activity android:name=".preview.GalleryPreviewActivity" />
         <activity android:name=".preview.VideoPlayActivity" />

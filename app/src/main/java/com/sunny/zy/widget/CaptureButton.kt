@@ -13,8 +13,8 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.sunny.zy.utils.DensityUtil
-import com.sunny.zy.utils.LogUtil
+import com.sunny.kit.utils.DensityUtil
+import com.sunny.kit.utils.LogUtil
 
 
 /**

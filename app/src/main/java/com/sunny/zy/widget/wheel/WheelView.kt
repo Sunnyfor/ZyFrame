@@ -13,8 +13,8 @@ import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import com.sunny.kit.utils.DensityUtil
 import com.sunny.zy.R
-import com.sunny.zy.utils.DensityUtil.dp2px
 import com.sunny.zy.widget.wheel.adapter.WheelAdapter
 import com.sunny.zy.widget.wheel.listener.LoopViewGestureListener
 import com.sunny.zy.widget.wheel.listener.OnItemSelectedListener
@@ -71,7 +71,7 @@ class WheelView : View {
             textColorCenter = a.getColor(R.styleable.WheelView_textColorCenter, -0xd5d5d6)
             dividerColor = a.getColor(R.styleable.WheelView_dividerColor, -0x2a2a2b)
             dividerWidth = a.getDimensionPixelSize(R.styleable.WheelView_dividerWidth, 2)
-            textSize = a.getDimensionPixelOffset(R.styleable.WheelView_textSize, dp2px(14f))
+            textSize = a.getDimensionPixelOffset(R.styleable.WheelView_textSize, DensityUtil.dp2px(14f))
             lineSpacingMultiplier = a.getFloat(R.styleable.WheelView_lineSpacingMultiplier, lineSpacingMultiplier)
             a.recycle() //回收内存
         }
@@ -129,7 +129,7 @@ class WheelView : View {
     private var adapter: WheelAdapter? = null
     private var label = ""//附加单位
 
-    private var textSize = dp2px(14f)  //选项的文字大小
+    private var textSize = DensityUtil.dp2px(14f)  //选项的文字大小
 
     private var maxTextWidth = 0
     private var maxTextHeight = 0

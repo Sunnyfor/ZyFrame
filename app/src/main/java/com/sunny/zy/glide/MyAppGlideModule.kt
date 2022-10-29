@@ -12,8 +12,8 @@ import com.bumptech.glide.load.model.ModelLoaderFactory
 import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.AppGlideModule
 import com.sunny.http.ZyHttp
+import com.sunny.kit.utils.FileUtil
 import com.sunny.zy.ZyFrameConfig
-import com.sunny.zy.utils.FileUtil
 import okhttp3.Call
 import java.io.InputStream
 

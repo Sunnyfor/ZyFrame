@@ -6,19 +6,18 @@ plugins {
     id 'maven-publish'
 }
 
+apply from: 'https://gitee.com/sunnyfor/GradleConfig/raw/master/config.gradle'
+
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdk project.ext.android.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 21
-        //noinspection OldTargetApi
-        targetSdkVersion 30
+        minSdk project.ext.android.minSdkVersion
+        targetSdk project.ext.android.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
 
     buildTypes {
         release {
@@ -26,6 +25,69 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    // 网络请求框架
+    api 'com.github.Sunnyfor:ZyHttp:1.0.5'
+
+    //工具类
+    api 'com.github.Sunnyfor:ZyKit:1.0.1'
+
+    // 事件总线EventBus：https://github.com/greenrobot/EventBus
+    api "org.greenrobot:eventbus:3.3.1"
+
+    // google 二维码扫描库
+    api 'com.google.zxing:core:3.4.1'
+
+    // 上拉加载、下拉刷新
+    api 'io.github.scwang90:refresh-layout-kernel:2.0.5'
+    api 'io.github.scwang90:refresh-header-classics:2.0.5'
+    api 'io.github.scwang90:refresh-footer-classics:2.0.5'
+
+    //AndroidX基本组件
+    api project.ext.dependencies.core_ktx
+
+    api project.ext.dependencies.appcompat
+
+    //UI组件库
+    api project.ext.dependencies.material
+
+    //约束布局
+    api project.ext.dependencies.constraint_layout
+
+    //Kotlin协程库
+    api project.ext.dependencies.coroutines
+
+    //Glide支持库
+    api project.ext.dependencies.glide
+    kapt project.ext.dependencies.glide_compiler
+
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+
+    // CameraX core library using camera2 implementation
+    implementation project.ext.dependencies.camerax
+    // CameraX Lifecycle Library
+    implementation project.ext.dependencies.camera_lifecycle
+    // CameraX View class
+    implementation project.ext.dependencies.camera_view
+
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+
+
 }
 
 afterEvaluate {
@@ -40,53 +102,4 @@ afterEvaluate {
             }
         }
     }
-}
-dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-
-    // 网络请求框架
-    api 'com.github.Sunnyfor:ZyHttp:1.0.3'
-
-    // 事件总线EventBus：https://github.com/greenrobot/EventBus
-    api "org.greenrobot:eventbus:3.3.1"
-
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-
-    // google 二维码扫描库
-    api 'com.google.zxing:core:3.4.1'
-
-    // 上拉加载、下拉刷新
-    api 'io.github.scwang90:refresh-layout-kernel:2.0.5'
-    api 'io.github.scwang90:refresh-header-classics:2.0.5'
-    api 'io.github.scwang90:refresh-footer-classics:2.0.5'
-
-    //AndroidX基本组件
-    api 'androidx.core:core-ktx:1.6.0'
-    api 'androidx.appcompat:appcompat:1.4.0-alpha03'
-
-    //UI组件库
-    api 'com.google.android.material:material:1.4.0'
-
-    //约束布局
-    api 'androidx.constraintlayout:constraintlayout:2.0.4'
-
-    //Kotlin协程库
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
-
-    //Glide支持库
-    api "com.github.bumptech.glide:glide:4.13.0"
-    kapt "com.github.bumptech.glide:compiler:4.13.0"
-
-    def camerax_version = "1.1.0-alpha07"
-    // CameraX core library using camera2 implementation
-    implementation "androidx.camera:camera-camera2:$camerax_version"
-    // CameraX Lifecycle Library
-    implementation "androidx.camera:camera-lifecycle:$camerax_version"
-    // CameraX View class
-    implementation "androidx.camera:camera-view:1.0.0-alpha27"
-
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-
-    implementation 'androidx.documentfile:documentfile:1.0.1'
 }

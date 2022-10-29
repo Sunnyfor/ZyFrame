@@ -1,11 +1,11 @@
 package com.sunny.zy.bluetooth
 
 import android.bluetooth.*
+import com.sunny.kit.utils.LogUtil
+import com.sunny.kit.utils.StringUtil
+import com.sunny.kit.utils.ToastUtil
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.bluetooth.bean.BluetoothBean
-import com.sunny.zy.utils.LogUtil
-import com.sunny.zy.utils.StringUtil
-import com.sunny.zy.utils.ToastUtil
 import java.util.*
 
 /**
@@ -108,7 +108,6 @@ object BluetoothConnector {
      * 发送消息
      */
     fun sendMsg(bluetoothBean: BluetoothBean, byteArray: ByteArray): Boolean {
-
         if (!bluetoothBean.isConnect) {
             ToastUtil.show("设备${bluetoothBean.device.address}未连接！")
             return false
@@ -117,9 +116,9 @@ object BluetoothConnector {
         val characteristic = gattService?.getCharacteristic(UUID.fromString(bluetoothBean.writeId))
         characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
         characteristic?.value = byteArray
-        LogUtil.i(
-            "${bluetoothBean.device.name}-发送数据:${StringUtil.bytesToHexString(byteArray)}"
-        )
+//        LogUtil.i(
+//            "${bluetoothBean.device.name}-发送数据:${StringUtil.byteArrToHex(byteArray)}"
+//        )
         return bluetoothBean.gatt?.writeCharacteristic(characteristic) ?: false
 
     }

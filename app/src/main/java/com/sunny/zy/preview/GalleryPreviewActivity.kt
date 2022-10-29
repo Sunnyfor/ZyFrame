@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.sunny.kit.utils.ToastUtil
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
@@ -19,7 +20,6 @@ import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.adapter.PhotoPreviewPageAdapter
 import com.sunny.zy.preview.adapter.PreviewPhotoAdapter
 import com.sunny.zy.utils.IntentManager
-import com.sunny.zy.utils.ToastUtil
 
 
 /**

@@ -20,6 +20,8 @@ import androidx.appcompat.widget.FitWindowsLinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.sunny.kit.utils.DensityUtil
+import com.sunny.kit.utils.PermissionsUtil
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.ZyFrameStore
@@ -27,8 +29,6 @@ import com.sunny.zy.base.bean.ErrorViewBean
 import com.sunny.zy.base.bean.MenuBean
 import com.sunny.zy.event.BindEventBus
 import com.sunny.zy.utils.BitmapUtil
-import com.sunny.zy.utils.DensityUtil
-import com.sunny.zy.utils.PermissionsUtil
 import com.sunny.zy.utils.ToolbarUtil
 import com.sunny.zy.widget.DefaultStateView
 import org.greenrobot.eventbus.EventBus

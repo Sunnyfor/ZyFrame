@@ -7,7 +7,7 @@ import com.bumptech.glide.load.data.DataFetcher
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.util.ContentLengthInputStream
 import com.bumptech.glide.util.Preconditions
-import com.sunny.zy.utils.LogUtil
+import com.sunny.kit.utils.LogUtil
 import okhttp3.Call
 import okhttp3.Request
 import okhttp3.Response

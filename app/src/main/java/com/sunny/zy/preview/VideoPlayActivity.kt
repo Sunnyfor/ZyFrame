@@ -10,10 +10,10 @@ import android.widget.TextView
 import android.widget.VideoView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import com.sunny.kit.utils.ToastUtil
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.IntentManager
-import com.sunny.zy.utils.ToastUtil
 
 /**
  * Desc

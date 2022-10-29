@@ -1,12 +1,9 @@
 package com.sunny.zy
 
 import android.app.Application
-import com.sunny.http.ZyHttpConfig
+import com.sunny.kit.ZyKit
+import com.sunny.kit.utils.LogUtil
 import com.sunny.zy.base.BaseActivity
-import com.sunny.zy.utils.LogUtil
-import com.sunny.zy.utils.ZyCookieJar
-import okhttp3.Cookie
-import okhttp3.HttpUrl
 import java.util.*
 
 /**
@@ -25,13 +22,7 @@ object ZyFrameStore {
 
     fun init(application: Application) {
         instance = application
-        //todo 临时代码
-        ZyHttpConfig.zyCookieJar = object : ZyCookieJar() {
-            override fun setCookies(url: HttpUrl, cookies: List<Cookie>): List<Cookie> {
-                return cookies
-            }
-        }
-
+        ZyKit.init(instance)
     }
 
     fun getContext() = instance
@@ -167,7 +158,7 @@ object ZyFrameStore {
     fun <T : BaseActivity> getActivity(clazz: Class<T>, position: Int? = null): T? {
         val result = activityStack.filter { it.javaClass == clazz }
         if (result.isNotEmpty()) {
-            val index = position ?: result.size - 1
+            val index = position ?: (result.size - 1)
             if (index < result.size) {
                 return result[index] as T
             }

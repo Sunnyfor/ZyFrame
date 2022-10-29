@@ -3,7 +3,7 @@ package com.sunny.zy.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.SurfaceView
-import com.sunny.zy.utils.LogUtil
+import com.sunny.kit.utils.LogUtil
 import kotlin.math.roundToInt
 
 /**

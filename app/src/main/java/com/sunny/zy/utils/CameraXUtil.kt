@@ -17,9 +17,12 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.sunny.kit.utils.LogUtil
+import com.sunny.kit.utils.StringUtil
+import com.sunny.kit.utils.ToastUtil
+import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.gallery.bean.GalleryBean
-import com.sunny.zy.ZyFrameConfig
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -33,6 +36,7 @@ import kotlin.math.min
  * Mail sunnyfor98@gmail.com
  * Date 2021/6/10 14:17
  */
+@SuppressLint("RestrictedApi")
 class CameraXUtil {
 
     private var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>? = null

@@ -38,25 +38,19 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
-    // 网络请求框架
-    api 'com.github.Sunnyfor:ZyHttp:1.0.5'
-
-    //工具类
-    api 'com.github.Sunnyfor:ZyKit:1.0.1'
-
     // 事件总线EventBus：https://github.com/greenrobot/EventBus
-    api "org.greenrobot:eventbus:3.3.1"
+    api project.ext.dependencies.eventBus
 
     // google 二维码扫描库
-    api 'com.google.zxing:core:3.4.1'
+    api project.ext.dependencies.zxing
 
     // 上拉加载、下拉刷新
-    api 'io.github.scwang90:refresh-layout-kernel:2.0.5'
-    api 'io.github.scwang90:refresh-header-classics:2.0.5'
-    api 'io.github.scwang90:refresh-footer-classics:2.0.5'
+    api project.ext.dependencies.refreshLayout
+    api project.ext.dependencies.refreshHeader
+    api project.ext.dependencies.refreshFooter
 
     //AndroidX基本组件
-    api project.ext.dependencies.core_ktx
+    api project.ext.dependencies.coreKtx
 
     api project.ext.dependencies.appcompat
 
@@ -64,30 +58,32 @@ dependencies {
     api project.ext.dependencies.material
 
     //约束布局
-    api project.ext.dependencies.constraint_layout
+    api project.ext.dependencies.constraintLayout
 
     //Kotlin协程库
     api project.ext.dependencies.coroutines
 
     //Glide支持库
     api project.ext.dependencies.glide
-    kapt project.ext.dependencies.glide_compiler
-
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+    kapt project.ext.dependencies.glideCompiler
 
     // CameraX core library using camera2 implementation
     implementation project.ext.dependencies.camerax
     // CameraX Lifecycle Library
-    implementation project.ext.dependencies.camera_lifecycle
+    implementation project.ext.dependencies.cameraLifecycle
     // CameraX View class
-    implementation project.ext.dependencies.camera_view
+    implementation project.ext.dependencies.cameraView
 
+    // 网络请求框架
+    api 'com.github.Sunnyfor:ZyHttp:1.0.6'
+
+    //工具类
+    api 'com.github.Sunnyfor:ZyKit:1.0.2'
+
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-
     implementation 'androidx.documentfile:documentfile:1.0.1'
-
-
 }
 
 afterEvaluate {
@@ -97,7 +93,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = 'com.github.Sunnyfor'
-                artifactId = 'zyFrame'
+                artifactId = 'ZyFrame'
                 version = '3.0.0'
             }
         }

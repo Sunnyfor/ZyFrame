@@ -2,12 +2,10 @@ package com.sunny.zy.gallery.model
 
 import android.content.ContentUris
 import android.provider.MediaStore
+import com.sunny.kit.ZyKit
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.gallery.bean.GalleryFolderBean
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Desc
@@ -67,6 +65,8 @@ class GalleryModel {
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.MIME_TYPE,
             MediaStore.Images.Media.SIZE,
             MediaStore.Images.Media.DATE_TAKEN
@@ -78,13 +78,13 @@ class GalleryModel {
         //所有图片
         val allPhotoFolderInfo = GalleryFolderBean(
             0,
-            ZyFrameStore.getContext().resources.getString(R.string.all_image),
+            ZyKit.getContext().resources.getString(R.string.all_image),
             null, 0,
             arrayListOf()
         )
         folderList.add(0, allPhotoFolderInfo)
 
-        val cursor = ZyFrameStore.getContext().contentResolver.query(
+        val cursor = ZyKit.getContext().contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projectionPhotos,
             null,
@@ -93,9 +93,11 @@ class GalleryModel {
         )
 
         cursor?.use {
+            val bucketIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID)
             val bucketNameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
-            val bucketIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID)
+            val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+            val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
             val imageIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             val typeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
@@ -112,6 +114,8 @@ class GalleryModel {
                 )
                 if (size > 0) {
                     val photoInfo = GalleryBean(imageId, uri)
+                    photoInfo.name = cursor.getString(nameColumn)
+                    photoInfo.path =  cursor.getString(dataColumn)
                     photoInfo.type = cursor.getString(typeColumn)
                     photoInfo.size = size
                     if (allPhotoFolderInfo.cover == null) {
@@ -153,13 +157,13 @@ class GalleryModel {
         //所有视频
         val allVideoFolderInfo = GalleryFolderBean(
             0,
-            ZyFrameStore.getContext().resources.getString(R.string.all_video),
+            ZyKit.getContext().resources.getString(R.string.all_video),
             null, 0,
             arrayListOf()
         )
         folderList.add(0, allVideoFolderInfo)
 
-        val cursor = ZyFrameStore.getContext().contentResolver.query(
+        val cursor = ZyKit.getContext().contentResolver.query(
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
             projectionPhotos,
             null,

@@ -22,7 +22,7 @@ import com.sunny.zy.widget.CaptureButton
  * Mail sunnyfor98@gmail.com
  * Date 2021/10/11 11:47
  */
-class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCallBack {
+class CameraActivity : BaseActivity() {
 
     private var isFirst = true
 
@@ -56,26 +56,26 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
 
     override fun initView() {
 
-        hideStatusBar(false)
+//        hideStatusBar(false)
 
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO
-            )
-        ) {
-            previewView.post {
-                val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
-                val screenAspectRatio = CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
-                cameraXUtil.init(
-                    this,
-                    previewView.surfaceProvider,
-                    screenAspectRatio,
-                    previewView.display.rotation
-                )
-                cameraXUtil.startCamera()
-            }
-        }
+//        requestPermissions(
+//            arrayOf(
+//                Manifest.permission.CAMERA,
+//                Manifest.permission.RECORD_AUDIO
+//            )
+//        ) {
+//            previewView.post {
+//                val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
+//                val screenAspectRatio = CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
+//                cameraXUtil.init(
+//                    this,
+//                    previewView.surfaceProvider,
+//                    screenAspectRatio,
+//                    previewView.display.rotation
+//                )
+//                cameraXUtil.startCamera()
+//            }
+//        }
 
         btnTake.setCaptureListener(object : CaptureButton.CaptureListener {
             override fun takePictures() {
@@ -84,7 +84,7 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
                 showLoading()
                 cameraXUtil.takePhoto { bean ->
                     galleryBean = bean
-                    IntentManager.startGalleryPreviewActivity(bean, this@CameraActivity)
+//                    IntentManager.startGalleryPreviewActivity(bean, this@CameraActivity)
                 }
             }
 
@@ -171,19 +171,19 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
     }
 
 
-    override fun onPreview(deleteList: ArrayList<GalleryBean>) {}
-
-    override fun onSelect(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {}
-
-    override fun onCamera(isComplete: Boolean) {
-        hideLoading()
-        if (isComplete) {
-            galleryBean?.let {
-                IntentManager.cameraResultCallBack?.invoke(it)
-            }
-            finish()
-        } else {
-            cameraXUtil.deletePicture(galleryBean?.uri ?: return)
-        }
-    }
+//    override fun onPreview(deleteList: ArrayList<GalleryBean>) {}
+//
+//    override fun onSelect(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {}
+//
+//    override fun onCamera(isComplete: Boolean) {
+//        hideLoading()
+//        if (isComplete) {
+//            galleryBean?.let {
+//                IntentManager.cameraResultCallBack?.invoke(it)
+//            }
+//            finish()
+//        } else {
+//            cameraXUtil.deletePicture(galleryBean?.uri ?: return)
+//        }
+//    }
 }

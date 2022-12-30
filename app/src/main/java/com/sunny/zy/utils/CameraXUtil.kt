@@ -17,11 +17,11 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.sunny.kit.ZyKit
 import com.sunny.kit.utils.LogUtil
 import com.sunny.kit.utils.StringUtil
 import com.sunny.kit.utils.ToastUtil
 import com.sunny.zy.ZyFrameConfig
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.gallery.bean.GalleryBean
 import java.io.File
 import java.util.concurrent.ExecutorService
@@ -97,7 +97,7 @@ class CameraXUtil {
         selector: CameraSelector? = null,
         imageAnalyzer: ImageAnalysis? = null
     ) {
-        cameraProviderFuture = ProcessCameraProvider.getInstance(ZyFrameStore.getContext())
+        cameraProviderFuture = ProcessCameraProvider.getInstance(ZyKit.getContext())
         cameraProviderFuture?.addListener(Runnable {
             val cameraProvider: ProcessCameraProvider? = cameraProviderFuture?.get()
 
@@ -146,7 +146,7 @@ class CameraXUtil {
                 exc.printStackTrace()
             }
 
-        }, ContextCompat.getMainExecutor(ZyFrameStore.getContext()))
+        }, ContextCompat.getMainExecutor(ZyKit.getContext()))
     }
 
 
@@ -162,20 +162,20 @@ class CameraXUtil {
 
     fun takePhoto(result: (galleryBean: GalleryBean) -> Unit) {
         val file = File(
-            ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+            ZyKit.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "${StringUtil.getTimeStamp()}.jpg"
         )
         val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
 
         imageCapture.takePicture(
             outputOptions,
-            ContextCompat.getMainExecutor(ZyFrameStore.getContext()),
+            ContextCompat.getMainExecutor(ZyKit.getContext()),
             object :
                 ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         FileProvider.getUriForFile(
-                            ZyFrameStore.getContext(),
+                            ZyKit.getContext(),
                             ZyFrameConfig.authorities,
                             file
                         )
@@ -207,21 +207,21 @@ class CameraXUtil {
     @SuppressLint("RestrictedApi", "MissingPermission")
     fun takeVideo(result: (galleryBean: GalleryBean) -> Unit) {
         val file = File(
-            ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES),
+            ZyKit.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES),
             "${StringUtil.getTimeStamp()}.mp4"
         )
 
         val outputOptions = VideoCapture.OutputFileOptions.Builder(file).build()
 
         videoCapture.startRecording(
-            outputOptions, ContextCompat.getMainExecutor(ZyFrameStore.getContext()),
+            outputOptions, ContextCompat.getMainExecutor(ZyKit.getContext()),
             object : VideoCapture.OnVideoSavedCallback {
 
                 override fun onVideoSaved(outputFileResults: VideoCapture.OutputFileResults) {
                     //保存视频成功回调，会在停止录制时被调用
                     val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         FileProvider.getUriForFile(
-                            ZyFrameStore.getContext(),
+                            ZyKit.getContext(),
                             ZyFrameConfig.authorities,
                             file
                         )
@@ -289,13 +289,13 @@ class CameraXUtil {
     }
 
     fun deleteMove(uri: Uri) {
-        ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.let {
+        ZyKit.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.let {
             deleteFile(it, uri)
         }
     }
 
     fun deletePicture(uri: Uri) {
-        ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.let {
+        ZyKit.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.let {
             deleteFile(it, uri)
         }
     }

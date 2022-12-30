@@ -1,11 +1,9 @@
 package com.sunny.zy.gallery
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -15,26 +13,25 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sunny.kit.utils.FileUtil
-import com.sunny.kit.utils.LogUtil
 import com.sunny.kit.utils.StringUtil
 import com.sunny.kit.utils.ToastUtil
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.BaseActivity
+import com.sunny.zy.callback.GalleryPreviewCallback
 import com.sunny.zy.gallery.adapter.GalleryContentAdapter
 import com.sunny.zy.gallery.adapter.GalleryFolderAdapter
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.gallery.bean.GalleryFolderBean
 import com.sunny.zy.gallery.contract.GalleryContract
-import com.sunny.zy.preview.GalleryPreviewActivity
 import com.sunny.zy.utils.*
+import com.sunny.zy.utils.permission.PermissionResult
+import com.sunny.zy.utils.permission.PermissionUtil
 import java.io.File
 
 /**
@@ -43,8 +40,8 @@ import java.io.File
  * Mail sunnyfor98@gmail.com
  * Date 2021/9/22 17:12
  */
-class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
-    GalleryPreviewActivity.OnPreviewResultCallBack {
+class GallerySelectActivity : BaseActivity(), GalleryContract.IView, GalleryPreviewCallback,
+    PermissionResult {
 
     private val galleryResultList = arrayListOf<GalleryBean>()
 
@@ -67,6 +64,10 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         GalleryContract.Presenter(this)
     }
 
+    private val permissionUtil by lazy {
+        PermissionUtil(this)
+    }
+
     companion object {
         const val SELECT_TYPE_INT = "selectType"
         const val SELECT_TYPE_MULTIPLE = 0  //多选
@@ -86,22 +87,31 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         findViewById<RecyclerView>(R.id.rvFolder)
     }
 
+    private val vBg by lazy {
+        findViewById<View>(R.id.vBg)
+    }
+
     private val rvContent by lazy {
         findViewById<RecyclerView>(R.id.rvContent)
     }
 
+    private val galleryIntent by lazy {
+        GalleryIntent()
+    }
+
     override fun initLayout() = R.layout.zy_act_photo_select
 
-    @SuppressLint("NotifyDataSetChanged")
+
     @Suppress("UNCHECKED_CAST")
     override fun initView() {
         //初始化标题栏
-        setTitleCustom(R.layout.zy_layout_title_photo_select)
-        toolbar?.setBackgroundResource(R.color.preview_bg)
-        setStatusBarColor(R.color.preview_bg)
-        toolbar?.findViewById<ImageView>(R.id.ivBack)?.setOnClickListener(this)
-        toolbar?.findViewById<ConstraintLayout>(R.id.clTitle)?.setOnClickListener(this)
-        toolbar?.findViewById<TextView>(R.id.tvComplete)?.setOnClickListener(this)
+        toolbar.setTitleCustom(R.layout.zy_layout_title_photo_select)
+        setImmersionResource(R.color.preview_bg)
+        toolbar.getView<ImageView>(R.id.ivBack)?.setOnClickListener(this)
+        toolbar.getView<ConstraintLayout>(R.id.clTitle)?.setOnClickListener(this)
+        toolbar.getView<TextView>(R.id.tvComplete)?.setOnClickListener(this)
+
+        galleryIntent.onCreate(this)
 
         intent.getBundleExtra("flags")?.let {
             selectType = it.getInt(SELECT_TYPE_INT, SELECT_TYPE_MULTIPLE)
@@ -124,6 +134,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
             toggleGallery()
         }
 
+        rvContent.itemAnimator = null
         rvContent.layoutManager = GridLayoutManager(this, 4)
         rvContent.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
@@ -179,29 +190,17 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                     intentCrop(data)
                 } else {
                     galleryResultList.add(data)
-                    IntentManager.selectResultCallBack?.invoke(galleryResultList)
-                    finish()
+                    setResult()
                 }
                 return@setOnItemClickListener
             }
 
-            val dataList = arrayListOf<GalleryBean>()
+            val dataList = contentAdapter.getData()
 
-            if (galleryResultList.isEmpty()) {
-                dataList.addAll(contentAdapter.getData())
-            } else {
-                dataList.addAll(galleryResultList)
-            }
-
-            if (!dataList.contains(data)) {
-                dataList.add(data)
-            }
-
-
-            IntentManager.startGalleryPreviewActivity(
+            galleryIntent.startGallerySelectPreview(
                 dataList,
                 galleryResultList,
-                dataList.indexOf(dataList.find { it.uri == data.uri }),
+                position,
                 maxSize,
                 this
             )
@@ -209,26 +208,15 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
     }
 
     override fun loadData() {
-        setPermissionsCancelFinish(true)
-        setPermissionsNoHintFinish(true)
-
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        ) {
-            when (fileType) {
-                FILE_TYPE_ALL -> presenter.loadImageAndVideData()
-                File_TYPE_IMAGE -> presenter.loadImageData()
-                File_TYPE_VIDEO -> presenter.loadVideoData()
-            }
-        }
+        permissionUtil.requestPermissions(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
 
 
     private fun updateTitle(position: Int) {
-        toolbar?.findViewById<TextView>(R.id.tvTitleGalleryName)?.text =
+        toolbar.findViewById<TextView>(R.id.tvTitleGalleryName)?.text =
             folderAdapter.getData(position).name
         contentAdapter.getData().clear()
         contentAdapter.getData().addAll(folderAdapter.getData(position).list)
@@ -236,7 +224,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
     }
 
     private fun updateCount() {
-        val completeText = toolbar?.findViewById<TextView>(R.id.tvComplete)
+        val completeText = toolbar.findViewById<TextView>(R.id.tvComplete)
         val textSb = StringBuilder()
         textSb.append(getString(R.string.complete))
 
@@ -265,17 +253,16 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
             expandAnim = AnimationUtils.loadAnimation(this, R.anim.gallery_folder_expand)
         }
 
-        toolbar?.findViewById<View>(R.id.ivExpand)?.startAnimation(expandAnim)
+        toolbar.findViewById<View>(R.id.ivExpand)?.startAnimation(expandAnim)
 
         if (rvFolder.visibility == View.GONE) {
             rvFolder.animation =
                 AnimationUtils.loadAnimation(this, R.anim.gallery_folder_out).apply {
                     setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation?) {
-                            rvFolder.setBackgroundResource(R.color.color_transparent)
+                        override fun onAnimationStart(animation: Animation?) {}
+                        override fun onAnimationEnd(animation: Animation?) {
+                            vBg.visibility = View.GONE
                         }
-
-                        override fun onAnimationEnd(animation: Animation?) {}
 
                         override fun onAnimationRepeat(animation: Animation?) {}
 
@@ -285,12 +272,11 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
             rvFolder.animation =
                 AnimationUtils.loadAnimation(this, R.anim.gallery_folder_in).apply {
                     setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation?) {}
-
-                        override fun onAnimationEnd(animation: Animation?) {
-                            rvFolder.setBackgroundColor(Color.parseColor("#3F000000"))
+                        override fun onAnimationStart(animation: Animation?) {
+                            vBg.visibility = View.VISIBLE
                         }
 
+                        override fun onAnimationEnd(animation: Animation?) {}
                         override fun onAnimationRepeat(animation: Animation?) {}
                     })
                 }
@@ -309,15 +295,19 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                 if (galleryResultList.isEmpty()) {
                     return
                 }
-                IntentManager.selectResultCallBack?.invoke(galleryResultList)
-                finish()
+                setResult()
             }
         }
     }
 
-    override fun onClose() {
-        IntentManager.selectResultCallBack = null
+    private fun setResult() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("data", galleryResultList)
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
     }
+
+    override fun onClose() {}
 
     override fun showGalleryData(data: List<GalleryFolderBean>) {
         folderAdapter.getData().clear()
@@ -350,47 +340,55 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         intent.putExtra("return-data", false)
         intent.putExtra("noFaceDetection", true) //
 
-        val outFile = File(ZyFrameConfig.TEMP, StringUtil.getTimeStamp() + ".jpg")
-        var outUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val outFile = File(FileUtil.getExternalDir(), StringUtil.getTimeStamp() + ".jpg")
+        val outUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             FileUtil.insertImage(outFile.name)
         } else {
             Uri.fromFile(outFile)
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outUri)
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                LogUtil.i("裁剪成功")
-                FileUtil.cropResultGetUri(outUri, outFile)?.let { resultUri ->
-                    outUri = resultUri
-                }
-                outUri?.let { uri ->
-                    data.uri = uri
-                }
-                galleryResultList.add(data)
-                IntentManager.selectResultCallBack?.invoke(galleryResultList)
-                finish()
-            } else {
-                LogUtil.i("裁剪失败")
-                LogUtil.i("uri:$outUri")
-            }
-        }.launch(intent)
+//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+//            if (it.resultCode == Activity.RESULT_OK) {
+//                LogUtil.i("裁剪成功")
+//                FileUtil.cropResultGetUri(outUri, outFile)?.let { resultUri ->
+//                    outUri = resultUri
+//                }
+//                outUri?.let { uri ->
+//                    data.uri = uri
+//                }
+//                galleryResultList.add(data)
+//                IntentManager.selectResultCallBack?.invoke(galleryResultList)
+//                finish()
+//            } else {
+//                LogUtil.i("裁剪失败")
+//                LogUtil.i("uri:$outUri")
+//            }
+//        }.launch(intent)
     }
 
 
-    override fun onPreview(deleteList: ArrayList<GalleryBean>) {}
+    override fun onPermissionFailed(failedPermissions: List<String>) {}
 
-    override fun onSelect(resultList: ArrayList<GalleryBean>, isFinish: Boolean) {
+    override fun onPermissionSuccess(successPermissions: List<String>) {
+        when (fileType) {
+            FILE_TYPE_ALL -> presenter.loadImageAndVideData()
+            File_TYPE_IMAGE -> presenter.loadImageData()
+            File_TYPE_VIDEO -> presenter.loadVideoData()
+        }
+    }
+
+    /**
+     * 预览结果处理
+     */
+    override fun onResult(flag: Boolean, resultList: ArrayList<GalleryBean>) {
         galleryResultList.clear()
         galleryResultList.addAll(resultList)
 
-        if (isFinish) {
-            IntentManager.selectResultCallBack?.invoke(galleryResultList)
-            finish()
+        if (flag) {
+            setResult()
         } else {
             contentAdapter.notifyItemRangeChanged(0, contentAdapter.itemCount)
             updateCount()
         }
     }
-
-    override fun onCamera(isComplete: Boolean) {}
 }

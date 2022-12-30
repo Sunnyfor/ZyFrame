@@ -5,7 +5,7 @@ import android.net.Uri
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.activity.CameraActivity
 import com.sunny.zy.activity.QRCodeActivity
-import com.sunny.zy.base.BaseActivity
+import com.sunny.zy.base.manager.ActivityManager
 import com.sunny.zy.gallery.GallerySelectActivity
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.GalleryPreviewActivity
@@ -33,64 +33,52 @@ object IntentManager {
     }
 
 
-    //跳转相册的
-    var selectResultCallBack: ((selectList: ArrayList<GalleryBean>) -> Unit)? = null
-    fun startGallerySelectActivity(
-        flags: GalleryFlagsBuild? = null,
-        resultCallBack: (selectList: ArrayList<GalleryBean>) -> Unit
-    ) {
-        selectResultCallBack = resultCallBack
-        val intent = Intent(getActivity(), GallerySelectActivity::class.java)
-        intent.putExtra("flags", flags?.build())
-        getActivity().startActivity(intent)
-    }
-
     //跳转预览并选择
-    var previewResultCallBackCallBack: GalleryPreviewActivity.OnPreviewResultCallBack? = null
-    fun startGalleryPreviewActivity(
-        dataList: ArrayList<GalleryBean>,
-        selectList: ArrayList<GalleryBean>,
-        index: Int = 0,
-        maxSize: Int = 0,
-        resultCallback: GalleryPreviewActivity.OnPreviewResultCallBack?
-    ) {
-        previewResultCallBackCallBack = resultCallback
-        val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
-        ZyFrameStore.setData("dataList", dataList)
-        intent.putExtra("index", index)
-        intent.putExtra("maxSize", maxSize)
-        intent.putExtra("type", GalleryPreviewActivity.TYPE_SELECT)
-        ZyFrameStore.setData("selectList", selectList)
-        getActivity().startActivity(intent)
-    }
+//    var previewResultCallBackCallBack: GalleryPreviewActivity.OnPreviewResultCallBack? = null
+//    fun startGalleryPreviewActivity(
+//        dataList: ArrayList<GalleryBean>,
+//        selectList: ArrayList<GalleryBean>,
+//        index: Int = 0,
+//        maxSize: Int = 0,
+//        resultCallback: GalleryPreviewActivity.OnPreviewResultCallBack?
+//    ) {
+//        previewResultCallBackCallBack = resultCallback
+//        val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
+//        ZyFrameStore.setData("dataList", dataList)
+//        intent.putExtra("index", index)
+//        intent.putExtra("maxSize", maxSize)
+//        intent.putExtra("type", GalleryPreviewActivity.TYPE_SELECT)
+//        ZyFrameStore.setData("selectList", selectList)
+//        getActivity().startActivity(intent)
+//    }
 
     //仅预览
-    fun startGalleryPreviewActivity(
-        dataList: ArrayList<GalleryBean>,
-        index: Int = 0,
-        isDelete: Boolean,
-        resultCallback: GalleryPreviewActivity.OnPreviewResultCallBack?
-    ) {
-        previewResultCallBackCallBack = resultCallback
-        val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
-        ZyFrameStore.setData("dataList", dataList)
-        intent.putExtra("index", index)
-        intent.putExtra("type", GalleryPreviewActivity.TYPE_PREVIEW)
-        intent.putExtra("isDelete", isDelete)
-        getActivity().startActivity(intent)
-    }
-
-    //相机预览
-    fun startGalleryPreviewActivity(
-        bean: GalleryBean,
-        resultCallback: GalleryPreviewActivity.OnPreviewResultCallBack?
-    ) {
-        previewResultCallBackCallBack = resultCallback
-        val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
-        ZyFrameStore.setData("dataList", arrayListOf(bean))
-        intent.putExtra("type", GalleryPreviewActivity.TYPE_CAMERA)
-        getActivity().startActivity(intent)
-    }
+//    fun startGalleryPreviewActivity(
+//        dataList: ArrayList<GalleryBean>,
+//        index: Int = 0,
+//        isDelete: Boolean,
+//        resultCallback: GalleryPreviewActivity.OnPreviewResultCallBack?
+//    ) {
+//        previewResultCallBackCallBack = resultCallback
+//        val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
+//        ZyFrameStore.setData("dataList", dataList)
+//        intent.putExtra("index", index)
+//        intent.putExtra("type", GalleryPreviewActivity.TYPE_PREVIEW)
+//        intent.putExtra("isDelete", isDelete)
+//        getActivity().startActivity(intent)
+//    }
+//
+//    //相机预览
+//    fun startGalleryPreviewActivity(
+//        bean: GalleryBean,
+//        resultCallback: GalleryPreviewActivity.OnPreviewResultCallBack?
+//    ) {
+//        previewResultCallBackCallBack = resultCallback
+//        val intent = Intent(getActivity(), GalleryPreviewActivity::class.java)
+//        ZyFrameStore.setData("dataList", arrayListOf(bean))
+//        intent.putExtra("type", GalleryPreviewActivity.TYPE_CAMERA)
+//        getActivity().startActivity(intent)
+//    }
 
     //跳转本地视频预览
     var videoPlayResultCallBack: ((isComplete: Boolean) -> Unit)? = null
@@ -115,5 +103,5 @@ object IntentManager {
     }
 
 
-    fun getActivity() = ZyFrameStore.getActivity(ZyFrameStore.getActivitySize() - 1)
+    fun getActivity() = ActivityManager.getLastActivity()
 }

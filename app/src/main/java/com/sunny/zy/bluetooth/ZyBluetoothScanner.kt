@@ -14,9 +14,9 @@ import android.content.IntentFilter
 import android.os.ParcelUuid
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import com.sunny.kit.ZyKit
 import com.sunny.kit.utils.LogUtil
 import com.sunny.kit.utils.ToastUtil
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
 import java.util.*
 import kotlin.collections.ArrayList
@@ -40,7 +40,7 @@ object ZyBluetoothScanner {
     private var onLeScanCallback: ScanCallback? = null
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
-        (ZyFrameStore.getContext()
+        (ZyKit.getContext()
             .getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
     }
 
@@ -105,7 +105,7 @@ object ZyBluetoothScanner {
     fun stopLeScan() {
         LogUtil.i("停止蓝牙扫描！")
         isScan = false
-        bluetoothAdapter?.bluetoothLeScanner?.stopScan(onLeScanCallback)
+//        bluetoothAdapter?.bluetoothLeScanner?.stopScan(onLeScanCallback)
     }
 
     /**
@@ -118,29 +118,29 @@ object ZyBluetoothScanner {
             return
         }
 
-        activity.requestPermissions(permissions) {
-            isScan = true
-            receiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    when (intent.action) {
-                        BluetoothDevice.ACTION_FOUND -> {
-                            intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-                                ?.let {
-                                    callback.onScanResult(it)
-                                }
-                        }
-                        BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                            callback.onScanFinish()
-                            isScan = false
-                        }
-                    }
-                }
-            }
-            val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-            activity.registerReceiver(receiver, filter)
-            bluetoothAdapter?.startDiscovery()
-        }
+//        activity.requestPermissions(permissions) {
+//            isScan = true
+//            receiver = object : BroadcastReceiver() {
+//                override fun onReceive(context: Context, intent: Intent) {
+//                    when (intent.action) {
+//                        BluetoothDevice.ACTION_FOUND -> {
+//                            intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+//                                ?.let {
+//                                    callback.onScanResult(it)
+//                                }
+//                        }
+//                        BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+//                            callback.onScanFinish()
+//                            isScan = false
+//                        }
+//                    }
+//                }
+//            }
+//            val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+//            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+//            activity.registerReceiver(receiver, filter)
+//            bluetoothAdapter?.startDiscovery()
+//        }
     }
 
     /**
@@ -150,7 +150,7 @@ object ZyBluetoothScanner {
     fun stopScan(activity: AppCompatActivity) {
         isScan = false
         activity.unregisterReceiver(receiver ?: return)
-        bluetoothAdapter?.cancelDiscovery()
+//        bluetoothAdapter?.cancelDiscovery()
     }
 
 
@@ -163,12 +163,12 @@ object ZyBluetoothScanner {
         filters: ArrayList<ScanFilter>? = null,
         settings: ScanSettings? = null
     ) {
-        activity.requestPermissions(permissions) {
-            isScan = true
-            bluetoothAdapter?.bluetoothLeScanner?.startScan(
-                filters, settings ?: ScanSettings.Builder().build(), onLeScanCallback
-            )
-        }
+//        activity.requestPermissions(permissions) {
+//            isScan = true
+//            bluetoothAdapter?.bluetoothLeScanner?.startScan(
+//                filters, settings ?: ScanSettings.Builder().build(), onLeScanCallback
+//            )
+//        }
         LogUtil.i("开始蓝牙扫描！")
     }
 

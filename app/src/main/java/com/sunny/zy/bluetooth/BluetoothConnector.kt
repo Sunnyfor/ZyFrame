@@ -1,10 +1,10 @@
 package com.sunny.zy.bluetooth
 
 import android.bluetooth.*
+import com.sunny.kit.ZyKit
 import com.sunny.kit.utils.LogUtil
 import com.sunny.kit.utils.StringUtil
 import com.sunny.kit.utils.ToastUtil
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.bluetooth.bean.BluetoothBean
 import java.util.*
 
@@ -21,7 +21,7 @@ object BluetoothConnector {
     const val STATE_GATT_WRITE = 2 //可写入
 
     fun connect(bean: BluetoothBean) {
-        bean.device.connectGatt(ZyFrameStore.getContext(), false, object : BluetoothGattCallback() {
+        bean.device.connectGatt(ZyKit.getContext(), false, object : BluetoothGattCallback() {
             override fun onConnectionStateChange(
                 gatt: BluetoothGatt?, status: Int, newState: Int
             ) {

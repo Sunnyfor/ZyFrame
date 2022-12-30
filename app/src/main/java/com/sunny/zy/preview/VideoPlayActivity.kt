@@ -81,7 +81,7 @@ class VideoPlayActivity : BaseActivity() {
     override fun initLayout() = R.layout.zy_act_preview_video
 
     override fun initView() {
-        setStatusBarColor(R.color.preview_bg)
+//        setStatusBarColor(R.color.preview_bg)
 
         if (isShowComplete) {
             tvComplete.visibility = View.VISIBLE

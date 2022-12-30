@@ -33,7 +33,7 @@ class PhotoPreviewPageAdapter(data: ArrayList<GalleryBean>) :
                 val photoView = holder.itemView
                 Glide.with(context)
                     .load(getData(position).uri)
-                    .into(photoView)
+                    .into(photoView as ImageView)
             }
             is ConstraintLayout -> {
                 val ivPhoto: ImageView = holder.getView(R.id.ivPhoto)

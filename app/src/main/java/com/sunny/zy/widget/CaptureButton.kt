@@ -72,7 +72,7 @@ class CaptureButton : View {
 
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        buttonSize = (DensityUtil.screenWidth() / 4.5).toInt()
+        buttonSize = (resources.displayMetrics.widthPixels / 4.5).toInt()
         buttonRadius = buttonSize / 2.0f
         buttonOutsideRadius = buttonRadius
         buttonInsideRadius = buttonRadius * 0.75f

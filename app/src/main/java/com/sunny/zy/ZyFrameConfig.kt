@@ -1,8 +1,6 @@
 package com.sunny.zy
 
 import android.util.Log
-import com.sunny.zy.base.ICreateStateView
-import com.sunny.zy.widget.DefaultCreateStateView
 
 /**
  * Desc 框架全局配置清单
@@ -23,24 +21,8 @@ object ZyFrameConfig {
     var authorities = "com.sunny.zy.provider"
 
     /**
-     * 两次点击事件间隔，单位毫秒
-     */
-    var clickInterval = 500L
-
-    /**
-     * 内存卡缓存路径
-     */
-    var TEMP = ZyFrameStore.getContext().getExternalFilesDir("temp")?.path ?: ""
-
-    /**
      * 设置StatusBar文字颜色
      */
     var statusBarIsDark = false
-
-
-    /**
-     * 全局创建状态覆盖层View
-     */
-    var createStateView: ICreateStateView = DefaultCreateStateView()
 
 }

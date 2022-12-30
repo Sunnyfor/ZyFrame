@@ -13,10 +13,9 @@ import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
-import com.sunny.zy.R
-import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.BaseRecycleAdapter
-import com.sunny.zy.base.bean.ErrorViewBean
+import com.sunny.zy.base.bean.PlaceholderBean
+import com.sunny.zy.config.ZyBaseConfig
 
 
 /**
@@ -75,9 +74,11 @@ class PullRefreshLayout : SmartRefreshLayout {
         ClassicsFooter(context)
     }
 
-    var defaultStateView = object : DefaultStateView(ZyFrameConfig.createStateView) {
-        override fun getStateViewParent(): ViewGroup {
-            return rootView
+    val defaultStateView by lazy {
+        object : DefaultStateView(ZyBaseConfig.createStateView) {
+            override fun getStateViewParent(): ViewGroup {
+                return rootView
+            }
         }
     }
 
@@ -231,7 +232,7 @@ class PullRefreshLayout : SmartRefreshLayout {
 
     fun <T> updateEmptyView(data: ArrayList<T>) {
         if (data.isEmpty()) {
-            val errorViewBean = ErrorViewBean(resources.getString(R.string.emptyData))
+            val errorViewBean = PlaceholderBean()
             defaultStateView.showError(errorViewBean)
 
         } else {
@@ -240,7 +241,7 @@ class PullRefreshLayout : SmartRefreshLayout {
     }
 
     fun getRecyclerView(): RecyclerView {
-        if (contentView !is RecyclerView){
+        if (contentView !is RecyclerView) {
             setRecyclerView()
         }
         return contentView as RecyclerView
@@ -260,7 +261,7 @@ class PullRefreshLayout : SmartRefreshLayout {
         super.onFinishInflate()
     }
 
-    private fun setRecyclerView(){
+    private fun setRecyclerView() {
         contentView = RecyclerView(context).apply {
             layoutManager = LinearLayoutManager(context)
         }

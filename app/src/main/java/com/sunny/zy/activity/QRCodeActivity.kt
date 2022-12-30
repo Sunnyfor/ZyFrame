@@ -28,27 +28,27 @@ class QRCodeActivity : BaseActivity() {
     override fun initLayout() = R.layout.zy_frag_qr_code
 
     override fun initView() {
-        setTitleDefault("扫一扫")
-        setPermissionsCancelFinish(true)
-        setPermissionsNoHintFinish(true)
-
-        requestPermissions(Manifest.permission.CAMERA) {
-            previewView.post {
-                val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
-                val screenAspectRatio =
-                    CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
-                cameraXUtil.init(
-                    this,
-                    previewView.surfaceProvider,
-                    screenAspectRatio,
-                    previewView.display.rotation
-                )
-                cameraXUtil.startQrCodeScan {
-                    IntentManager.qrCodeResultCallBack?.invoke(it)
-                    finish()
-                }
-            }
-        }
+//        setTitleDefault("扫一扫")
+//        setPermissionsCancelFinish(true)
+//        setPermissionsNoHintFinish(true)
+//
+//        requestPermissions(Manifest.permission.CAMERA) {
+//            previewView.post {
+//                val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
+//                val screenAspectRatio =
+//                    CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
+//                cameraXUtil.init(
+//                    this,
+//                    previewView.surfaceProvider,
+//                    screenAspectRatio,
+//                    previewView.display.rotation
+//                )
+//                cameraXUtil.startQrCodeScan {
+//                    IntentManager.qrCodeResultCallBack?.invoke(it)
+//                    finish()
+//                }
+//            }
+//        }
     }
 
 

@@ -1,25 +1,27 @@
 package com.sunny.zy.preview
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.sunny.kit.utils.DensityUtil
 import com.sunny.kit.utils.ToastUtil
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.gallery.bean.GalleryBean
 import com.sunny.zy.preview.adapter.PhotoPreviewPageAdapter
 import com.sunny.zy.preview.adapter.PreviewPhotoAdapter
-import com.sunny.zy.utils.IntentManager
 
 
 /**
@@ -49,6 +51,10 @@ class GalleryPreviewActivity : BaseActivity() {
 
     private val isDelete by lazy {
         intent.getBooleanExtra("isDelete", false)
+    }
+
+    private val vStatusBar by lazy {
+        findViewById<View>(R.id.statusBar)
     }
 
     private val clTitle by lazy {
@@ -83,7 +89,6 @@ class GalleryPreviewActivity : BaseActivity() {
 
     private val rvPreview by lazy {
         findViewById<RecyclerView>(R.id.rvPreview)
-
     }
 
     private val clSelect by lazy {
@@ -103,7 +108,7 @@ class GalleryPreviewActivity : BaseActivity() {
         PreviewPhotoAdapter(selectList).apply {
             setOnItemClickListener { _, position ->
                 val index = dataList.indexOf(getData(position))
-                viewPager.currentItem = index
+                viewPager.setCurrentItem(index,false)
             }
         }
     }
@@ -116,12 +121,21 @@ class GalleryPreviewActivity : BaseActivity() {
 
     override fun initView() {
 
-        setStatusBarColor(R.color.preview_bg)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
 
+        hideStatusBar()
+        vStatusBar.layoutParams.height = DensityUtil.getStatusBarHeight()
         index = intent.getIntExtra("index", 0)
         maxSize = intent.getIntExtra("maxSize", 0)
-        dataList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("dataList", true) ?: arrayListOf())
-        selectList.addAll(ZyFrameStore.getData<ArrayList<GalleryBean>>("selectList", true) ?: arrayListOf())
+        dataList.addAll(
+            intent.getParcelableArrayListExtra("dataList") ?: arrayListOf()
+        )
+        selectList.addAll(
+            intent.getParcelableArrayListExtra("selectList") ?: arrayListOf()
+        )
 
         updateTitle()
 
@@ -171,17 +185,18 @@ class GalleryPreviewActivity : BaseActivity() {
         viewPager.adapter = PhotoPreviewPageAdapter(dataList).apply {
             onPhotoCallback = {
                 if (clTitle.visibility == View.VISIBLE) {
-                    hideStatusBar(false)
                     clTitle.visibility = View.GONE
-
+                    vStatusBar.visibility = View.GONE
+                    window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                     if (type == TYPE_SELECT) {
                         clPreview.visibility = View.GONE
                         clSelect.visibility = View.GONE
                     }
 
                 } else {
-                    showStatusBar()
                     clTitle.visibility = View.VISIBLE
+                    vStatusBar.visibility = View.VISIBLE
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                     if (type == TYPE_SELECT) {
                         if (selectList.isNotEmpty()) {
                             clPreview.visibility = View.VISIBLE
@@ -207,7 +222,7 @@ class GalleryPreviewActivity : BaseActivity() {
 
         viewPager.setCurrentItem(index, false)
 
-        setOnClickListener(clTitle, ivBack, tvComplete, ivDelete, ivSelect, tvSelect)
+        setOnClickListener(clTitle, ivBack, tvComplete, ivDelete, clSelect, ivSelect, tvSelect)
 
     }
 
@@ -219,9 +234,7 @@ class GalleryPreviewActivity : BaseActivity() {
     override fun onClickEvent(view: View) {
         when (view.id) {
             R.id.ivBack -> setResult()
-            R.id.clTitle -> {
-            }
-
+            R.id.clTitle,R.id.clSelect -> {}
             R.id.tvComplete -> {
 
                 if (type == TYPE_CAMERA) {
@@ -280,13 +293,9 @@ class GalleryPreviewActivity : BaseActivity() {
 
     private fun setResult(flag: Boolean = false) {
         val intent = Intent()
-        intent.putExtra("type", type)
-        when (type) {
-            TYPE_CAMERA -> IntentManager.previewResultCallBackCallBack?.onCamera(flag)
-            TYPE_PREVIEW -> IntentManager.previewResultCallBackCallBack?.onPreview(deleteList)
-            TYPE_SELECT -> IntentManager.previewResultCallBackCallBack?.onSelect(selectList, flag)
-        }
-        IntentManager.previewResultCallBackCallBack = null
+        intent.putExtra("flag", flag)
+        intent.putExtra("data", selectList)
+        setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
@@ -313,7 +322,9 @@ class GalleryPreviewActivity : BaseActivity() {
         if (selectList.isEmpty()) {
             clPreview.visibility = View.GONE
         } else {
-            clPreview.visibility = View.VISIBLE
+            if (clTitle.visibility == View.VISIBLE) {
+                clPreview.visibility = View.VISIBLE
+            }
         }
 
         if (!selectList.contains(dataList[index])) {
@@ -323,13 +334,5 @@ class GalleryPreviewActivity : BaseActivity() {
             val index = selectList.indexOf(dataList[index])
             rvPreview.scrollToPosition(index)
         }
-    }
-
-    interface OnPreviewResultCallBack {
-        fun onPreview(deleteList: ArrayList<GalleryBean>)
-
-        fun onSelect(resultList: ArrayList<GalleryBean>, isFinish: Boolean)
-
-        fun onCamera(isComplete: Boolean)
     }
 }

@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.documentfile.provider.DocumentFile
 import com.bumptech.glide.Glide
+import com.sunny.kit.ZyKit
 import com.sunny.zy.R
-import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseRecycleAdapter
 import com.sunny.zy.base.BaseRecycleViewHolder
 import com.sunny.zy.gallery.bean.GalleryBean
@@ -44,7 +44,7 @@ class PreviewPhotoAdapter(data: ArrayList<GalleryBean>) : BaseRecycleAdapter<Gal
         if (uri == null) {
             return
         }
-        val type = DocumentFile.fromSingleUri(ZyFrameStore.getContext(), uri)?.type ?: ""
+        val type = DocumentFile.fromSingleUri(ZyKit.getContext(), uri)?.type ?: ""
         if (type.contains("video")) {
             view.visibility = View.VISIBLE
         } else {

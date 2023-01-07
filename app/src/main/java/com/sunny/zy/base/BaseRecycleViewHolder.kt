@@ -13,16 +13,23 @@ import androidx.recyclerview.widget.RecyclerView
 @Suppress("UNCHECKED_CAST")
 class BaseRecycleViewHolder(
     itemView: View,
-    onItemClickListener: ((view: View, position: Int) -> Unit)?
-) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    onItemClickListener: ((view: View, position: Int) -> Unit)?,
+    onItemLongClickListener: ((view: View, position: Int) -> Unit)?
+) : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 
     private val viewMap = SparseArray<View>()
     private var onItemClickListener: ((view: View, position: Int) -> Unit)? = null
+    private var onItemLongClickListener: ((view: View, position: Int) -> Unit)? = null
 
     init {
-        if (onItemClickListener != null) {
-            this.onItemClickListener = onItemClickListener
+        onItemClickListener?.let {
+            this.onItemClickListener = it
             itemView.setOnClickListener(this)
+        }
+
+        onItemLongClickListener?.let {
+            this.onItemLongClickListener = it
+            itemView.setOnLongClickListener(this)
         }
     }
 
@@ -37,5 +44,10 @@ class BaseRecycleViewHolder(
 
     override fun onClick(v: View) {
         onItemClickListener?.invoke(v, adapterPosition)
+    }
+
+    override fun onLongClick(v: View): Boolean {
+        onItemLongClickListener?.invoke(v, adapterPosition)
+        return true
     }
 }

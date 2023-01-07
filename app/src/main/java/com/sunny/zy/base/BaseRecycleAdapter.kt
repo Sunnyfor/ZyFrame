@@ -15,6 +15,7 @@ abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
     RecyclerView.Adapter<BaseRecycleViewHolder>() {
     private var isDouble = false
     private var onItemClickListener: ((view: View, position: Int) -> Unit)? = null
+    private var onItemLongClickListener: ((view: View, position: Int) -> Unit)? = null
     lateinit var context: Context
 
     /*
@@ -22,7 +23,7 @@ abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecycleViewHolder {
         context = parent.context
-        return BaseRecycleViewHolder(initLayout(parent, viewType), onItemClickListener)
+        return BaseRecycleViewHolder(initLayout(parent, viewType), onItemClickListener, onItemLongClickListener)
     }
 
     /*
@@ -44,6 +45,13 @@ abstract class BaseRecycleAdapter<T>(private var list: ArrayList<T>) :
      */
     fun setOnItemClickListener(onItemClickListener: ((view: View, position: Int) -> Unit)) {
         this.onItemClickListener = onItemClickListener
+    }
+
+    /*
+     * 子条目长按事件
+     */
+    fun setOnItemLongClickListener(onItemLongClickListener: ((view: View, position: Int) -> Unit)) {
+        this.onItemLongClickListener = onItemLongClickListener
     }
 
 }

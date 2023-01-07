@@ -59,6 +59,8 @@ class CameraXUtil {
             .build()
     }
 
+    private var camera: Camera? = null
+
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
     private lateinit var lifecycleOwner: LifecycleOwner
@@ -123,17 +125,18 @@ class CameraXUtil {
             try {
                 // Unbind use cases before rebinding
                 cameraProvider.unbindAll()
+                camera = null
                 // Bind use cases to camera
 
                 if (imageAnalyzer != null) {
-                    cameraProvider.bindToLifecycle(
+                    camera = cameraProvider.bindToLifecycle(
                         lifecycleOwner,
                         cameraSelector,
                         preview,
                         imageAnalyzer
                     )
                 } else {
-                    cameraProvider.bindToLifecycle(
+                    camera = cameraProvider.bindToLifecycle(
                         lifecycleOwner,
                         cameraSelector,
                         preview,
@@ -157,6 +160,13 @@ class CameraXUtil {
             CameraSelector.DEFAULT_BACK_CAMERA
         }
         startCamera()
+    }
+
+    /**
+     * 开关手电筒
+     */
+    fun enableTorch(value: Boolean) {
+        camera?.cameraControl?.enableTorch(value)
     }
 
 

@@ -36,8 +36,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-
     // 事件总线EventBus：https://github.com/greenrobot/EventBus
     api project.ext.dependencies.eventBus
 

@@ -66,7 +66,6 @@ class GalleryModel {
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.MIME_TYPE,
             MediaStore.Images.Media.SIZE,
             MediaStore.Images.Media.DATE_TAKEN
@@ -97,7 +96,6 @@ class GalleryModel {
             val bucketNameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
             val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-            val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
             val imageIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             val typeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
@@ -115,7 +113,6 @@ class GalleryModel {
                 if (size > 0) {
                     val photoInfo = GalleryBean(imageId, uri)
                     photoInfo.name = cursor.getString(nameColumn)
-                    photoInfo.path =  cursor.getString(dataColumn)
                     photoInfo.type = cursor.getString(typeColumn)
                     photoInfo.size = size
                     if (allPhotoFolderInfo.cover == null) {

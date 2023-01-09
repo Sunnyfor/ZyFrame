@@ -103,7 +103,7 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
             dateSb.append(" 周")
             dateSb.append(weekStrList[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1])
         }
-        findViewById<TextView>(R.id.tvTitle)?.text = dateSb.toString()
+        findViewById<TextView>(R.id.tvTitle).text = dateSb.toString()
     }
 
     fun setTitle(date: String) {

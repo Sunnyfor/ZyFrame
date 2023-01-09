@@ -11,7 +11,6 @@ import android.os.Parcelable
  * Date 2021/9/22 18:12
  */
 class GalleryBean(var id: Long = 0, var uri: Uri?) : Parcelable {
-    var path = ""
     var name = ""
     var type = ""
     var duration = 0
@@ -22,7 +21,6 @@ class GalleryBean(var id: Long = 0, var uri: Uri?) : Parcelable {
         parcel.readParcelable(Uri::class.java.classLoader)
     ) {
         name = parcel.readString() ?: ""
-        path = parcel.readString() ?: ""
         type = parcel.readString() ?: ""
         duration = parcel.readInt()
         size = parcel.readLong()
@@ -33,7 +31,6 @@ class GalleryBean(var id: Long = 0, var uri: Uri?) : Parcelable {
         parcel.writeLong(id)
         parcel.writeParcelable(uri, flags)
         parcel.writeString(name)
-        parcel.writeString(path)
         parcel.writeString(type)
         parcel.writeInt(duration)
         parcel.writeLong(size)
@@ -41,6 +38,11 @@ class GalleryBean(var id: Long = 0, var uri: Uri?) : Parcelable {
 
     override fun describeContents(): Int {
         return 0
+    }
+
+
+    override fun toString(): String {
+        return "GalleryBean(id=$id, uri=$uri, name='$name', type='$type', duration=$duration, size=$size)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -51,8 +53,8 @@ class GalleryBean(var id: Long = 0, var uri: Uri?) : Parcelable {
 
         if (id != other.id) return false
         if (uri != other.uri) return false
+        if (name != other.name) return false
         if (type != other.type) return false
-        if (size != other.size) return false
 
         return true
     }
@@ -60,15 +62,10 @@ class GalleryBean(var id: Long = 0, var uri: Uri?) : Parcelable {
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + (uri?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
         result = 31 * result + type.hashCode()
-        result = 31 * result + size.hashCode()
         return result
     }
-
-    override fun toString(): String {
-        return "GalleryBean(id=$id, uri=$uri, path='$path', name='$name', type='$type', duration=$duration, size=$size)"
-    }
-
 
     companion object CREATOR : Parcelable.Creator<GalleryBean> {
         override fun createFromParcel(parcel: Parcel): GalleryBean {

@@ -18,5 +18,6 @@
         <activity android:name=".gallery.GallerySelectActivity" />
         <activity android:name=".preview.GalleryPreviewActivity" />
         <activity android:name=".preview.VideoPlayActivity" />
+        <activity android:name=".activity.CropActivity"/>
     </application>
 </manifest>

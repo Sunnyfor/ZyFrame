@@ -22,4 +22,6 @@
     <color name="font_theme">@color/color_theme</color>
 
     <color name="preview_bg">#343434</color>
+    <color name="preview_front">#4a4a4a</color>
+    <color name="dialog_bg">#8c000000</color>
 </resources>

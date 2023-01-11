@@ -66,19 +66,23 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
         ) {
             previewView.post {
                 val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
-                val screenAspectRatio = CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
+                val screenAspectRatio =
+                    CameraXUtil.aspectRatio(metrics.widthPixels, metrics.heightPixels)
                 cameraXUtil.init(
                     this,
                     previewView.surfaceProvider,
                     screenAspectRatio,
                     previewView.display.rotation
                 )
-                cameraXUtil.startCamera()
+                cameraXUtil.startCamera(CameraXUtil.TYPE_IMAGE)
             }
         }
 
         btnTake.setCaptureListener(object : CaptureButton.CaptureListener {
             override fun takePictures() {
+                if (cameraXUtil.type != CameraXUtil.TYPE_IMAGE) {
+                    cameraXUtil.startCamera(CameraXUtil.TYPE_IMAGE)
+                }
                 //拍照
                 startAlphaAnimation()
                 showLoading()
@@ -93,22 +97,29 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
             }
 
             override fun recordStart() {
-                cameraXUtil.takeVideo { bean ->
-                    galleryBean = bean
 
-                    IntentManager.startVideoPlayActivity(bean.uri ?: return@takeVideo) {
-                        hideLoading()
-                        if (it) {
-                            IntentManager.cameraResultCallBack?.invoke(bean)
-                            finish()
-                        } else {
-                            cameraXUtil.deleteMove(bean.uri ?: return@startVideoPlayActivity)
+                if (cameraXUtil.type != CameraXUtil.TYPE_VIDEO) {
+                    cameraXUtil.startCamera(CameraXUtil.TYPE_VIDEO)
+                }
+                previewView.post {
+                    //开始计时
+                    btnTake.startTimer()
+                    cameraXUtil.takeVideo { bean ->
+                        galleryBean = bean
+                        IntentManager.startVideoPlayActivity(bean.uri ?: return@takeVideo) {
+                            hideLoading()
+                            if (it) {
+                                IntentManager.cameraResultCallBack?.invoke(bean)
+                                finish()
+                            } else {
+                                cameraXUtil.deleteMove(bean.uri ?: return@startVideoPlayActivity)
+                            }
+
                         }
 
                     }
-
+                    startAlphaAnimation()
                 }
-                startAlphaAnimation()
             }
 
             @SuppressLint("MissingPermission")

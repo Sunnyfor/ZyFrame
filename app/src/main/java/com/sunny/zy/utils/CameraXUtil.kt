@@ -45,6 +45,12 @@ class CameraXUtil {
         Executors.newSingleThreadExecutor()
     }
 
+    private val imageAnalyzer by lazy {
+        ImageAnalysis.Builder().build().also {
+            it.setAnalyzer(cameraExecutor, YUMImageAnalysis())
+        }
+    }
+
     private val imageCapture by lazy {
         ImageCapture.Builder()
             .setTargetAspectRatio(screenAspectRatio)
@@ -59,6 +65,8 @@ class CameraXUtil {
             .build()
     }
 
+    private var resultCallback: ((text: String) -> Unit)? = null
+
     private var camera: Camera? = null
 
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -68,6 +76,9 @@ class CameraXUtil {
     private var screenAspectRatio = 0
 
     private var rotation = 0
+
+    var type = TYPE_QRCODE
+        private set
 
     private lateinit var surfaceProvider: Preview.SurfaceProvider
 
@@ -88,17 +99,16 @@ class CameraXUtil {
         selector: CameraSelector? = null,
         resultCallback: (text: String) -> Unit
     ) {
-        val imageAnalyzer = ImageAnalysis.Builder().build().also {
-            it.setAnalyzer(cameraExecutor, YUMImageAnalysis(resultCallback))
-        }
-        startCamera(selector, imageAnalyzer)
+        this.resultCallback = resultCallback
+        startCamera(TYPE_QRCODE, selector)
     }
 
 
     fun startCamera(
-        selector: CameraSelector? = null,
-        imageAnalyzer: ImageAnalysis? = null
+        type: Int,
+        selector: CameraSelector? = null
     ) {
+        this.type = type
         cameraProviderFuture = ProcessCameraProvider.getInstance(ZyFrameStore.getContext())
         cameraProviderFuture?.addListener(Runnable {
             val cameraProvider: ProcessCameraProvider? = cameraProviderFuture?.get()
@@ -128,21 +138,32 @@ class CameraXUtil {
                 camera = null
                 // Bind use cases to camera
 
-                if (imageAnalyzer != null) {
-                    camera = cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        imageAnalyzer
-                    )
-                } else {
-                    camera = cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        imageCapture,
-                        videoCapture
-                    )
+                when (type) {
+                    TYPE_QRCODE -> {
+                        camera = cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageAnalyzer
+                        )
+                    }
+                    TYPE_IMAGE -> {
+                        camera = cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageCapture
+                        )
+                    }
+
+                    TYPE_VIDEO -> {
+                        camera = cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            videoCapture
+                        )
+                    }
                 }
                 preview.setSurfaceProvider(surfaceProvider)
             } catch (exc: Exception) {
@@ -159,7 +180,7 @@ class CameraXUtil {
         } else {
             CameraSelector.DEFAULT_BACK_CAMERA
         }
-        startCamera()
+        startCamera(type)
     }
 
     /**
@@ -253,7 +274,7 @@ class CameraXUtil {
     }
 
 
-    private inner class YUMImageAnalysis(var resultCallback: (text: String) -> Unit) :
+    private inner class YUMImageAnalysis() :
         ImageAnalysis.Analyzer {
 
         private val reader: MultiFormatReader = MultiFormatReader()
@@ -282,7 +303,7 @@ class CameraXUtil {
                 val result = reader.decode(bitmap).text
                 onDestroy()
                 Handler(Looper.getMainLooper()).post {
-                    resultCallback.invoke(result)
+                    resultCallback?.invoke(result)
                 }
 
             } catch (e: NotFoundException) {
@@ -320,6 +341,10 @@ class CameraXUtil {
 
         const val RATIO_4_3_VALUE = 4.0 / 3.0
         const val RATIO_16_9_VALUE = 16.0 / 9.0
+
+        const val TYPE_QRCODE = 0
+        const val TYPE_IMAGE = 1
+        const val TYPE_VIDEO = 2
 
         fun createQRCode(content: String, qrcode_size: Int = 300): Bitmap? {
             val hashMap = HashMap<EncodeHintType, Any>()
@@ -366,5 +391,4 @@ class CameraXUtil {
             return AspectRatio.RATIO_16_9
         }
     }
-
 }

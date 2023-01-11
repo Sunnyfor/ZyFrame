@@ -159,7 +159,7 @@ class CaptureButton : View {
                 state = STATE_IDLE
             }
             STATE_RECORDING -> {
-                timer!!.cancel() //停止计时器
+                timer?.cancel() //停止计时器
                 recordEnd() //录制结束
             }
         }
@@ -234,14 +234,17 @@ class CaptureButton : View {
                 //设置为录制状态
                 if (state == STATE_LONG_PRESS) {
                     if (captureListener != null) captureListener?.recordStart()
-                    state = STATE_RECORDING
-                    timer?.start()
                 }
             }
         })
         set.playTogether(outsideAnim, insideAnim)
         set.duration = 100
         set.start()
+    }
+
+    fun startTimer(){
+        state = STATE_RECORDING
+        timer?.start()
     }
 
     //更新进度条

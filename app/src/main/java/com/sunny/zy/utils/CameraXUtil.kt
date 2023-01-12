@@ -65,6 +65,14 @@ class CameraXUtil {
             .build()
     }
 
+    private val preview by lazy {
+        Preview.Builder()
+            .setTargetAspectRatio(screenAspectRatio)
+            .setTargetRotation(rotation)
+            .build()
+    }
+
+
     private var resultCallback: ((text: String) -> Unit)? = null
 
     private var camera: Camera? = null
@@ -92,6 +100,7 @@ class CameraXUtil {
         this.surfaceProvider = surfaceProvider
         this.screenAspectRatio = screenAspectRatio
         this.rotation = rotation
+        preview.setSurfaceProvider(surfaceProvider)
     }
 
 
@@ -113,8 +122,9 @@ class CameraXUtil {
         cameraProviderFuture?.addListener(Runnable {
             val cameraProvider: ProcessCameraProvider? = cameraProviderFuture?.get()
 
-            if (selector != null) {
+            if (selector != null && selector != cameraSelector) {
                 cameraSelector = selector
+                cameraProvider?.unbindAll()
             }
 
             if (cameraProvider?.hasCamera(cameraSelector) != true) {
@@ -127,17 +137,13 @@ class CameraXUtil {
                 return@Runnable
             }
 
-            val preview = Preview.Builder()
-                .setTargetAspectRatio(screenAspectRatio)
-                .setTargetRotation(rotation)
-                .build()
+
 
             try {
                 // Unbind use cases before rebinding
-                cameraProvider.unbindAll()
+
                 camera = null
                 // Bind use cases to camera
-
                 when (type) {
                     TYPE_QRCODE -> {
                         camera = cameraProvider.bindToLifecycle(
@@ -148,6 +154,9 @@ class CameraXUtil {
                         )
                     }
                     TYPE_IMAGE -> {
+                        if (cameraProvider.isBound(videoCapture)) {
+                            cameraProvider.unbind(videoCapture)
+                        }
                         camera = cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,
@@ -157,6 +166,9 @@ class CameraXUtil {
                     }
 
                     TYPE_VIDEO -> {
+                        if (cameraProvider.isBound(imageCapture)) {
+                            cameraProvider.unbind(imageCapture)
+                        }
                         camera = cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,
@@ -165,7 +177,6 @@ class CameraXUtil {
                         )
                     }
                 }
-                preview.setSurfaceProvider(surfaceProvider)
             } catch (exc: Exception) {
                 exc.printStackTrace()
             }
@@ -175,12 +186,13 @@ class CameraXUtil {
 
 
     fun switchCamera() {
-        cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-            CameraSelector.DEFAULT_FRONT_CAMERA
-        } else {
-            CameraSelector.DEFAULT_BACK_CAMERA
-        }
-        startCamera(type)
+        startCamera(
+            type, if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            } else {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            }
+        )
     }
 
     /**

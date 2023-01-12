@@ -83,12 +83,14 @@ class CameraActivity : BaseActivity(), GalleryPreviewActivity.OnPreviewResultCal
                 if (cameraXUtil.type != CameraXUtil.TYPE_IMAGE) {
                     cameraXUtil.startCamera(CameraXUtil.TYPE_IMAGE)
                 }
-                //拍照
-                startAlphaAnimation()
-                showLoading()
-                cameraXUtil.takePhoto { bean ->
-                    galleryBean = bean
-                    IntentManager.startGalleryPreviewActivity(bean, this@CameraActivity)
+                previewView.post {
+                    //拍照
+                    startAlphaAnimation()
+                    showLoading()
+                    cameraXUtil.takePhoto { bean ->
+                        galleryBean = bean
+                        IntentManager.startGalleryPreviewActivity(bean, this@CameraActivity)
+                    }
                 }
             }
 

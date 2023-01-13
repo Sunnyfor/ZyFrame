@@ -244,7 +244,7 @@ class WheelView : View {
      */
     private fun measureTextWidthHeight() {
         val rect = Rect()
-        for (i in 0 until adapter!!.getItemsCount()) {
+        for (i in 0 until (adapter?.getItemsCount()?:0)) {
             val s1 = getContentText(adapter!!.getItem(i))
             paintCenterText.getTextBounds(s1, 0, s1.length, rect)
             val textWidth = rect.width()
@@ -462,16 +462,16 @@ class WheelView : View {
         }
 
         //只显示选中项Label文字的模式，并且Label文字不为空，则进行绘制
-        if (!TextUtils.isEmpty(label) && isCenterLabel) {
-            //绘制文字，靠右并留出空隙
-            val drawRightContentStart = mMeasuredWidth - getTextWidth(paintCenterText, label)
-            canvas.drawText(
-                label,
-                drawRightContentStart - centerContentOffset,
-                centerY,
-                paintCenterText
-            )
-        }
+//        if (!TextUtils.isEmpty(label) && isCenterLabel) {
+//            //绘制文字，靠右并留出空隙
+//            val drawRightContentStart = mMeasuredWidth - getTextWidth(paintCenterText, label)
+//            canvas.drawText(
+//                label,
+//                drawRightContentStart - centerContentOffset,
+//                centerY,
+//                paintCenterText
+//            )
+//        }
 
         // 设置数组中每个元素的值
         var counter = 0
@@ -483,13 +483,13 @@ class WheelView : View {
             //判断是否循环，如果是循环数据源也使用相对循环的position获取对应的item值，如果不是循环则超出数据源范围使用""空白字符串填充，在界面上形成空白无数据的item项
             if (isLoop) {
                 index = getLoopMappingIndex(index)
-                showText = adapter!!.getItem(index)
+                showText = "${adapter?.getItem(index)}"
             } else if (index < 0) {
                 showText = ""
-            } else if (index > adapter!!.getItemsCount() - 1) {
+            } else if (index > (adapter?.getItemsCount()?:0) - 1) {
                 showText = ""
             } else {
-                showText = adapter!!.getItem(index)
+                showText =  "${adapter?.getItem(index)}"
             }
             canvas.save()
             // 弧长 L = itemHeight * counter - itemHeightOffset

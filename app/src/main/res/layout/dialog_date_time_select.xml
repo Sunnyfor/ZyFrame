@@ -100,12 +100,11 @@
         android:id="@+id/wvHour"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_25"
         app:layout_constraintBottom_toBottomOf="@id/wvDay"
         app:layout_constraintEnd_toStartOf="@id/wvMinute"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/wvDay"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+        app:layout_constraintTop_toTopOf="@id/wvDay" />
 
 
     <com.sunny.zy.widget.wheel.WheelView

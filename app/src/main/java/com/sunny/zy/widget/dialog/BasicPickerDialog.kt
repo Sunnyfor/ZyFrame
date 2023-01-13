@@ -16,7 +16,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-class BasicPickerDialog(context: Context) : BaseDialog(context) {
+class BasicPickerDialog(context: Context, var resultCallback: (date: String) -> Unit) :
+    BaseDialog(context) {
 
     private val years = arrayListOf<String>()
     private val months = arrayListOf<String>()
@@ -35,7 +36,10 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
     var labelDay = "日"
     var labelHour = "时"
     var labelMinute = "分"
-    var dateSplit = "-" //日期分隔符
+    var labelDate = "-" //日期分隔符
+    var labelSplit = " "//日期和时间的分隔符
+    var labelTime = ":" //时间分割符
+    var isFillSecond = false //是否已00填充秒
 
     private var dateSb = StringBuilder()
     private val weekSb = StringBuilder()
@@ -86,7 +90,6 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
 
     override fun initView() {
         window?.setGravity(Gravity.BOTTOM)
-
         wvYear.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(index: Int) {
                 val pattern = Pattern.compile("^[0-9]*")
@@ -128,21 +131,54 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
             }
         })
 
+        wvYear.setLabel(labelYear)
+        wvMonth.setLabel(labelMonth)
+        wvDay.setLabel(labelDay)
+        wvHour.setLabel(labelHour)
+        wvMinute.setLabel(labelMinute)
+
         setWheelViewStyle(wvYear)
         setWheelViewStyle(wvMonth)
         setWheelViewStyle(wvDay)
         setWheelViewStyle(wvHour)
         setWheelViewStyle(wvMinute)
 
-        wvHour.visibility = isShowView(isShowHour)
-        wvMinute.visibility = isShowView(isShowMinute)
 
         findViewById<TextView>(R.id.tvCancel).setOnClickListener {
             dismiss()
         }
 
         findViewById<TextView>(R.id.tvConfirm).setOnClickListener {
+            resultSb.clear()
+            if (isShowYear) {
+                resultSb.append(getValueStr(years[wvYear.currentItem]))
+            }
+            if (isShowMonth) {
+                addLabel(labelDate)
+                resultSb.append(getValueStr(months[wvMonth.currentItem]))
+            }
 
+            if (isShowDay) {
+                addLabel(labelDate)
+                resultSb.append(getValueStr(days[wvDay.currentItem]))
+            }
+
+            if (isShowHour) {
+                addLabel(labelSplit)
+                resultSb.append(getValueStr(hours[wvHour.currentItem]))
+            }
+
+            if (isShowMinute) {
+                addLabel(labelTime)
+                resultSb.append(getValueStr(minutes[wvMinute.currentItem]))
+            }
+
+            if (isShowHour && isShowMinute && isFillSecond) {
+                resultSb.append(labelTime).append("00")
+            }
+
+            resultCallback.invoke(resultSb.toString())
+            dismiss()
         }
     }
 
@@ -165,6 +201,8 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
                 SimpleDateFormat(patternSb.toString(), Locale.CHINA).format(calendar.time)
             )
             title = (dateSb.toString() + weekSb.toString())
+        } else {
+            tvTitle.visibility = View.GONE
         }
         tvTitle.text = title
     }
@@ -182,6 +220,7 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
     }
 
     private fun setWheelViewStyle(wheelView: WheelView) {
+        wheelView.isCenterLabel(false)
         wheelView.setTextSize(20f)
         wheelView.setTypeface(Typeface.DEFAULT)
         wheelView.setDividerColor(ContextCompat.getColor(context, R.color.color_transparent))
@@ -198,11 +237,11 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
         }
         val currentYear = calendar.get(Calendar.YEAR)
         years.clear()
-        val currentYearStr = "${currentYear}$labelYear"
+        val currentYearStr = "$currentYear"
         years.add(currentYearStr)
         for (i in 1..100) {
-            years.add("${currentYear + i}$labelYear")
-            years.add(0, "${currentYear - i}$labelYear")
+            years.add("${currentYear + i}")
+            years.add(0, "${currentYear - i}")
         }
         wvYear.setAdapter(ArrayWheelAdapter(years))
         wvYear.currentItem = years.indexOf(currentYearStr)
@@ -212,7 +251,7 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
          */
         if (months.isEmpty()) {
             for (i in 1..12) {
-                months.add("$i$labelMonth")
+                months.add("$i")
             }
             wvMonth.setAdapter(ArrayWheelAdapter(months))
         }
@@ -227,9 +266,9 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
     private fun loadTimeData() {
         for (i in 0..59) {
             if (i < 24) {
-                hours.add(getLabelText(i, labelHour))
+                hours.add(i.toString())
             }
-            minutes.add(getLabelText(i, labelMinute))
+            minutes.add(i.toString())
         }
 
         wvHour.setAdapter(ArrayWheelAdapter(hours))
@@ -237,8 +276,8 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
 
         val currentTime = StringUtil.getCurrentTime("HH:mm")
         val times = currentTime.split(":")
-        wvHour.currentItem = hours.indexOf("${times[0]}$labelHour")
-        wvMinute.currentItem = minutes.indexOf("${times[1]}$labelMinute")
+        wvHour.currentItem = hours.indexOf(times[0])
+        wvMinute.currentItem = minutes.indexOf(times[1])
     }
 
     private fun loadDay() {
@@ -247,7 +286,7 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
          */
         days.clear()
         for (i in 1..calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-            days.add("$i$labelDay")
+            days.add("$i")
         }
         wvDay.setAdapter(ArrayWheelAdapter(days))
         if (dayIndex != 0) {
@@ -256,16 +295,49 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
     }
 
     private fun getLabelText(value: Int, label: String): String {
-        if (value < 10) {
-            return "0$value$label"
-        }
-        return "$value$label"
+        return "${getValueStr(value)}$label"
     }
 
+    private fun getValueStr(value: Int): String {
+        if (value < 10) {
+            return "0$value"
+        }
+        return value.toString()
+    }
+
+    private fun getValueStr(value: String): String {
+        return getValueStr(value.toInt())
+    }
+
+    private fun addLabel(label: String) {
+        if (resultSb.isNotEmpty()) {
+            resultSb.append(label)
+        }
+    }
 
     override fun onClickEvent(view: View) {
         TODO("Not yet implemented")
     }
+
+    fun showYY() {
+        resetShow()
+        isShowYear = true
+        show()
+    }
+
+    fun showMM() {
+        resetShow()
+        isShowMonth = true
+        show()
+    }
+
+    fun showYYMM() {
+        resetShow()
+        isShowYear = true
+        isShowMonth = true
+        show()
+    }
+
 
     fun showYYMMDD() {
         resetShow()
@@ -285,7 +357,23 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
         show()
     }
 
-    fun isShowView(isShow: Boolean) = if (isShow) View.VISIBLE else View.GONE
+    fun showHHmm() {
+        resetShow()
+        isShowHour = true
+        isShowMinute = true
+        show()
+    }
+
+    override fun show() {
+        super.show()
+        wvYear.visibility = isShowView(isShowYear)
+        wvMonth.visibility = isShowView(isShowMonth)
+        wvDay.visibility = isShowView(isShowDay)
+        wvHour.visibility = isShowView(isShowHour)
+        wvMinute.visibility = isShowView(isShowMinute)
+    }
+
+    private fun isShowView(isShow: Boolean) = if (isShow) View.VISIBLE else View.GONE
 
     private fun resetShow() {
         isShowYear = false
@@ -293,11 +381,6 @@ class BasicPickerDialog(context: Context) : BaseDialog(context) {
         isShowDay = false
         isShowHour = false
         isShowMinute = false
-//        wvYear.visibility = View.GONE
-//        wvMonth.visibility = View.GONE
-//        wvDay.visibility = View.GONE
-//        wvHour.visibility = View.GONE
-//        wvMinute.visibility = View.GONE
     }
 
 

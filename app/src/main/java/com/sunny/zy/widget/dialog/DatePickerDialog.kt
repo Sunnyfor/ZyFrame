@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.sunny.kit.utils.StringUtil
 import com.sunny.zy.R
 import com.sunny.zy.adapter.ArrayWheelAdapter
 import com.sunny.zy.base.widget.dialog.BaseDialog
@@ -15,46 +16,38 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-
-/**
- * Desc 定制化日期选择组件
- * Author ZY
- * Mail sunnyfor98@gmail.com
- * Date 2022/2/25 17:36
- */
 class DatePickerDialog(context: Context, var resultCallback: (date: String) -> Unit) :
     BaseDialog(context) {
+
+    private val years = arrayListOf<String>()
+    private val months = arrayListOf<String>()
+    private val days = arrayListOf<String>()
+    private val hours = arrayListOf<String>()
+    private val minutes = arrayListOf<String>()
+    private val weekStrList = arrayOf("日", "一", "二", "三", "四", "五", "六")
 
     private val calendar by lazy {
         Calendar.getInstance()
     }
 
-    private val years = arrayListOf<String>()
+    var labelYear = "年"
+    var labelMonth = "月"
+    var labelWeek = "周"
+    var labelDay = "日"
+    var labelHour = "时"
+    var labelMinute = "分"
+    var labelDate = "-" //日期分隔符
+    var labelSplit = " "//日期和时间的分隔符
+    var labelTime = ":" //时间分割符
+    var isFillSecond = false //是否已00填充秒
 
-    private val months = arrayListOf<String>()
-
-    private val days = arrayListOf<String>()
-
-    private val dateSb = StringBuilder()
+    private var dateSb = StringBuilder()
     private val weekSb = StringBuilder()
+    private var resultSb = StringBuilder()
 
-    private val weekStrList = arrayOf("日", "一", "二", "三", "四", "五", "六")
-
-    private var labelYear = "年"
-    private var labelMonth = "月"
-    private var labelDay = "日"
-
-    private var montIndex = 1
-
-    private var dayIndex = 1
-
-    private var isShowYear = true
-
-    private var isShowMonth = true
-
-    private var isShowDay = true
-
-    private var title = ""
+    private val tvTitle by lazy {
+        findViewById<TextView>(R.id.tvTitle)
+    }
 
     private val wvYear by lazy {
         findViewById<WheelView>(R.id.wvYear)
@@ -68,110 +61,87 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         findViewById<WheelView>(R.id.wvDay)
     }
 
-    var isNoLimit = false //月和日是否不限制
 
-    var dateSplit = "-" //日期分隔符
-
-    fun setYear(year: Int) {
-        calendar.set(Calendar.YEAR, year)
+    private val wvHour by lazy {
+        findViewById<WheelView>(R.id.wvHour)
     }
 
-    fun setMonth(month: Int) {
-        calendar.set(Calendar.MONTH, month - 1)
+    private val wvMinute by lazy {
+        findViewById<WheelView>(R.id.wvMinute)
     }
 
+    private var montIndex = 1
 
-    fun setDay(day: Int) {
-        calendar.set(Calendar.DAY_OF_MONTH, day)
-    }
+    private var dayIndex = 1
 
+    private var isShowYear = false
 
-    fun setLabel(year: String, month: String, day: String) {
-        labelYear = year
-        labelMonth = month
-        labelDay = day
-    }
+    private var isShowMonth = false
 
+    private var isShowDay = false
 
-    fun setDate(date: String) {
-        val dates = date.split(dateSplit)
-        if (dates.isNotEmpty()) {
-            setYear(dates[0].toInt())
-        }
-        if (dates.size >= 2) {
-            setMonth(dates[1].toInt())
-        } else {
-            setMonth(1)
-        }
-        if (dates.size >= 3) {
-            setDay(dates[2].toInt())
-        } else {
-            setDay(1)
-        }
-    }
+    private var isShowHour = false
 
+    private var isShowMinute = false
 
-    override fun initLayout() = R.layout.dialog_date_select
+    private var title = ""
+
+    override fun initLayout() = R.layout.dialog_date_time_select
 
     override fun initView() {
         window?.setGravity(Gravity.BOTTOM)
-        setWheelViewStyle(wvYear)
         wvYear.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(index: Int) {
                 val pattern = Pattern.compile("^[0-9]*")
                 val matcher = pattern.matcher(years[index])
                 matcher.find()
                 calendar.set(Calendar.YEAR, matcher.group().toInt())
-                initDay()
+                if (isShowDay) {
+                    loadDay()
+                }
                 initTitle()
             }
         })
 
-        setWheelViewStyle(wvMonth)
         wvMonth.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(index: Int) {
                 montIndex = index
-                if (isNoLimit && index == 0) {
-                    calendar.set(Calendar.DAY_OF_MONTH, 1)
-                    initDay()
-                    initTitle()
-                    return
-                }
-
-                val position = if (isNoLimit) 1 else 0
-
                 val mCalendar = Calendar.getInstance()
                 mCalendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR))
                 mCalendar.set(Calendar.DAY_OF_MONTH, 1)
-                mCalendar.set(Calendar.MONTH, index - position)
-
+                mCalendar.set(Calendar.MONTH, index)
                 val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
                 val maxDay = mCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
                 if (currentDay >= maxDay) {
                     calendar.set(Calendar.DAY_OF_MONTH, maxDay)
                 }
-
-                calendar.set(Calendar.MONTH, index - position)
-                initDay()
+                calendar.set(Calendar.MONTH, index)
+                if (isShowDay) {
+                    loadDay()
+                }
                 initTitle()
             }
         })
-
-        setWheelViewStyle(wvDay)
 
         wvDay.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(index: Int) {
                 dayIndex = index
-                if (isNoLimit && index == 0) {
-                    initTitle()
-                    return
-                }
-                val position = if (isNoLimit) 1 else 0
-                calendar.set(Calendar.DAY_OF_MONTH, index + 1 - position)
+                calendar.set(Calendar.DAY_OF_MONTH, index + 1)
                 initTitle()
             }
-
         })
+
+        wvYear.setLabel(labelYear)
+        wvMonth.setLabel(labelMonth)
+        wvDay.setLabel(labelDay)
+        wvHour.setLabel(labelHour)
+        wvMinute.setLabel(labelMinute)
+
+        setWheelViewStyle(wvYear)
+        setWheelViewStyle(wvMonth)
+        setWheelViewStyle(wvDay)
+        setWheelViewStyle(wvHour)
+        setWheelViewStyle(wvMinute)
 
 
         findViewById<TextView>(R.id.tvCancel).setOnClickListener {
@@ -179,37 +149,86 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         }
 
         findViewById<TextView>(R.id.tvConfirm).setOnClickListener {
-            val regex = Regex("[^0-9]")
-            val resultSb = StringBuilder(dateSb.replace(regex, dateSplit))
-
-            if (resultSb.isNotEmpty() && resultSb.lastIndexOf(dateSplit) == resultSb.length - 1) {
-                resultSb.deleteCharAt(resultSb.length - 1)
+            resultSb.clear()
+            if (isShowYear) {
+                resultSb.append(getValueStr(years[wvYear.currentItem]))
             }
-            resultCallback.invoke(
-                resultSb.toString()
-            )
+            if (isShowMonth) {
+                addLabel(labelDate)
+                resultSb.append(getValueStr(months[wvMonth.currentItem]))
+            }
+
+            if (isShowDay) {
+                addLabel(labelDate)
+                resultSb.append(getValueStr(days[wvDay.currentItem]))
+            }
+
+            if (isShowHour) {
+                addLabel(labelSplit)
+                resultSb.append(getValueStr(hours[wvHour.currentItem]))
+            }
+
+            if (isShowMinute) {
+                addLabel(labelTime)
+                resultSb.append(getValueStr(minutes[wvMinute.currentItem]))
+            }
+
+            if (isShowHour && isShowMinute && isFillSecond) {
+                resultSb.append(labelTime).append("00")
+            }
+
+            resultCallback.invoke(resultSb.toString())
             dismiss()
-        }
-
-        initYear()
-        initMonth()
-        initDay()
-        initTitle()
-
-        if (isNoLimit) {
-            wvMonth.setCyclic(false)
-            wvDay.setCyclic(false)
         }
     }
 
-    override fun loadData() {}
+    override fun loadData() {
+        loadDateData()
+        loadTimeData()
+        initTitle()
+    }
 
-    override fun onClickEvent(view: View) {}
 
-    override fun onClose() {}
+    private fun initTitle() {
+        if (isShowYear && isShowMonth && isShowDay) {
+            val patternSb = StringBuilder()
+            patternSb.append("yyyy${labelYear}")
+            patternSb.append("MM${labelMonth}")
+            patternSb.append("dd${labelDay}")
+            countWeek()
+            dateSb.clear()
+            dateSb.append(
+                SimpleDateFormat(patternSb.toString(), Locale.CHINA).format(calendar.time)
+            )
+            title = (dateSb.toString() + weekSb.toString())
+        } else {
+            tvTitle.visibility = View.GONE
+        }
+        tvTitle.text = title
+    }
 
+    private fun countWeek(): String {
+        weekSb.clear()
+        if (!isShowDay) {
+            return weekSb.toString()
+        }
 
-    private fun initYear() {
+        weekSb.append(labelWeek)
+        weekSb.append(weekStrList[calendar.get(Calendar.DAY_OF_WEEK) - 1])
+
+        return weekSb.toString()
+    }
+
+    private fun setWheelViewStyle(wheelView: WheelView) {
+        wheelView.isCenterLabel(false)
+        wheelView.setTextSize(20f)
+        wheelView.setTypeface(Typeface.DEFAULT)
+        wheelView.setDividerColor(ContextCompat.getColor(context, R.color.color_transparent))
+        wheelView.setItemsVisibleCount(5)
+        wheelView.setLineSpacingMultiplier(2f)
+    }
+
+    private fun loadDateData() {
         /**
          * 初始化年数据
          */
@@ -218,186 +237,154 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         }
         val currentYear = calendar.get(Calendar.YEAR)
         years.clear()
-        val currentYearStr = "${currentYear}$labelYear"
+        val currentYearStr = "$currentYear"
         years.add(currentYearStr)
         for (i in 1..100) {
-            years.add("${currentYear + i}$labelYear")
-            years.add(0, "${currentYear - i}$labelYear")
+            years.add("${currentYear + i}")
+            years.add(0, "${currentYear - i}")
         }
         wvYear.setAdapter(ArrayWheelAdapter(years))
         wvYear.currentItem = years.indexOf(currentYearStr)
-    }
 
-
-    private fun initMonth(only: Boolean = false) {
         /**
          *  初始化月数据
          */
-        var size = 0
         if (months.isEmpty()) {
-
-            if (isNoLimit) {
-                months.add("不限")
-                size = 1
-            }
-
             for (i in 1..12) {
-                months.add("$i$labelMonth")
+                months.add("$i")
             }
             wvMonth.setAdapter(ArrayWheelAdapter(months))
         }
+        wvMonth.currentItem = calendar.get(Calendar.MONTH)
 
-        if (only) {
-            wvMonth.currentItem = 0
-        } else {
-            wvMonth.currentItem = calendar.get(Calendar.MONTH) + size
-        }
+        /**
+         *  初始化日数据
+         */
+        loadDay()
     }
 
+    private fun loadTimeData() {
+        for (i in 0..59) {
+            if (i < 24) {
+                hours.add(i.toString())
+            }
+            minutes.add(i.toString())
+        }
 
-    private fun initDay() {
+        wvHour.setAdapter(ArrayWheelAdapter(hours))
+        wvMinute.setAdapter(ArrayWheelAdapter(minutes))
+
+        val currentTime = StringUtil.getCurrentTime("HH:mm")
+        val times = currentTime.split(":")
+        wvHour.currentItem = hours.indexOf(times[0])
+        wvMinute.currentItem = minutes.indexOf(times[1])
+    }
+
+    private fun loadDay() {
         /**
          * 初始化天数据
          */
-        var size = 0
         days.clear()
-        if (isNoLimit) {
-            days.add("不限")
-            size = 1
+        for (i in 1..calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+            days.add("$i")
         }
-
-        if (isNoLimit && montIndex == 0) {
-            wvDay.setAdapter(ArrayWheelAdapter(days))
-            dayIndex = 0
-            wvDay.currentItem = dayIndex
-        } else {
-            for (i in 1..calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-                days.add("$i$labelDay")
-            }
-            wvDay.setAdapter(ArrayWheelAdapter(days))
-            if (dayIndex != 0) {
-                wvDay.currentItem = calendar.get(Calendar.DAY_OF_MONTH) - 1 + size
-            }
+        wvDay.setAdapter(ArrayWheelAdapter(days))
+        if (dayIndex != 0) {
+            wvDay.currentItem = calendar.get(Calendar.DAY_OF_MONTH) - 1
         }
     }
 
+    private fun getLabelText(value: Int, label: String): String {
+        return "${getValueStr(value)}$label"
+    }
 
-    private fun initTitle() {
-        val patternSb = StringBuilder()
-        if (isNoLimit) {
-            if (isShowYear) {
-                patternSb.append("yyyy${labelYear}")
-            }
-            if (montIndex != 0 && isShowMonth) {
-                patternSb.append("MM${labelMonth}")
-            }
-            if (dayIndex != 0 && isShowDay) {
-                patternSb.append("dd${labelDay}")
-            }
-        } else {
-            if (isShowYear) {
-                patternSb.append("yyyy${labelYear}")
-            }
-
-            if (isShowMonth) {
-                patternSb.append("MM${labelMonth}")
-            }
-
-            if (isShowDay) {
-                patternSb.append("dd${labelDay}")
-            }
+    private fun getValueStr(value: Int): String {
+        if (value < 10) {
+            return "0$value"
         }
-        countWeek()
-        dateSb.clear()
-        dateSb.append(
-            SimpleDateFormat(patternSb.toString(), Locale.CHINA).format(calendar.time)
-        )
+        return value.toString()
+    }
 
-        findViewById<TextView>(R.id.tvTitle).text = if (title.isNotEmpty()) {
-            title
-        } else {
-            dateSb.toString() + weekSb.toString()
+    private fun getValueStr(value: String): String {
+        return getValueStr(value.toInt())
+    }
+
+    private fun addLabel(label: String) {
+        if (resultSb.isNotEmpty()) {
+            resultSb.append(label)
         }
     }
 
-    private fun countWeek(): String {
-        weekSb.clear()
-        if (!isShowDay) {
-            return weekSb.toString()
-        }
-        if (isNoLimit) {
-            if (dayIndex == 0) {
-                return weekSb.toString()
-            }
-        }
-        weekSb.append(" 周")
-        weekSb.append(weekStrList[calendar.get(Calendar.DAY_OF_WEEK) - 1])
-
-        return weekSb.toString()
+    override fun onClickEvent(view: View) {
+        TODO("Not yet implemented")
     }
 
-    fun getTitle(): String = findViewById<TextView>(R.id.tvTitle).text.toString()
-
-
-    /**
-     * 显示年
-     */
-    fun showYear() {
+    fun showYY() {
+        resetShow()
         isShowYear = true
-        isShowMonth = false
-        isShowDay = false
-        title = "选择年"
         show()
-        wvYear.visibility = View.VISIBLE
-        wvMonth.visibility = View.GONE
-        wvDay.visibility = View.GONE
     }
 
-    /**
-     * 显示月
-     */
-    fun showMonth() {
-        isShowYear = false
+    fun showMM() {
+        resetShow()
         isShowMonth = true
-        isShowDay = false
-        title = "选择月"
         show()
-        wvYear.visibility = View.INVISIBLE
-        wvMonth.visibility = View.VISIBLE
-        wvDay.visibility = View.INVISIBLE
     }
 
-    /**
-     * 显示年月
-     */
-    fun showYearMonth() {
+    fun showYYMM() {
+        resetShow()
         isShowYear = true
         isShowMonth = true
-        isShowDay = false
-        title = "选择年月"
         show()
-        wvYear.visibility = View.VISIBLE
-        wvMonth.visibility = View.VISIBLE
-        wvDay.visibility = View.GONE
-
     }
 
-    override fun dismiss() {
-        title = ""
+
+    fun showYYMMDD() {
+        resetShow()
         isShowYear = true
         isShowMonth = true
         isShowDay = true
-        wvYear.visibility = View.VISIBLE
-        wvMonth.visibility = View.VISIBLE
-        wvDay.visibility = View.VISIBLE
-        super.dismiss()
+        show()
     }
 
-    private fun setWheelViewStyle(wheelView: WheelView) {
-        wheelView.setTextSize(20f)
-        wheelView.setTypeface(Typeface.DEFAULT)
-        wheelView.setDividerColor(ContextCompat.getColor(context, R.color.color_transparent))
-        wheelView.setItemsVisibleCount(5)
-        wheelView.setLineSpacingMultiplier(2f)
+    fun showYYMMDDHHmm() {
+        resetShow()
+        isShowYear = true
+        isShowMonth = true
+        isShowDay = true
+        isShowHour = true
+        isShowMinute = true
+        show()
+    }
+
+    fun showHHmm() {
+        resetShow()
+        isShowHour = true
+        isShowMinute = true
+        show()
+    }
+
+    override fun show() {
+        super.show()
+        wvYear.visibility = isShowView(isShowYear)
+        wvMonth.visibility = isShowView(isShowMonth)
+        wvDay.visibility = isShowView(isShowDay)
+        wvHour.visibility = isShowView(isShowHour)
+        wvMinute.visibility = isShowView(isShowMinute)
+    }
+
+    private fun isShowView(isShow: Boolean) = if (isShow) View.VISIBLE else View.GONE
+
+    private fun resetShow() {
+        isShowYear = false
+        isShowMonth = false
+        isShowDay = false
+        isShowHour = false
+        isShowMinute = false
+    }
+
+
+    override fun onClose() {
+        TODO("Not yet implemented")
     }
 }

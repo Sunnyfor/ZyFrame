@@ -94,7 +94,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.Sunnyfor'
                 artifactId = 'ZyFrame'
-                version = '3.0.0'
+                version = '3.0.22'
             }
         }
     }

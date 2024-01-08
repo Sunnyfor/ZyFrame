@@ -10,7 +10,7 @@ import com.sunny.zy.widget.wheel.WheelView
  */
 class LoopViewGestureListener(private val wheelView: WheelView) : android.view.GestureDetector.SimpleOnGestureListener() {
 
-    override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
         wheelView.scrollBy(velocityY)
         return true
 

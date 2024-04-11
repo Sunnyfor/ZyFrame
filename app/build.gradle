@@ -75,7 +75,7 @@ dependencies {
     implementation project.ext.dependencies.cameraView
 
     // 网络请求框架
-    api 'com.github.Sunnyfor:ZyHttp:1.0.8'
+    api 'com.github.Sunnyfor:ZyHttp:1.0.9'
 
     //工具类
     api 'com.github.Sunnyfor:ZyKit:2.0.1'

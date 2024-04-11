@@ -3,7 +3,7 @@ package com.sunny.zy.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.SurfaceView
-import com.sunny.kit.utils.LogUtil
+import com.sunny.kit.utils.application.ZyKit
 import kotlin.math.roundToInt
 
 /**
@@ -51,7 +51,7 @@ class AutoFitSurfaceView : SurfaceView {
                 newHeight = (width / actualRatio).roundToInt()
             }
 
-            LogUtil.i("Measured dimensions set: $newWidth x $newHeight")
+            ZyKit.log.i("Measured dimensions set: $newWidth x $newHeight")
             setMeasuredDimension(newWidth, newHeight)
         }
     }

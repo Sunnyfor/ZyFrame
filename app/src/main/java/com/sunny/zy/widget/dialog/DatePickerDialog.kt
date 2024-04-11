@@ -6,14 +6,15 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.sunny.kit.utils.StringUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.R
 import com.sunny.zy.adapter.ArrayWheelAdapter
 import com.sunny.zy.base.widget.dialog.BaseDialog
 import com.sunny.zy.widget.wheel.WheelView
 import com.sunny.zy.widget.wheel.listener.OnItemSelectedListener
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import java.util.regex.Pattern
 
 class DatePickerDialog(context: Context, var resultCallback: (date: String) -> Unit) :
@@ -274,7 +275,7 @@ class DatePickerDialog(context: Context, var resultCallback: (date: String) -> U
         wvHour.setAdapter(ArrayWheelAdapter(hours))
         wvMinute.setAdapter(ArrayWheelAdapter(minutes))
 
-        val currentTime = StringUtil.getCurrentTime("HH:mm")
+        val currentTime = ZyKit.date.getCurrentTime("HH:mm")
         val times = currentTime.split(":")
         wvHour.currentItem = hours.indexOf(times[0])
         wvMinute.currentItem = minutes.indexOf(times[1])

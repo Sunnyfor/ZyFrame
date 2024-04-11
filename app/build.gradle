@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.library'
+    id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'org.jetbrains.kotlin.android'
@@ -75,10 +75,10 @@ dependencies {
     implementation project.ext.dependencies.cameraView
 
     // 网络请求框架
-    api 'com.github.Sunnyfor:ZyHttp:1.0.6'
+    api 'com.github.Sunnyfor:ZyHttp:1.0.8'
 
     //工具类
-    api 'com.github.Sunnyfor:ZyKit:1.0.2'
+    api 'com.github.Sunnyfor:ZyKit:2.0.1'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
@@ -86,16 +86,16 @@ dependencies {
     implementation 'androidx.documentfile:documentfile:1.0.1'
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                from components.release
-                groupId = 'com.github.Sunnyfor'
-                artifactId = 'ZyFrame'
-                version = '3.0.22'
-            }
-        }
-    }
-}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            // Creates a Maven publication called "release".
+//            release(MavenPublication) {
+//                from components.release
+//                groupId = 'com.github.Sunnyfor'
+//                artifactId = 'ZyFrame'
+//                version = '3.0.22'
+//            }
+//        }
+//    }
+//}

@@ -30,4 +30,12 @@
 
     <!--camera-->
     <string name="camera_hint">轻触拍照，长按摄像</string>
+
+
+    <!--通用Dialog文案-->
+    <string name="dialogTitle">温馨提示</string>
+    <string name="dialogAuthor">授权</string>
+    <string name="dialogSetting">设置</string>
+    <string name="dialogCancel">取消</string>
+    <string name="dialogConfirm">确定</string>
 </resources>

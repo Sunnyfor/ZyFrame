@@ -1,10 +1,9 @@
 package com.sunny.zy
 
 import android.app.Application
-import com.sunny.kit.ZyKit
-import com.sunny.kit.utils.LogUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.base.BaseActivity
-import java.util.*
+import java.util.Stack
 
 /**
  * Desc 应用类
@@ -144,7 +143,7 @@ object ZyFrameStore {
      */
     fun finishAllActivity() {
         activityStack.forEach {
-            LogUtil.i("关闭:${it?.javaClass?.name}")
+            ZyKit.log.i("关闭:${it?.javaClass?.name}")
             it.finish()
         }
         activityStack.clear()

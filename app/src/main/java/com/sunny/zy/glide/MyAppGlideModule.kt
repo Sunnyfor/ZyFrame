@@ -12,7 +12,7 @@ import com.bumptech.glide.load.model.ModelLoaderFactory
 import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.AppGlideModule
 import com.sunny.http.ZyHttp
-import com.sunny.kit.utils.FileUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.ZyFrameConfig
 import okhttp3.Call
 import java.io.InputStream
@@ -36,7 +36,7 @@ class MyAppGlideModule : AppGlideModule() {
         builder.setLogLevel(ZyFrameConfig.glideLogLevel)
         val cacheSize = 100 * 1000L * 1000L
         builder.setDiskCache(
-            DiskLruCacheFactory(FileUtil.getFile("glide").path, cacheSize)
+            DiskLruCacheFactory(ZyKit.file.getExternalFile("glide").path, cacheSize)
         )
     }
 

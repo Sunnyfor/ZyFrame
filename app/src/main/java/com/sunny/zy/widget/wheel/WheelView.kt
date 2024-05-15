@@ -13,7 +13,7 @@ import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import com.sunny.kit.utils.DensityUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.R
 import com.sunny.zy.widget.wheel.adapter.WheelAdapter
 import com.sunny.zy.widget.wheel.listener.LoopViewGestureListener
@@ -23,7 +23,12 @@ import com.sunny.zy.widget.wheel.timer.SmoothScrollTimerTask
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.acos
+import kotlin.math.ceil
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
 
 /**
  * 3d滚轮控件
@@ -71,7 +76,7 @@ class WheelView : View {
             textColorCenter = a.getColor(R.styleable.WheelView_textColorCenter, -0xd5d5d6)
             dividerColor = a.getColor(R.styleable.WheelView_dividerColor, -0x2a2a2b)
             dividerWidth = a.getDimensionPixelSize(R.styleable.WheelView_dividerWidth, 2)
-            textSize = a.getDimensionPixelOffset(R.styleable.WheelView_textSize, DensityUtil.dp2px(14f))
+            textSize = a.getDimensionPixelOffset(R.styleable.WheelView_textSize, ZyKit.density.dp2px(14f))
             lineSpacingMultiplier = a.getFloat(R.styleable.WheelView_lineSpacingMultiplier, lineSpacingMultiplier)
             a.recycle() //回收内存
         }
@@ -129,7 +134,7 @@ class WheelView : View {
     private var adapter: WheelAdapter? = null
     private var label = ""//附加单位
 
-    private var textSize = DensityUtil.dp2px(14f)  //选项的文字大小
+    private var textSize = ZyKit.density.dp2px(14f)  //选项的文字大小
 
     private var maxTextWidth = 0
     private var maxTextHeight = 0
@@ -402,6 +407,7 @@ class WheelView : View {
                 canvas.drawLine(startX, firstLineY, endX, firstLineY, paintIndicator)
                 canvas.drawLine(startX, secondLineY, endX, secondLineY, paintIndicator)
             }
+
             DividerType.CIRCLE -> {
                 //分割线为圆圈形状
                 paintIndicator.style = Paint.Style.STROKE
@@ -420,6 +426,7 @@ class WheelView : View {
                 val radius = (endX - startX).coerceAtLeast(itemHeight) / 1.8f
                 canvas.drawCircle(mMeasuredWidth / 2f, mMeasuredHeight / 2f, radius, paintIndicator)
             }
+
             else -> {
                 canvas.drawLine(0.0f, firstLineY, mMeasuredWidth.toFloat(), firstLineY, paintIndicator)
                 canvas.drawLine(0.0f, secondLineY, mMeasuredWidth.toFloat(), secondLineY, paintIndicator)
@@ -596,13 +603,16 @@ class WheelView : View {
             null -> {
                 ""
             }
+
             is IPickerViewData -> {
                 item.getPickerViewText()
             }
+
             is Int -> {
                 //如果为整形则最少保留两位数.
                 getFixNum(item)
             }
+
             else -> item.toString()
         }
     }
@@ -620,6 +630,7 @@ class WheelView : View {
             } else { //只显示中间label时，时间选择器内容偏左一点，留出空间绘制单位标签
                 ((mMeasuredWidth - rect.width()) * 0.25).toInt()
             }
+
             Gravity.START -> drawCenterContentStart = 0
             Gravity.END -> drawCenterContentStart = mMeasuredWidth - rect.width() - centerContentOffset.toInt()
         }
@@ -634,6 +645,7 @@ class WheelView : View {
             } else { //只显示中间label时，时间选择器内容偏左一点，留出空间绘制单位标签
                 ((mMeasuredWidth - rect.width()) * 0.25).toInt()
             }
+
             Gravity.START -> drawOutContentStart = 0
             Gravity.END -> drawOutContentStart = mMeasuredWidth - rect.width() - centerContentOffset.toInt()
         }
@@ -657,6 +669,7 @@ class WheelView : View {
                 cancelFuture()
                 previousY = event.rawY
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val dy = previousY - event.rawY
                 previousY = event.rawY
@@ -675,6 +688,7 @@ class WheelView : View {
                     }
                 }
             }
+
             MotionEvent.ACTION_UP -> {
                 performClick()
                 if (!eventConsumed) { //未消费掉事件

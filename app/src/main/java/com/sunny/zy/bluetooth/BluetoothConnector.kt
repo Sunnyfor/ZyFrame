@@ -1,12 +1,14 @@
 package com.sunny.zy.bluetooth
 
-import android.bluetooth.*
-import com.sunny.kit.utils.LogUtil
-import com.sunny.kit.utils.StringUtil
-import com.sunny.kit.utils.ToastUtil
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
+import android.bluetooth.BluetoothProfile
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.bluetooth.bean.BluetoothBean
-import java.util.*
+import java.util.UUID
 
 /**
  * Desc
@@ -28,7 +30,7 @@ object BluetoothConnector {
                 super.onConnectionStateChange(gatt, status, newState)
                 when (newState) {
                     BluetoothProfile.STATE_CONNECTED -> {
-                        LogUtil.i("连接蓝牙成功:${bean.device.address}  $status  $newState")
+                        ZyKit.log.i("连接蓝牙成功:${bean.device.address}  $status  $newState")
                         bean.isConnect = true
                         bean.gatt = gatt
                         gatt?.discoverServices()
@@ -39,7 +41,7 @@ object BluetoothConnector {
                         bean.isConnect = false
                         bean.gatt?.close()
                         bean.gatt = null
-                        LogUtil.i("蓝牙设备断开:${bean.device.address}  $status")
+                        ZyKit.log.i("蓝牙设备断开:${bean.device.address}  $status")
                         bean.receiveState(STATE_DIS_CONNECT, "蓝牙设备断开")
                     }
                 }
@@ -47,19 +49,19 @@ object BluetoothConnector {
 
             override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
                 super.onServicesDiscovered(gatt, status)
-                LogUtil.i("发现服务:${status}")
+                ZyKit.log.i("发现服务:${status}")
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     val gattService = gatt?.getService(UUID.fromString(bean.serviceId))
                     val characteristic =
                         gattService?.getCharacteristic(UUID.fromString(bean.notifyId))
                     val isOk = gatt?.setCharacteristicNotification(characteristic, true)
                     if (isOk == true) {
-                        LogUtil.i("打开蓝牙通知!")
+                        ZyKit.log.i("打开蓝牙通知!")
                         characteristic?.descriptors?.forEach {
                             val result =
                                 it.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
                             if (result) {
-                                LogUtil.i("设置蓝牙写入!")
+                                ZyKit.log.i("设置蓝牙写入!")
                                 gatt.writeDescriptor(it)
                                 bean.receiveState(STATE_GATT_WRITE, "蓝牙设备蓝牙写入")
                             }
@@ -75,7 +77,7 @@ object BluetoothConnector {
                 status: Int
             ) {
                 super.onCharacteristicRead(gatt, characteristic, status)
-                LogUtil.i("蓝牙数据onCharacteristicRead：${status}")
+                ZyKit.log.i("蓝牙数据onCharacteristicRead：${status}")
             }
 
             override fun onCharacteristicWrite(
@@ -84,7 +86,7 @@ object BluetoothConnector {
                 status: Int
             ) {
                 super.onCharacteristicWrite(gatt, characteristic, status)
-                LogUtil.i("蓝牙数据onCharacteristicWrite：${status}")
+                ZyKit.log.i("蓝牙数据onCharacteristicWrite：${status}")
             }
 
             override fun onCharacteristicChanged(
@@ -99,7 +101,7 @@ object BluetoothConnector {
                     resultSb.append(it)
                 }
                 bean.receiveMessage(resultByte)
-                LogUtil.i("蓝牙数据：${resultSb}")
+                ZyKit.log.i("蓝牙数据：${resultSb}")
             }
         })
     }
@@ -109,14 +111,14 @@ object BluetoothConnector {
      */
     fun sendMsg(bluetoothBean: BluetoothBean, byteArray: ByteArray): Boolean {
         if (!bluetoothBean.isConnect) {
-            ToastUtil.show("设备${bluetoothBean.device.address}未连接！")
+            ZyKit.toast.show("设备${bluetoothBean.device.address}未连接！")
             return false
         }
         val gattService = bluetoothBean.gatt?.getService(UUID.fromString(bluetoothBean.serviceId))
         val characteristic = gattService?.getCharacteristic(UUID.fromString(bluetoothBean.writeId))
         characteristic?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
         characteristic?.value = byteArray
-//        LogUtil.i(
+//        ZyKit.log.i(
 //            "${bluetoothBean.device.name}-发送数据:${StringUtil.byteArrToHex(byteArray)}"
 //        )
         return bluetoothBean.gatt?.writeCharacteristic(characteristic) ?: false

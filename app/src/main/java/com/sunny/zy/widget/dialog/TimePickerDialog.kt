@@ -6,12 +6,12 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.sunny.kit.utils.StringUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.R
 import com.sunny.zy.adapter.ArrayWheelAdapter
 import com.sunny.zy.base.widget.dialog.BaseDialog
 import com.sunny.zy.widget.wheel.WheelView
-import java.util.*
+import java.util.Calendar
 
 /**
  * Desc
@@ -84,7 +84,7 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
         setWheelViewStyle(wvMinute)
         wvMinute.setAdapter(ArrayWheelAdapter(minutes))
 
-        val currentTime = StringUtil.getCurrentTime("HH:mm")
+        val currentTime = ZyKit.date.getCurrentTime("HH:mm")
         val times = currentTime.split(":")
         wvHour.currentItem = hours.indexOf("${times[0]}时")
         wvMinute.currentItem = minutes.indexOf("${times[1]}分")
@@ -99,7 +99,7 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
 
     private fun initTitle() {
         if (dateSb.isEmpty()) {
-            dateSb.append(StringUtil.getCurrentTime("yyyy年MM月dd日"))
+            dateSb.append(ZyKit.date.getCurrentTime("yyyy年MM月dd日"))
             dateSb.append(" 周")
             dateSb.append(weekStrList[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1])
         }

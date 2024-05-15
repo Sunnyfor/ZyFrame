@@ -3,6 +3,7 @@ package com.sunny.zy.gallery
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -18,13 +19,11 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sunny.kit.utils.FileUtil
-import com.sunny.kit.utils.LogUtil
-import com.sunny.kit.utils.StringUtil
-import com.sunny.kit.utils.ToastUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.base.BaseActivity
@@ -158,7 +157,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                     updateCount()
                     contentAdapter.notifyItemChanged(position)
                 } else {
-                    ToastUtil.show(
+                    ZyKit.toast.show(
                         String.format(
                             getString(
                                 R.string.maxSizeHint,
@@ -305,6 +304,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
             R.id.clTitle -> {
                 toggleGallery()
             }
+
             R.id.tvComplete -> {
                 if (galleryResultList.isEmpty()) {
                     return
@@ -350,17 +350,17 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         intent.putExtra("return-data", false)
         intent.putExtra("noFaceDetection", true) //
 
-        val outFile = File(ZyFrameConfig.TEMP, StringUtil.getTimeStamp() + ".jpg")
+        val outFile = File(ZyFrameConfig.TEMP, "${ZyKit.date.getTimeStamp()}.jpg")
         var outUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            FileUtil.insertImage(outFile.name)
+            insertImage(outFile.name)
         } else {
             Uri.fromFile(outFile)
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outUri)
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                LogUtil.i("裁剪成功")
-                FileUtil.cropResultGetUri(outUri, outFile)?.let { resultUri ->
+                ZyKit.log.i("裁剪成功")
+                cropResultGetUri(outUri, outFile)?.let { resultUri ->
                     outUri = resultUri
                 }
                 outUri?.let { uri ->
@@ -369,9 +369,10 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                 galleryResultList.add(data)
                 IntentManager.selectResultCallBack?.invoke(galleryResultList)
                 finish()
+
             } else {
-                LogUtil.i("裁剪失败")
-                LogUtil.i("uri:$outUri")
+                ZyKit.log.i("裁剪失败")
+                ZyKit.log.i("uri:$outUri")
             }
         }.launch(intent)
     }
@@ -393,4 +394,34 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
     }
 
     override fun onCamera(isComplete: Boolean) {}
+
+    private fun insertImage(name: String): Uri? {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        }
+        return ZyKit.getContext().contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+    }
+
+    private fun cropResultGetUri(uri: Uri?, file: File): Uri? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && uri != null) {
+            ZyKit.getContext().contentResolver.openInputStream(uri)?.use {
+                if (file.exists()) {
+                    file.delete()
+                }
+                file.createNewFile()
+                file.writeBytes(it.readBytes())
+                ZyKit.getContext().contentResolver.delete(uri, null)
+                return FileProvider.getUriForFile(
+                    ZyKit.getContext(),
+                    ZyKit.authorities,
+                    file
+                )
+            }
+        }
+        return null
+    }
 }

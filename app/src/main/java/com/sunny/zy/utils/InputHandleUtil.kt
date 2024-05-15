@@ -11,7 +11,7 @@ import android.widget.PopupWindow
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.sunny.kit.utils.DensityUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.base.BaseActivity
 
 
@@ -99,7 +99,7 @@ class InputHandleUtil(var activity: BaseActivity?) : PopupWindow(activity), View
                 //拦截不正常高度
                 return
             }
-            keyboardHeight -= DensityUtil.getStatusBarHeight()
+            keyboardHeight -= ZyKit.density.getStatusBarHeight()
         }
         keyboardOpen = keyboardHeight > 0
         onLayoutSizeChangeListener?.onChange(keyboardHeight, keyboardOpen)

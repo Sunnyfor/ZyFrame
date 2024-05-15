@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.VideoView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import com.sunny.kit.utils.ToastUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.R
 import com.sunny.zy.base.BaseActivity
 import com.sunny.zy.utils.IntentManager
@@ -107,7 +107,7 @@ class VideoPlayActivity : BaseActivity() {
 
         videoView.setOnErrorListener { _, _, _ ->
             finish()
-            ToastUtil.show("无法播放此视频")
+            ZyKit.toast.show("无法播放此视频")
             return@setOnErrorListener true
         }
 
@@ -120,6 +120,7 @@ class VideoPlayActivity : BaseActivity() {
                 isComplete = false
                 finish()
             }
+
             tvComplete.id -> {
                 isComplete = true
                 finish()

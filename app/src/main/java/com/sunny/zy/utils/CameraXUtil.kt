@@ -17,9 +17,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import com.sunny.kit.utils.LogUtil
-import com.sunny.kit.utils.StringUtil
-import com.sunny.kit.utils.ToastUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.gallery.bean.GalleryBean
@@ -109,10 +107,10 @@ class CameraXUtil {
 
             if (cameraProvider?.hasCamera(cameraSelector) != true) {
                 if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                    ToastUtil.show("没有找到后置摄像头")
+                    ZyKit.toast.show("没有找到后置摄像头")
                 }
                 if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
-                    ToastUtil.show("没有找到前置摄像头")
+                    ZyKit.toast.show("没有找到前置摄像头")
                 }
                 return@Runnable
             }
@@ -173,7 +171,7 @@ class CameraXUtil {
     fun takePhoto(result: (galleryBean: GalleryBean) -> Unit) {
         val file = File(
             ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "${StringUtil.getTimeStamp()}.jpg"
+            "${ZyKit.date.getTimeStamp()}.jpg"
         )
         val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
 
@@ -218,7 +216,7 @@ class CameraXUtil {
     fun takeVideo(result: (galleryBean: GalleryBean) -> Unit) {
         val file = File(
             ZyFrameStore.getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES),
-            "${StringUtil.getTimeStamp()}.mp4"
+            "${ZyKit.date.getTimeStamp()}.mp4"
         )
 
         val outputOptions = VideoCapture.OutputFileOptions.Builder(file).build()
@@ -246,7 +244,7 @@ class CameraXUtil {
 
                 override fun onError(videoCaptureError: Int, message: String, cause: Throwable?) {
                     //保存视频失败
-                    LogUtil.i("视频录制失败！")
+                    ZyKit.log.i("视频录制失败！")
                 }
 
             })

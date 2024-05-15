@@ -14,12 +14,10 @@ import android.content.IntentFilter
 import android.os.ParcelUuid
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
-import com.sunny.kit.utils.LogUtil
-import com.sunny.kit.utils.ToastUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -58,11 +56,11 @@ object ZyBluetoothScanner {
     ) {
         this.onLeScanCallback = onResult
         if (bluetoothAdapter == null) {
-            ToastUtil.show("当前设备不支持蓝牙！")
+            ZyKit.toast.show("当前设备不支持蓝牙！")
         }
 
         if (isScan) {
-            ToastUtil.show("蓝牙正在扫描中！")
+            ZyKit.toast.show("蓝牙正在扫描中！")
             return
         }
         checkBlueTooth(activity) {
@@ -103,7 +101,7 @@ object ZyBluetoothScanner {
      */
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADMIN)
     fun stopLeScan() {
-        LogUtil.i("停止蓝牙扫描！")
+        ZyKit.log.i("停止蓝牙扫描！")
         isScan = false
         bluetoothAdapter?.bluetoothLeScanner?.stopScan(onLeScanCallback)
     }
@@ -129,6 +127,7 @@ object ZyBluetoothScanner {
                                     callback.onScanResult(it)
                                 }
                         }
+
                         BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                             callback.onScanFinish()
                             isScan = false
@@ -169,14 +168,14 @@ object ZyBluetoothScanner {
                 filters, settings ?: ScanSettings.Builder().build(), onLeScanCallback
             )
         }
-        LogUtil.i("开始蓝牙扫描！")
+        ZyKit.log.i("开始蓝牙扫描！")
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_ADMIN)
     private fun checkBlueTooth(activity: BaseActivity, callback: () -> Unit) {
         if (bluetoothAdapter?.isEnabled == false) {
             activity.hideLoading()
-            ToastUtil.show("请打开蓝牙后扫描！")
+            ZyKit.toast.show("请打开蓝牙后扫描！")
         } else {
             callback.invoke()
         }

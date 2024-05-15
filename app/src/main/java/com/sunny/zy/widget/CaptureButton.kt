@@ -13,8 +13,7 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.sunny.kit.utils.DensityUtil
-import com.sunny.kit.utils.LogUtil
+import com.sunny.kit.utils.application.ZyKit
 
 
 /**
@@ -72,7 +71,7 @@ class CaptureButton : View {
 
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        buttonSize = (DensityUtil.screenWidth() / 4.5).toInt()
+        buttonSize = (ZyKit.density.screenWidth() / 4.5).toInt()
         buttonRadius = buttonSize / 2.0f
         buttonOutsideRadius = buttonRadius
         buttonInsideRadius = buttonRadius * 0.75f
@@ -84,9 +83,9 @@ class CaptureButton : View {
         longPressRunnable = LongPressRunnable()
         state = STATE_IDLE //初始化为空闲状态
         buttonState = BUTTON_STATE_BOTH //初始化按钮为可录制可拍照
-        LogUtil.i("CaptureButton start")
+        ZyKit.log.i("CaptureButton start")
         duration = 10 * 1000 //默认最长录制时间为10s
-        LogUtil.i("CaptureButton end")
+        ZyKit.log.i("CaptureButton end")
         minDuration = 1500 //默认最短录制时间为1.5s
         centerX = ((buttonSize + outsideAddSize * 2) / 2).toFloat()
         centerY = ((buttonSize + outsideAddSize * 2) / 2).toFloat()
@@ -125,8 +124,8 @@ class CaptureButton : View {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                LogUtil.i("state = $state")
-                if (state == STATE_IDLE){
+                ZyKit.log.i("state = $state")
+                if (state == STATE_IDLE) {
                     eventY = event.y //记录Y值
                     state = STATE_PRESS //修改当前状态为点击按下
 
@@ -137,10 +136,12 @@ class CaptureButton : View {
                     ) //同时延长500启动长按后处理的逻辑Runnable
                 }
             }
+
             MotionEvent.ACTION_MOVE -> if (captureListener != null && state == STATE_RECORDING && (buttonState == BUTTON_STATE_ONLY_RECORDER || buttonState == BUTTON_STATE_BOTH)) {
                 //记录当前Y值与按下时候Y值的差值，调用缩放回调接口
                 captureListener?.recordZoom(eventY - event.y)
             }
+
             MotionEvent.ACTION_UP ->                 //根据当前按钮的状态进行相应的处理
                 handlerUnPressByState()
         }
@@ -158,6 +159,7 @@ class CaptureButton : View {
             } else {
                 state = STATE_IDLE
             }
+
             STATE_RECORDING -> {
                 timer!!.cancel() //停止计时器
                 recordEnd() //录制结束
@@ -196,7 +198,7 @@ class CaptureButton : View {
             invalidate()
         }
         insideAnim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 //回调拍照接口
                 captureListener?.takePictures()
@@ -229,7 +231,7 @@ class CaptureButton : View {
         val set = AnimatorSet()
         //当动画结束后启动录像Runnable并且回调录像开始接口
         set.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 //设置为录制状态
                 if (state == STATE_LONG_PRESS) {

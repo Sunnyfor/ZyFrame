@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.sunny.kit.utils.ToastUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameStore
 import com.sunny.zy.base.BaseActivity
@@ -135,6 +135,7 @@ class GalleryPreviewActivity : BaseActivity() {
                     ivDelete.visibility = View.VISIBLE
                 }
             }
+
             TYPE_SELECT -> {
                 tvComplete.visibility = View.VISIBLE
                 clSelect.visibility = View.VISIBLE
@@ -150,10 +151,12 @@ class GalleryPreviewActivity : BaseActivity() {
                             0 -> {
                                 outRect.left = resources.getDimension(R.dimen.dp_8).toInt()
                             }
+
                             selectList.size - 1 -> {
                                 outRect.right = resources.getDimension(R.dimen.dp_8).toInt()
                                 outRect.left = resources.getDimension(R.dimen.dp_16).toInt()
                             }
+
                             else -> {
                                 outRect.left = resources.getDimension(R.dimen.dp_16).toInt()
                             }
@@ -250,11 +253,12 @@ class GalleryPreviewActivity : BaseActivity() {
                     updateTitle()
                 }
             }
+
             R.id.ivSelect, R.id.tvSelect -> {
                 if (!selectList.contains(dataList[index])) {
 
                     if (selectList.size >= maxSize) {
-                        ToastUtil.show(
+                        ZyKit.toast.show(
                             String.format(
                                 getString(
                                     R.string.maxSizeHint,

@@ -20,8 +20,7 @@ import androidx.appcompat.widget.FitWindowsLinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.sunny.kit.utils.DensityUtil
-import com.sunny.kit.utils.PermissionsUtil
+import com.sunny.kit.utils.application.ZyKit
 import com.sunny.zy.R
 import com.sunny.zy.ZyFrameConfig
 import com.sunny.zy.ZyFrameStore
@@ -29,6 +28,7 @@ import com.sunny.zy.base.bean.ErrorViewBean
 import com.sunny.zy.base.bean.MenuBean
 import com.sunny.zy.event.BindEventBus
 import com.sunny.zy.utils.BitmapUtil
+import com.sunny.zy.utils.PermissionsUtil
 import com.sunny.zy.utils.ToolbarUtil
 import com.sunny.zy.widget.DefaultStateView
 import org.greenrobot.eventbus.EventBus
@@ -91,7 +91,7 @@ abstract class BaseActivity : AppCompatActivity(),
 
         val statusBarParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            DensityUtil.getStatusBarHeight()
+            ZyKit.density.getStatusBarHeight()
         )
         getFitWindowsLinearLayout().addView(statusBar, 0, statusBarParams)
         mStatusBarColor = R.color.colorPrimary
@@ -104,6 +104,7 @@ abstract class BaseActivity : AppCompatActivity(),
                     setContentView(layoutView)
                 }
             }
+
             is View -> {
                 setContentView(layoutView)
             }
@@ -289,11 +290,11 @@ abstract class BaseActivity : AppCompatActivity(),
 
     override fun setStatusBarDrawable(@DrawableRes drawable: Int, relevantView: View?) {
         mStatusBarColor = drawable
-        val width = DensityUtil.screenWidth()
-        val statusBarHeight = DensityUtil.getStatusBarHeight()
+        val width = ZyKit.density.screenWidth()
+        val statusBarHeight = ZyKit.density.getStatusBarHeight()
         var toolbarHeight = 0
         if (toolbar != null) {
-            toolbarHeight = DensityUtil.getToolBarHeight()
+            toolbarHeight = ZyKit.density.getToolBarHeight()
         }
 
         if (relevantView == null) {

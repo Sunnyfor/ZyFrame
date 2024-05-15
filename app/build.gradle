@@ -63,10 +63,6 @@ dependencies {
     //Kotlin协程库
     api project.ext.dependencies.coroutines
 
-    //Glide支持库
-    api project.ext.dependencies.glide
-    kapt project.ext.dependencies.glideCompiler
-
     // CameraX core library using camera2 implementation
     implementation project.ext.dependencies.camerax
     // CameraX Lifecycle Library

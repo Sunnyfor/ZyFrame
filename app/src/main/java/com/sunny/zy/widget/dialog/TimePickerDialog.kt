@@ -73,8 +73,10 @@ class TimePickerDialog(context: Context, var resultCallback: (date: String) -> U
             if (i < 10) {
                 hours.add("0$i$hourLabel")
                 minutes.add("0$i$minuteLabel")
-            } else {
+            } else if (i < 25) {
                 hours.add("$i$hourLabel")
+                minutes.add("$i$minuteLabel")
+            } else {
                 minutes.add("$i$minuteLabel")
             }
         }

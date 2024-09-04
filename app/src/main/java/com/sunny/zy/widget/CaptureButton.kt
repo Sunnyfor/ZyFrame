@@ -196,7 +196,7 @@ class CaptureButton : View {
             invalidate()
         }
         insideAnim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 //回调拍照接口
                 captureListener?.takePictures()
@@ -229,7 +229,7 @@ class CaptureButton : View {
         val set = AnimatorSet()
         //当动画结束后启动录像Runnable并且回调录像开始接口
         set.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 //设置为录制状态
                 if (state == STATE_LONG_PRESS) {

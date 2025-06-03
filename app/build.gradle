@@ -9,7 +9,7 @@ plugins {
 apply from: 'https://gitee.com/sunnyfor/GradleConfig/raw/master/config.gradle'
 
 android {
-    compileSdk project.ext.android.compileSdkVersion
+    compileSdk 32
 
     defaultConfig {
         minSdk project.ext.android.minSdkVersion
@@ -75,10 +75,10 @@ dependencies {
     implementation project.ext.dependencies.cameraView
 
     // 网络请求框架
-    api 'com.github.Sunnyfor:ZyHttp:1.0.6'
+    api 'com.github.Sunnyfor:ZyHttp:old_1.0.6'
 
     //工具类
-    api 'com.github.Sunnyfor:ZyKit:1.0.2'
+    api 'com.github.Sunnyfor:ZyKit:old_1.0.2'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'

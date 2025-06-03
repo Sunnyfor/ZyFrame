@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -36,6 +35,9 @@ import com.sunny.zy.gallery.contract.GalleryContract
 import com.sunny.zy.preview.GalleryPreviewActivity
 import com.sunny.zy.utils.*
 import java.io.File
+import androidx.core.view.isVisible
+import androidx.core.view.isGone
+import androidx.core.graphics.toColorInt
 
 /**
  * Desc
@@ -77,8 +79,8 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
         const val ASPECT_Y_INT = "aspectY"
         const val FILE_TYPE_INT = "fileType"
         const val FILE_TYPE_ALL = 0
-        const val File_TYPE_IMAGE = 1
-        const val File_TYPE_VIDEO = 2
+        const val FILE_TYPE_IMAGE = 1
+        const val FILE_TYPE_VIDEO = 2
     }
 
 
@@ -93,7 +95,6 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
     override fun initLayout() = R.layout.zy_act_photo_select
 
     @SuppressLint("NotifyDataSetChanged")
-    @Suppress("UNCHECKED_CAST")
     override fun initView() {
         //初始化标题栏
         setTitleCustom(R.layout.zy_layout_title_photo_select)
@@ -158,13 +159,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                     updateCount()
                     contentAdapter.notifyItemChanged(position)
                 } else {
-                    ToastUtil.show(
-                        String.format(
-                            getString(
-                                R.string.maxSizeHint,
-                                maxSize.toString()
-                            )
-                        )
+                    ToastUtil.show(String.format(getString(R.string.maxSizeHint), maxSize.toString())
                     )
                 }
             }
@@ -209,20 +204,10 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
     }
 
     override fun loadData() {
-        setPermissionsCancelFinish(true)
-        setPermissionsNoHintFinish(true)
-
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        ) {
-            when (fileType) {
-                FILE_TYPE_ALL -> presenter.loadImageAndVideData()
-                File_TYPE_IMAGE -> presenter.loadImageData()
-                File_TYPE_VIDEO -> presenter.loadVideoData()
-            }
+        when (fileType) {
+            FILE_TYPE_ALL -> presenter.loadImageAndVideData()
+            FILE_TYPE_IMAGE -> presenter.loadImageData()
+            FILE_TYPE_VIDEO -> presenter.loadVideoData()
         }
     }
 
@@ -257,7 +242,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
 
         val expandAnim: Animation
 
-        if (rvFolder.visibility == View.VISIBLE) {
+        if (rvFolder.isVisible) {
             rvFolder.visibility = View.GONE
             expandAnim = AnimationUtils.loadAnimation(this, R.anim.gallery_folder_collect)
         } else {
@@ -267,7 +252,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
 
         toolbar?.findViewById<View>(R.id.ivExpand)?.startAnimation(expandAnim)
 
-        if (rvFolder.visibility == View.GONE) {
+        if (rvFolder.isGone) {
             rvFolder.animation =
                 AnimationUtils.loadAnimation(this, R.anim.gallery_folder_out).apply {
                     setAnimationListener(object : Animation.AnimationListener {
@@ -288,7 +273,7 @@ class GallerySelectActivity : BaseActivity(), GalleryContract.IView,
                         override fun onAnimationStart(animation: Animation?) {}
 
                         override fun onAnimationEnd(animation: Animation?) {
-                            rvFolder.setBackgroundColor(Color.parseColor("#3F000000"))
+                            rvFolder.setBackgroundColor("#3F000000".toColorInt())
                         }
 
                         override fun onAnimationRepeat(animation: Animation?) {}
